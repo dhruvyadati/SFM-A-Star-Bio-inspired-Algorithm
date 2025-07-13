@@ -5,7 +5,7 @@ numObstacles = 20;
 maxArea = 20000;
 
 % Set the bounds of plot
-xMin = 0
+xMin = 0;
 xMax = 1000;
 yMin = 0;
 yMax = 1000;
