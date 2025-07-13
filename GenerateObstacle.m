@@ -7,7 +7,6 @@ function [xPoly, yPoly] = GenerateObstacle(areaMax, bounds)
 
     % Number of vertices randomly between 3 and 10
     numVertices = randi([3, 10]);
-
     xMin = bounds(1); xMax = bounds(2);
     yMin = bounds(3); yMax = bounds(4);
 
@@ -27,14 +26,12 @@ function [xPoly, yPoly] = GenerateObstacle(areaMax, bounds)
         xPoly = xCenter + radii .* cos(angles);
         yPoly = yCenter + radii .* sin(angles);
 
-        % Close the polygon
         xPoly(end+1) = xPoly(1);
         yPoly(end+1) = yPoly(1);
 
-        % Area via shoelace formula
+        % Shoelace formula for area & check area and bounds
         A = 0.5 * abs(sum(xPoly(1:end-1).*yPoly(2:end) - xPoly(2:end).*yPoly(1:end-1)));
-
-        % Check area and bounds
+        
         if A <= areaMax && ...
            all(xPoly >= xMin) && all(xPoly <= xMax) && ...
            all(yPoly >= yMin) && all(yPoly <= yMax)
