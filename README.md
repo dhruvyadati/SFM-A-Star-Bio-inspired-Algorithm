@@ -1,4 +1,4 @@
-# Read Me
+# SFM + A* Bio-inspired Algorithm
 
 Combining bio-inspired algorithms, SFM + A*, for enhanced path finding and navigation.
 
