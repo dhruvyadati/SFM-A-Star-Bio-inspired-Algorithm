@@ -8,7 +8,7 @@ yMax = 10;
 bounds = [xMin, xMax, yMin, yMax];
 
 % Generate obstacle list
-[xObsList, yObsList] = GenerateEnvironment(xMax, yMax, numObstacles, maxArea, bounds);
+[xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
 
 % Make graph
 G = Graph(xMax, yMax, xObsList, yObsList);
