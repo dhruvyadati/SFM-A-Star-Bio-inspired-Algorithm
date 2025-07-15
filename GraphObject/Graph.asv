@@ -1,0 +1,53 @@
+function G = Graph(xMax, yMax, xObsList, yObsList);
+
+    % Initialize containers
+    edgesSource = [];
+    edgesTarget = [];
+    weights = [];
+    
+    % For example, create a 10x10 grid of free cells as a graph
+    nodeIDs = reshape(1:(xMax*yMax), yMax, xMax);  % Map (y,x) to node ID
+    
+    % 8-way connectivity
+    dirs = [
+        -1,  0, 1;        % N
+        -1,  1, sqrt(2);  % NE
+         0,  1, 1;        % E
+         1,  1, sqrt(2);  % SE
+         1,  0, 1;        % S
+         1, -1, sqrt(2);  % SW
+         0, -1, 1;        % W
+        -1, -1, sqrt(2)   % NW
+    ];
+    
+    % Only define edges for valid, free nodes (obstacles skipped manually)
+    for y = 1:yMax
+        for x = 1:xMax
+            if isInsideAnyPolygon(x, y, xObsList, yObsList)
+                continue;  % skip obstacle cells
+            end
+
+            current = nodeIDs(y,x);
+    
+            for d = 1:size(dirs,1)
+                ny = y + dirs(d,1);
+                nx = x + dirs(d,2);
+   
+                if ny >= 1 && ny <= yMax && nx >= 1 && nx <= xMax
+                    if isInsideAnyPolygon(nx, ny, xObsList, yObsList)
+                        continue;  % skip obstacle neighbors
+                    end
+    
+                    neighbor = nodeIDs(ny, nx);
+                    edgesSource(end+1) = current;
+                    edgesTarget(end+1) = neighbor;
+                    weights(end+1) = dirs(d,3);
+                end
+            end
+        end
+    end
+    
+    % Build graph directly
+    G = graph(edgesSource, edgesTarget, weights);
+
+end
