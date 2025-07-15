@@ -1,0 +1,101 @@
+function [path, cameFrom, gScore] = AStar(grid, startPos, goalPos, allowDiag)
+    % if num of input arguments < 4, then include diagonals
+    % diagonals
+    if nargin < 4
+        allowDiag = true; 
+    end
+
+    % size func returns dimensions of matrix [rows, cols]
+    [nRows, nCols] = size(grid);
+
+    % anonymous func to check if something is inbounds
+    inBounds = @(r,c) (r>=1 && r<=nRows && c>=1 && c<=nCols);
+    if allowDiag
+        dirs = [ -1  0 ; %left 
+                  1  0 ; %right
+                  0 -1 ;%down
+                  0  1 ;  %up
+                 -1 -1 ; %bl diagonal
+                  -1 1 ; %tl diagonal
+                  1 -1 ; %br diagonal
+                  1  1 ];%tr diagonal
+        stepCost = [1 1 1 1 sqrt(2) sqrt(2) sqrt(2) sqrt(2)];
+    else
+        dirs = [ -1  0 ; %left 
+          1  0 ; %right
+          0 -1 ;%down
+          0  1 ;  %up
+          ]
+        stepCost = ones(1,4);
+    end
+    nDirs = size(dirs,1);
+
+    % the heuristic (bias) will be euclidean distance 
+    heuristic = @(r,c) hypot(goalPos(2)-r , goalPos(1)-c);
+
+
+    gScore   = inf(nRows,nCols);              
+    fScore   = inf(nRows,nCols);  
+    %saves memory: 8 bytes/ num -> 4 bytes/num
+    cameFrom = zeros(nRows,nCols,2, 'int32');
+    discoveredNodes = false(nRows,nCols);         
+    sC = startPos(1);
+    gC = goalPos(1);
+    gR = goalPos(2); 
+    sR = startPos(2);
+    % initialize starting node 
+    gScore(sR,sC) = 0;
+    fScore(sR,sC) = heuristic(sR,sC);
+    discoveredNodes(sR,sC) = true;
+
+    % main a* algo
+    while any(discoveredNodes(:))
+        %(:) reshapes matrix into a column vector 
+        %find func returns a vector containing linear indices of each
+        %nonzero element in array 
+        [openRows, openCols] = find(discoveredNodes);
+        [~, idx]= min(fScore(discoveredNodes));
+        curR = openRows(idx);
+        curC = openCols(idx);
+        if curR == gR && curC == gC
+            path = reconstructPath(cameFrom, [curR,curC],[sR,sC]);
+            %reverses the order of the rows 
+            path = flipud(path);
+            path = [path(:,2) path(:,1)]; 
+            return;
+        end
+        discoveredNodes(curR,curC) = false; 
+        for k = 1:nDirs
+            nR = curR + dirs(k,1);
+            nC = curC + dirs(k,2);
+            if ~inBounds(nR,nC) || grid(nR,nC)==0
+                continue;            
+            end
+            tempG = gScore(curR,curC) + stepCost(k);
+            if tempG < gScore(nR,nC)
+                % found better path 
+                cameFrom(nR,nC,1) = curR;
+                cameFrom(nR,nC,2) = curC;
+                gScore(nR,nC) = tempG;
+                fScore(nR,nC) = tempG + heuristic(nR,nC);
+                discoveredNodes(nR,nC) = true;
+            end
+        end
+    end
+    %no path was found, return empty path  
+    path = [];     
+end
+
+function path = reconstructPath(cameFrom, nodeRC, startRC)
+    path = nodeRC;
+    while ~(nodeRC(1)==startRC(1) && nodeRC(2)==startRC(2))
+        parentR = cameFrom(nodeRC(1),nodeRC(2), 1);
+        parentC = cameFrom(nodeRC(1), nodeRC(2), 2);
+        if parentR==0 
+            path = [];
+            return;
+        end
+        nodeRC = [parentR, parentC];
+        path = [path; nodeRC];  
+    end
+end

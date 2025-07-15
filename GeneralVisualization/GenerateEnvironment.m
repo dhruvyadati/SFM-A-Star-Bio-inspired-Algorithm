@@ -33,4 +33,9 @@ function [grid, xObsList, yObsList] = GenerateEnvironment(xMax, yMax, numObstacl
         in = inpolygon(X, Y, xObsList{i}, yObsList{i});
         grid(in) = 0;
     end
+    %padding to prevent collision w/ obstacles 
+    kernel  = ones(3);
+    obsMask = (grid == 0);
+    inflated = conv2(double(obsMask), kernel, 'same') > 0;
+    grid(inflated) = 0;
 end
