@@ -1,6 +1,4 @@
-% Generates the Graph
-
-% Set the number of obstacles and maximum area of each obstacle
+% Set # of obstacles and max area of each obstacle
 numObstacles = 5;
 maxArea = 20;
 xMin = 0;
@@ -44,9 +42,9 @@ title('Graph-Based Pathfinding Environment');
 xlabel('X');
 ylabel('Y');
 xlim([xMin xMax]);
-xticks([xMin:1:xMax]);    % comment if grid is > 10x10 (too laggy)
+xticks([xMin:1:xMax]);    % Comment if grid is > 10x10 (too laggy)
 ylim([yMin yMax]);
-yticks([xMin:1:xMax]);    % comment if grid is > 10x10 (too laggy)
+yticks([xMin:1:xMax]);    % Comment if grid is > 10x10 (too laggy)
 
 % Plot obstacles
 for i = 1:numObstacles
@@ -63,7 +61,7 @@ for i = 1:xMax
     for j = 1:yMax
         for z = 1:numObstacles
             if ~isInsideAnyPolygon(i, j, xObsList, yObsList)
-                % if you are exceeding a grid 10x10, comment the plot out -
+                % If you are exceeding a grid 10x10, comment the plot out -
                 % it gets laggy
                 plot(i, j, 'o', 'MarkerSize', 2, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'k');
                 nodesWithoutObs(i, j) = nodeIDs(i,j);
