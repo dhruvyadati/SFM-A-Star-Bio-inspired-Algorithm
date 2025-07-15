@@ -1,5 +1,5 @@
 function inside = isInsideAnyPolygon(x, y, xObsList, yObsList)
-% Checks if point (x, y) is inside any obstacle polygon
+% Check if point (x, y) is inside any obstacle polygon
 
     inside = false;
     for i = 1:length(xObsList)

@@ -25,14 +25,16 @@ nodeIDs = reshape(1:(xMax * yMax), yMax, xMax);  % Matrix: (row = y, col = x)
 startNode = nodeIDs(startXY(2), startXY(1));  % y, x
 goalNode = nodeIDs(goalXY(2), goalXY(1));
 
-% Use MATLabs' Dijkstra to find shortest path using graph
+
+%{
+% Use MATLabs Dijkstra to find shortest path using graph
 % Do not need this right now (we will use a*)
 [pathNodes, pathLength] = shortestpath(G, startNode, goalNode);
 
 
 % Convert path node IDs back to (x, y)
 [yPath, xPath] = ind2sub(size(nodeIDs), pathNodes);
-
+%}
 
 figure;
 hold on;
@@ -51,7 +53,7 @@ for i = 1:numObstacles
     fill(xObsList{i}, yObsList{i}, 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'k');
 end
 
-% Plot start and goal points
+% Plot start and goal
 plot(startXY(1), startXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'r'); % start
 plot(goalXY(1), goalXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'g');   % goal
 
@@ -63,17 +65,18 @@ for i = 1:xMax
             if ~isInsideAnyPolygon(i, j, xObsList, yObsList)
                 % if you are exceeding a grid 10x10, comment the plot out -
                 % it gets laggy
-                plot(i, j, 'o', 'MarkerSize', 2, 'MarkerFaceColor', 'y', 'MarkerEdgeColor', 'y');
+                plot(i, j, 'o', 'MarkerSize', 2, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'k');
                 nodesWithoutObs(i, j) = nodeIDs(i,j);
             end
         end  
     end
 end
 
-
+%{
 % Plot path if one exists
 if ~isempty(pathNodes)
     plot(xPath, yPath, 'b-', 'LineWidth', 2);
 else
     disp('No path');
 end
+%}
