@@ -1,4 +1,4 @@
-% Generates the Grid to a Graph
+% Generates the Graph
 
 % Set the number of obstacles and maximum area of each obstacle
 numObstacles = 5;
@@ -17,7 +17,7 @@ G = Graph(xMax, yMax, xObsList, yObsList);
 
 % Define start and goal coordinates in (x, y)
 startXY = [1, 1];
-goalXY = [10, 10];
+goalXY = [xMax, yMax];
 
 nodeIDs = reshape(1:(xMax * yMax), yMax, xMax);  % Matrix: (row = y, col = x)
 % nodeID = nodeIDs(y, x);  % For any (x, y) location
@@ -42,9 +42,9 @@ title('Graph-Based Pathfinding Environment');
 xlabel('X');
 ylabel('Y');
 xlim([xMin xMax]);
-%xticks([xMin:1:xMax]);
+xticks([xMin:1:xMax]);    % comment if grid is > 10x10 (too laggy)
 ylim([yMin yMax]);
-%yticks([xMin:1:xMax]);
+yticks([xMin:1:xMax]);    % comment if grid is > 10x10 (too laggy)
 
 % Plot obstacles
 for i = 1:numObstacles
@@ -55,13 +55,16 @@ end
 plot(startXY(1), startXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'r'); % start
 plot(goalXY(1), goalXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'g');   % goal
 
-
+nodesWithoutObs = zeros(xMax, yMax);
 % Plot the nodes
 for i = 1:xMax
     for j = 1:yMax
         for z = 1:numObstacles
-            if ~([i, j] == inpolygon(i, j, xObsList{z}, yObsList{z}))
+            if ~isInsideAnyPolygon(i, j, xObsList, yObsList)
+                % if you are exceeding a grid 10x10, comment the plot out -
+                % it gets laggy
                 plot(i, j, 'o', 'MarkerSize', 2, 'MarkerFaceColor', 'y', 'MarkerEdgeColor', 'y');
+                nodesWithoutObs(i, j) = nodeIDs(i,j);
             end
         end  
     end
@@ -74,23 +77,3 @@ if ~isempty(pathNodes)
 else
     disp('No path');
 end
-
-
-%{
-[yMax, xMax] = size(g);
-[X, Y] = meshgrid(1:xMax, 1:yMax);
-positions = [X(:), Y(:)];
-%}
-
-%G.Nodes.Name = string(1:numel(g))';  % Optional names
-%G.Nodes.Position = positions;       % Store x/y positions if needed
-
-%{
-if currentNode < neighborNode
-    % Add edge just once
-    edgesSource(end+1) = currentNode;
-    edgesTarget(end+1) = neighborNode;
-    weights(end+1) = w;
-end
-
-%}

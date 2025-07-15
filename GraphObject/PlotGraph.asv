@@ -17,7 +17,7 @@ G = Graph(xMax, yMax, xObsList, yObsList);
 
 % Define start and goal coordinates in (x, y)
 startXY = [1, 1];
-goalXY = [10, 10];
+goalXY = [xMax, yMax];
 
 nodeIDs = reshape(1:(xMax * yMax), yMax, xMax);  % Matrix: (row = y, col = x)
 % nodeID = nodeIDs(y, x);  % For any (x, y) location
@@ -46,8 +46,6 @@ xlim([xMin xMax]);
 ylim([yMin yMax]);
 %yticks([xMin:1:xMax]);
 
-
-
 % Plot obstacles
 for i = 1:numObstacles
     fill(xObsList{i}, yObsList{i}, 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'k');
@@ -57,18 +55,20 @@ end
 plot(startXY(1), startXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'r'); % start
 plot(goalXY(1), goalXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'g');   % goal
 
-%{
+nodesWithoutObs = zeros(xMax, yMax);
 % Plot the nodes
 for i = 1:xMax
     for j = 1:yMax
         for z = 1:numObstacles
-            if ~([i, j] == inpolygon(i, j, xObsList{z}, yObsList{z}))
-                plot(i, j, 'o', 'MarkerSize', 2, 'MarkerFaceColor', 'y', 'MarkerEdgeColor', 'y');
+            if ~isInsideAnyPolygon(i, j, xObsList, yObsList)
+                %plot(i, j, 'o', 'MarkerSize', 2, 'MarkerFaceColor', 'y',
+                %'MarkerEdgeColor', 'y'); 
+                nodesWithoutObs(i, j) = nodeIDs(i,j);
             end
         end  
     end
 end
-%}
+
 
 % Plot path if one exists
 if ~isempty(pathNodes)
