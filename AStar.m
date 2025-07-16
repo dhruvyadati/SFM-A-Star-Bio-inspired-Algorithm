@@ -1,101 +1,69 @@
-function [path, cameFrom, gScore] = AStar(grid, startPos, goalPos, allowDiag)
-    % if num of input arguments < 4, then include diagonals
-    % diagonals
-    if nargin < 4
-        allowDiag = true; 
-    end
+function [path, cameFrom, gScore] = AStar(G, nodeIDs, startXY, goalXY)
+%   nodeIDs             yMax×xMax lookup from (x,y) to nodeID
+%   startXY,goalXY      [x y] in grid coords
+%   path                N×2 list of (x,y) from start to goal
+%   cameFrom            predecessor map (basically nodeID to nodeID)
+%   gScore              final cost for all nodes
 
-    % size func returns dimensions of matrix [rows, cols]
-    [nRows, nCols] = size(grid);
+    [yMax,xMax] = size(nodeIDs);
+    start = nodeIDs(startXY(2), startXY(1));
+    goal  = nodeIDs(goalXY(2), goalXY(1));
+    n     = numnodes(G);
 
-    % anonymous func to check if something is inbounds
-    inBounds = @(r,c) (r>=1 && r<=nRows && c>=1 && c<=nCols);
-    if allowDiag
-        dirs = [ -1  0 ; %left 
-                  1  0 ; %right
-                  0 -1 ;%down
-                  0  1 ;  %up
-                 -1 -1 ; %bl diagonal
-                  -1 1 ; %tl diagonal
-                  1 -1 ; %br diagonal
-                  1  1 ];%tr diagonal
-        stepCost = [1 1 1 1 sqrt(2) sqrt(2) sqrt(2) sqrt(2)];
-    else
-        dirs = [ -1  0 ; %left 
-          1  0 ; %right
-          0 -1 ;%down
-          0  1 ;  %up
-          ]
-        stepCost = ones(1,4);
-    end
-    nDirs = size(dirs,1);
+    % (x,y) positions per node for heuristic
+    [Ygrid, Xgrid] = ind2sub([yMax xMax], 1:n);
+    Xpos = Xgrid(:); Ypos = Ygrid(:);
+    heuristic = @(u) hypot(Xpos(u)-goalXY(1), Ypos(u)-goalXY(2));
 
-    % the heuristic (bias) will be euclidean distance 
-    heuristic = @(r,c) hypot(goalPos(2)-r , goalPos(1)-c);
+    % The data structures for a*
+    gScore  = inf(n,1);
+    fScore  = inf(n,1);
+    cameFrom= zeros(n,1,'uint32');
+    openSet = false(n,1);
 
+    gScore(start)=0;
+    fScore(start)=heuristic(start);
+    openSet(start)=true;
 
-    gScore   = inf(nRows,nCols);              
-    fScore   = inf(nRows,nCols);  
-    %saves memory: 8 bytes/ num -> 4 bytes/num
-    cameFrom = zeros(nRows,nCols,2, 'int32');
-    discoveredNodes = false(nRows,nCols);         
-    sC = startPos(1);
-    gC = goalPos(1);
-    gR = goalPos(2); 
-    sR = startPos(2);
-    % initialize starting node 
-    gScore(sR,sC) = 0;
-    fScore(sR,sC) = heuristic(sR,sC);
-    discoveredNodes(sR,sC) = true;
+    while any(openSet)
+        % pick open node with min fScore
+        openIdx = find(openSet);
+        [~,minI] = min(fScore(openIdx));
+        current = openIdx(minI);
 
-    % main a* algo
-    while any(discoveredNodes(:))
-        %(:) reshapes matrix into a column vector 
-        %find func returns a vector containing linear indices of each
-        %nonzero element in array 
-        [openRows, openCols] = find(discoveredNodes);
-        [~, idx]= min(fScore(discoveredNodes));
-        curR = openRows(idx);
-        curC = openCols(idx);
-        if curR == gR && curC == gC
-            path = reconstructPath(cameFrom, [curR,curC],[sR,sC]);
-            %reverses the order of the rows 
-            path = flipud(path);
-            path = [path(:,2) path(:,1)]; 
-            return;
+        if current==goal
+            % reconstruct
+            pathNodes = reconstruct(current);
+            [r,c] = ind2sub([yMax xMax], pathNodes);
+            path = [c r];  % convert to (x,y)
+            return
         end
-        discoveredNodes(curR,curC) = false; 
-        for k = 1:nDirs
-            nR = curR + dirs(k,1);
-            nC = curC + dirs(k,2);
-            if ~inBounds(nR,nC) || grid(nR,nC)==0
-                continue;            
-            end
-            tempG = gScore(curR,curC) + stepCost(k);
-            if tempG < gScore(nR,nC)
-                % found better path 
-                cameFrom(nR,nC,1) = curR;
-                cameFrom(nR,nC,2) = curC;
-                gScore(nR,nC) = tempG;
-                fScore(nR,nC) = tempG + heuristic(nR,nC);
-                discoveredNodes(nR,nC) = true;
+
+        openSet(current)=false;
+        nbrs = neighbors(G, current);
+
+        for v = nbrs'
+            eid = findedge(G, current, v);
+            tentative = gScore(current) + G.Edges.Weight(eid);
+            if tentative < gScore(v)
+                cameFrom(v) = current;
+                gScore(v)   = tentative;
+                fScore(v)   = tentative + heuristic(v);
+                openSet(v)  = true;
             end
         end
     end
-    %no path was found, return empty path  
-    path = [];     
-end
 
-function path = reconstructPath(cameFrom, nodeRC, startRC)
-    path = nodeRC;
-    while ~(nodeRC(1)==startRC(1) && nodeRC(2)==startRC(2))
-        parentR = cameFrom(nodeRC(1),nodeRC(2), 1);
-        parentC = cameFrom(nodeRC(1), nodeRC(2), 2);
-        if parentR==0 
-            path = [];
-            return;
-        end
-        nodeRC = [parentR, parentC];
-        path = [path; nodeRC];  
+    % no path
+    path = [];
+
+    function pn = reconstruct(node)
+      pn = node;
+      while node~= start
+        node = cameFrom(node);
+        if node==0, pn=[]; return; end
+        pn(end+1,1) = node;
+      end
+      pn = flip(pn);
     end
 end
