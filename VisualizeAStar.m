@@ -15,7 +15,7 @@ bounds = [xMin, xMax, yMin, yMax];
 [xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
 
 % Make graph G
-[G, nodeIDs] = Graph(xMax, yMax, xObsList, yObsList);
+[G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList);
 
 % call aStar algorithm
 startXY = [xMin, yMin];
@@ -56,7 +56,8 @@ allPos = [Xgrid(:), Ygrid(:)];
 
 % Restrict to the nodes that actually appear in G:
 edgeNodes    = unique(G.Edges.EndNodes(:));
-freePos      = allPos(edgeNodes, :);
+% This is in form of [row x col] while freeNodes is node number
+freePos      = allPos(edgeNodes, :);  
 
 % Plot graph edges - Comment if grid is > 10x10 (too laggy)
 h = plot(G, ...
