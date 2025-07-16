@@ -28,6 +28,8 @@ goalNode = nodeIDs(goalXY(2), goalXY(1));
 
 [path, cameFrom, gScore] = AStar(G, nodeIDs, startXY, goalXY); 
 
+%% Create Plot and Obstacles
+ 
 % Create Plot
 figure;
 hold on;
