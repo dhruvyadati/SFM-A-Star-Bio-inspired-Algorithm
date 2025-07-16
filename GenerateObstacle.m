@@ -33,8 +33,8 @@ function [xPoly, yPoly] = GenerateObstacle(areaMax, bounds)
         A = 0.5 * abs(sum(xPoly(1:end-1).*yPoly(2:end) - xPoly(2:end).*yPoly(1:end-1)));
         
         if A <= areaMax && ...
-           all(xPoly >= xMin) && all(xPoly <= xMax) && ...
-           all(yPoly >= yMin) && all(yPoly <= yMax)
+            all(xPoly >= xMin) && all(xPoly <= xMax) && ...
+            all(yPoly >= yMin) && all(yPoly <= yMax)
             return;
         end
     end

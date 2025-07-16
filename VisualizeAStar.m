@@ -39,9 +39,9 @@ title('Pathfinding Visual Environment');
 xlabel('X'); 
 ylabel('Y');
 xlim([xMin xMax]); 
-xticks([xMin:1:xMax]);    % Comment if grid is > 10x10 (too laggy)
+xticks([xMin:1:xMax]);      % Comment if grid is > 10x10 (too laggy)
 ylim([yMin yMax]);
-yticks([xMin:1:xMax]);    % Comment if grid is > 10x10 (too laggy)
+yticks([xMin:1:xMax]);      % Comment if grid is > 10x10 (too laggy)
 
 % Plot obstacles
 for i = 1:numObstacles
@@ -55,18 +55,18 @@ end
 allPos = [Xgrid(:), Ygrid(:)];  
 
 % Restrict to the nodes that actually appear in G:
-edgeNodes    = unique(G.Edges.EndNodes(:));
+edgeNodes = unique(G.Edges.EndNodes(:));
 % This is in form of [row x col] while freeNodes is node number
-freePos      = allPos(edgeNodes, :);  
+freePos = allPos(edgeNodes, :);  
 
 % Plot graph edges - Comment if grid is > 10x10 (too laggy)
 h = plot(G, ...
     'XData', allPos(:,1), ...
     'YData', allPos(:,2), ...
-    'NodeLabel', {}, ...           % no labels
+    'NodeLabel', {}, ...            % no labels
     'LineStyle', '-', ...
     'EdgeColor', [0.7 0.7 0.7], ... % light gray edges
-    'Marker', 'none');             % don't draw nodes yet
+    'Marker', 'none');              % don't draw nodes yet
 
 % Overlay free nodes
 scatter(freePos(:,1), freePos(:,2), 20, 'b', 'filled'); % Comment if grid is > 10x10 (too laggy)
@@ -82,7 +82,22 @@ plot(goalXY(1), goalXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'Marke
 
 % plot a* path
 if ~isempty(path)                                              
-    plot(path(:,1), path(:,2), 'w-', 'LineWidth', 1.5);    
+    plot(path(:,1), path(:,2), 'k-', 'LineWidth', 1.5);    
 else                                                           
     warning('No path was found :(');                        
 end                                                            
+
+%% Save runs
+
+%{
+t = datetime('now','TimeZone','America/Los_Angeles','Format','d-MMM-y HH:mm:ss Z');
+% Generate a filename using the current date and time
+% Change "runs" to the directory you want to save files to
+filename = sprintf('runs/variables_%s.mat', t); 
+filename2 = sprintf('runs/region_%s.fig', t); 
+% Save your data
+save(filename);
+savefig(filename2);
+%}
+
+

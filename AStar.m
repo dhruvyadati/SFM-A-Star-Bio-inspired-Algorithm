@@ -58,12 +58,12 @@ function [path, cameFrom, gScore] = AStar(G, nodeIDs, startXY, goalXY)
     path = [];
 
     function pn = reconstruct(node)
-      pn = node;
-      while node~= start
-        node = cameFrom(node);
-        if node==0, pn=[]; return; end
-        pn(end+1,1) = node;
-      end
-      pn = flip(pn);
+        pn = node;
+        while node~= start
+            node = cameFrom(node);
+            if node==0, pn=[]; return; end
+            pn(end+1,1) = node;
+        end
+    pn = flip(pn);
     end
 end
