@@ -54,10 +54,8 @@ end
 [Ygrid, Xgrid] = ndgrid(1:yMax, 1:xMax);
 allPos = [Xgrid(:), Ygrid(:)];  
 
-% Restrict to the nodes that actually appear in G:
-edgeNodes = unique(G.Edges.EndNodes(:));
 % This is in form of [row x col] while freeNodes is node number
-freePos = allPos(edgeNodes, :);  
+freePos = allPos(freeNodeIDs, :);  
 
 % Plot graph edges - Comment if grid is > 10x10 (too laggy)
 h = plot(G, ...
@@ -89,7 +87,7 @@ end
 
 %% Save runs
 
-%{
+
 t = datetime('now','TimeZone','America/Los_Angeles','Format','d-MMM-y HH:mm:ss Z');
 % Generate a filename using the current date and time
 % Change "runs" to the directory you want to save files to
@@ -98,7 +96,7 @@ filename2 = sprintf('runs/region_%s.fig', t);
 % Save your data
 save(filename);
 savefig(filename2);
-%}
+
 
 
 
