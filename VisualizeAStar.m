@@ -1,18 +1,18 @@
 % Used for visual of environment 
 
 % Set the number of obstacles and maximum area of each obstacle
-numObstacles = 5;        
-maxArea = 20;      
+numObstacles = 24;        
+maxArea = 200;      
 
 % Set the bounds of plot
 xMin = 1;                  
-xMax = 10;
+xMax = 50;
 yMin = 1;            
-yMax = 10;
+yMax = 50;
 bounds = [xMin, xMax, yMin, yMax];
 
 % Get the object list
-[xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
+[xObsList, yObsList] = GenerateEnvironmentGraphObject(numObstacles, maxArea, bounds);
 
 % Make graph G
 [G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList);
@@ -39,9 +39,9 @@ title('Pathfinding Visual Environment');
 xlabel('X'); 
 ylabel('Y');
 xlim([xMin xMax]); 
-xticks([xMin:1:xMax]);      % Comment if grid is > 10x10 (too laggy)
+%xticks([xMin:1:xMax]);      % Comment if grid is > 10x10 (too laggy)
 ylim([yMin yMax]);
-yticks([xMin:1:xMax]);      % Comment if grid is > 10x10 (too laggy)
+%yticks([xMin:1:xMax]);      % Comment if grid is > 10x10 (too laggy)
 
 % Plot obstacles
 for i = 1:numObstacles
@@ -69,7 +69,7 @@ h = plot(G, ...
     'Marker', 'none');              % don't draw nodes yet
 
 % Overlay free nodes
-scatter(freePos(:,1), freePos(:,2), 20, 'b', 'filled'); % Comment if grid is > 10x10 (too laggy)
+scatter(freePos(:,1), freePos(:,2), 5, 'b', 'filled'); % Comment if grid is > 10x10 (too laggy)
 
 % bring everything to front/back
 uistack(h, 'bottom');
@@ -99,5 +99,6 @@ filename2 = sprintf('runs/region_%s.fig', t);
 save(filename);
 savefig(filename2);
 %}
+
 
 

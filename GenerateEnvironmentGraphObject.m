@@ -1,7 +1,4 @@
-% GenerateEnvironment creates obstacles and returns occupancy grid
-
-function [xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds)
-%   xMax, yMax          dimensions of environment
+function [xObsList, yObsList] = GenerateEnvironmentGraphObject(numObstacles, maxArea, bounds)
 %   numObstacles        number of obstacles
 %   maxArea             max area per obstacle
 %   bounds              [xMin, xMax, yMin, yMax]
