@@ -12,7 +12,7 @@ yMax = 50;
 bounds = [xMin, xMax, yMin, yMax];
 
 % Get the object list
-[xObsList, yObsList] = GenerateEnvironmentGraphObject(numObstacles, maxArea, bounds);
+[xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
 
 % Make graph G
 [G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList);
