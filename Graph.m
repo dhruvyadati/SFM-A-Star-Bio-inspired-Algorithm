@@ -1,15 +1,18 @@
-function [G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList)
+function [G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList, margin)
     % Builds 8‑way graph and removes any nodes/edges on obstacle polygons
     %   G               MATLAB graph object
     %   nodeIDs         yMax×xMax matrix mapping (y,x)→node ID
     %   freeNodeIDs     vector of node IDs that survived (degree>0)
-    
+
     % Helper func: is point (px,py) inside any obstacle
-    function in = ptInObs(px,py)
-        in = false;
+    % Also takes in the margin and checks points within that margin
+    function near = ptInObs(px,py)
+        near = false;
         for k = 1:numel(xObsList)
-            if inpolygon(px, py, xObsList{k}, yObsList{k})
-            in = true; return
+            [d, ~, ~] = p_poly_dist(px, py, xObsList{k}, yObsList{k});
+            if d <= margin
+                near = true;
+                return;
             end
         end
     end

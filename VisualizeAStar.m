@@ -1,7 +1,7 @@
 % Used for visual of environment 
 
 % Set the number of obstacles and maximum area of each obstacle
-numObstacles = 24;        
+numObstacles = 10;        
 maxArea = 200;      
 
 % Set the bounds of plot
@@ -10,12 +10,13 @@ xMax = 50;
 yMin = 1;            
 yMax = 50;
 bounds = [xMin, xMax, yMin, yMax];
+margin = 1;
 
 % Get the object list
 [xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
 
 % Make graph G
-[G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList);
+[G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList, margin);
 
 % call aStar algorithm
 startXY = [xMin, yMin];
