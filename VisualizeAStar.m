@@ -1,8 +1,8 @@
 % Used for visual of environment 
 
 % Set the number of obstacles and maximum area of each obstacle
-numObstacles = 10;        
-maxArea = 200;      
+numObstacles = 14;        
+maxArea = 150;      
 
 % Set the bounds of plot
 xMin = 1;                  
