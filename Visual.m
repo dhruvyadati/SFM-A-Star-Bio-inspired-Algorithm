@@ -10,6 +10,7 @@ yMin = 1;
 yMax = 50;
 bounds = [xMin, xMax, yMin, yMax];
 margin = 1;
+% test
 
 % Define SFM Variables
 global goal 
