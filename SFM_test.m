@@ -10,21 +10,22 @@ global xObsList
 global yObsList
 global numObstacles
 global a_s
-global r_inf_sc
+global r_inf_s
 
 %goal = [10, 1, 3;10, 1, 8];
 
-p = 10;
+p = 16;
 goal = zeros(2, p);
 goal = 28 * rand(size(goal));
-t_r = 0.5;
-v_max = 10;
-v_min = 2;
-r_inf = 0.75;
-r_inf_s = 1;
+t_r = 0.8;
+v_max = 5;
+v_min = 0.5;
+r_inf = 0.5;
+r_inf_s = 1.25;
 b = 1;
+a = 400;
 a_s = 100;
-numObstacles = 5;
+numObstacles = 3;
 
 
 xMin = 0;
@@ -35,7 +36,9 @@ bounds = [xMin, xMax, yMin, yMax];
 maxArea = 20;
  
 
-[g, xObsList, yObsList] = GenerateEnvironmentWithOccupancy(xMax, yMax, numObstacles, maxArea, bounds);
+[xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
+
+
 
 hold on
 for i = 1:numObstacles
@@ -69,13 +72,13 @@ plot(goal(1,:), goal(2,:), 'o', color= 'Green');
 
 h = plot(u_0(:, 1), u_0(:,2), 'o');
 
-while any(any(abs(u(1:2,:,i)-goal) > 0.2) ~= 0)
-    
+while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     i = i+1;
-    F = Force_G(t,u(:,:,i-1)) + Force_O_Dyn(t,u(:,:,i-1)) + Force_O_Stat(t,u(:,:,i-1));
+    F = Force_G(t,u(:,:,i-1)) + Force_O_Stat(t,u(:,:,i-1)) + Force_O_Dyn(t,u(:,:,i-1));
     
     u(1:2,:, i ) = u(1:2,:, i-1) + u(3:4,:, i-1) * dt + 1/2 * F' * dt^2;
     u(3:4,:, i ) = u(3:4,:, i -1) + F' * dt; 
+
     if norm(u(3:4,:,i)) > v_max 
         u(3:4,:,i) = u(3:4,:,i) / norm(u(3:4,:,i)) * v_max; 
     end
