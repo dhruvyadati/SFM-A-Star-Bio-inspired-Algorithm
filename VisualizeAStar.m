@@ -46,8 +46,8 @@ p = 16;
 goal = zeros(2, p);
 for i = 1:p
     while true
-        xRand = 50 * rand();
-        yRand = 50 * rand();
+        xRand = xMax * rand();
+        yRand = xMax * rand();
         if ~ptInObs(xRand, yRand, xObsList, yObsList, margin)
             goal(:, i) = [xRand; yRand];
             break;
