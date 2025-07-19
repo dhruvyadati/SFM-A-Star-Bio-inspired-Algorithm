@@ -28,7 +28,7 @@ global r_inf_s
 
 p = 16;
 goal = zeros(2, p);
-goal = 28 * rand(size(goal));
+goal = 50 * rand(size(goal));
 t_r = 0.8;
 v_max = 5;
 v_min = 0.5;
@@ -120,7 +120,7 @@ end
 %% Plot SFM Nodes
 
 u_0 = zeros(4,p);
-u_0 = 28 * rand(size(u_0));
+u_0 = 50 * rand(size(u_0));
 
 % u_0_1 = [2; 2; 1; 1];
 % u_0_2 = [11; 12;  -1; -1 ];
@@ -134,8 +134,7 @@ dt = 0.01;
 i = 1;
 
 axis([1 xMax 1 yMax]);
-plot(goal(1,:), goal(2,:), 'o', color= 'Green');
-%plot 
+plot(goal(1,:), goal(2,:), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'g');
 
 h = plot(u_0(:, 1), u_0(:,2), 'o');
 

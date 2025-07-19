@@ -98,7 +98,3 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     pause(0.01);
 
 end
-
-
-
-
