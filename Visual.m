@@ -131,7 +131,19 @@ end
 %% Plot SFM Nodes
 
 u_0 = zeros(4,p);
-u_0 = 50 * rand(size(u_0));
+% Set random humans not in obstacles
+for i = 1:p
+    while true
+        xRand = xMax * rand();
+        yRand = yMax * rand();
+        if ~ptInObs(xRand, yRand, xObsList, yObsList, margin)
+            vxRand = randn();   % random velocity x
+            vyRand = randn();   % random velocity y
+            u_0(:, i) = [xRand; yRand; vxRand; vyRand];
+            break;
+        end
+    end
+end
 
 % u_0_1 = [2; 2; 1; 1];
 % u_0_2 = [11; 12;  -1; -1 ];
@@ -145,9 +157,9 @@ dt = 0.01;
 i = 1;
 
 axis([1 xMax 1 yMax]);
-plot(goal(1,:), goal(2,:), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'g');
+plot(goal(1,:), goal(2,:), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'g');
 
-h = plot(u_0(:, 1), u_0(:,2), 'o');
+h = plot(u_0(:, 1), u_0(:,2), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
 
 while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     i = i+1;
