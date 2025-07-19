@@ -14,29 +14,40 @@ global r_inf_s
 
 %goal = [10, 1, 3;10, 1, 8];
 
-p = 16;
+p = 100;
 goal = zeros(2, p);
-goal = 28 * rand(size(goal));
-t_r = 0.8;
+
+t_r = 0.5;
 v_max = 5;
-v_min = 0.5;
-r_inf = 0.5;
-r_inf_s = 1.25;
+v_min = 2;
+r_inf = 0.75;
+r_inf_s = 1;
 b = 1;
 a = 400;
-a_s = 100;
-numObstacles = 3;
+a_s = 2000;
+numObstacles = 5;
 
-
+margin = 1;
 xMin = 0;
 xMax = 30;
 yMin = 0;
 yMax = 30;
 bounds = [xMin, xMax, yMin, yMax];
-maxArea = 20;
+maxArea = 40;
  
 
 [xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
+
+for i = 1:p
+    while true
+        xRand = xMax * rand();
+        yRand = xMax * rand();
+        if ~ptInObs(xRand, yRand, xObsList, yObsList, margin)
+            goal(:, i) = [xRand; yRand];
+            break;
+        end
+    end
+end
 
 
 
@@ -82,14 +93,19 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     if norm(u(3:4,:,i)) > v_max 
         u(3:4,:,i) = u(3:4,:,i) / norm(u(3:4,:,i)) * v_max; 
     end
+
     if norm(u(3:4,:,i)) < v_min 
         u(3:4,:,i) = u(3:4,:,i) / norm(u(3:4,:,i)) * v_min; 
     end
-
+    
+   
+    
     if i > 10000
         break
     end
-    
+   
+
+
     x = squeeze(u(1,:,i));
     y = squeeze(u(2,:,i));
     set(h, 'XData', x, color="red");

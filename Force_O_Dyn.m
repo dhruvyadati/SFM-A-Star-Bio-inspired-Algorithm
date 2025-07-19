@@ -17,12 +17,13 @@ function [F] = Force_O_Dyn(t,u)
             end
             
             dist_v = x(:,i) - x(:,j);
-           
+            
             dist = norm(dist_v);
             
             if dist > r_inf
                 continue
             end
+           
             F_ij = (a * exp(dist)/b) * dist_v;
             F(:,i) =  F(:,i) + F_ij;
             

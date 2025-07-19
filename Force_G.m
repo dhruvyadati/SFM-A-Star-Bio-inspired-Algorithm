@@ -16,7 +16,6 @@ vel = [u(3,:);u(4,:)];
 
 x_g = goal - x;
 
-
 for i = 1:p
     v_des(i) = norm(x_g(:,i));
     if v_des(i) > v_max
