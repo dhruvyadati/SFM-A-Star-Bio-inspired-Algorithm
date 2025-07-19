@@ -26,9 +26,6 @@ global numObstacles
 global a_s
 global r_inf_s
 
-p = 16;
-goal = zeros(2, p);
-goal = 50 * rand(size(goal));
 t_r = 0.8;
 v_max = 5;
 v_min = 0.5;
@@ -43,6 +40,20 @@ numObstacles = 6;
 
 % Get the object list
 [xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
+
+% Set random human goals not in obstacles
+p = 16;
+goal = zeros(2, p);
+for i = 1:p
+    while true
+        xRand = 50 * rand();
+        yRand = 50 * rand();
+        if ~ptInObs(xRand, yRand, xObsList, yObsList, margin)
+            goal(:, i) = [xRand; yRand];
+            break;
+        end
+    end
+end
 
 % Make graph G
 [G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList, margin);

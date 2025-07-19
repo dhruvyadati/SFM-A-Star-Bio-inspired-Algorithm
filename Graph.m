@@ -3,20 +3,6 @@ function [G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList, margi
     %   G               MATLAB graph object
     %   nodeIDs         yMax×xMax matrix mapping (y,x)→node ID
     %   freeNodeIDs     vector of node IDs that survived (degree>0)
-
-    % Helper func: is point (px,py) inside any obstacle
-    % Also takes in the margin and checks points within that margin
-    function near = ptInObs(px,py)
-        near = false;
-        for k = 1:numel(xObsList)
-            [d, ~, ~] = p_poly_dist(px, py, xObsList{k}, yObsList{k});
-            if d <= margin
-                near = true;
-                return;
-            end
-        end
-    end
-    
     
     % Helper func: does segment (x1,y1)–(x2,y2) intersect any polygon boundary
     function cross = edgeIntersects(x1,y1,x2,y2)
@@ -42,14 +28,14 @@ function [G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList, margi
     src = []; tgt = []; w = [];
     for y = 1:yMax
         for x = 1:xMax
-            if ptInObs(x,y), continue, end       % skip obstacle node
+            if ptInObs(x,y, xObsList, yObsList, margin), continue, end       % skip obstacle node
             u = nodeIDs(y,x);
             for d = 1:size(dirs,1)
                 ny = y + dirs(d,1);  nx = x + dirs(d,2);
                 cost = dirs(d,3);
         
                 if nx<1 || nx>xMax || ny<1 || ny>yMax, continue, end
-                if ptInObs(nx,ny),        continue, end  % skip into obstacle
+                if ptInObs(nx,ny, xObsList, yObsList, margin),        continue, end  % skip into obstacle
                 if edgeIntersects(x,y, nx,ny), continue, end  % skip slicing edge
         
                 v = nodeIDs(ny,nx);
