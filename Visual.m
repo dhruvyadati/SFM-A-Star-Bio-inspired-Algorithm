@@ -27,13 +27,13 @@ global a_s
 global r_inf_s
 
 t_r = 0.5;
-v_max = 5;
-v_min = 2;
+v_max = 20;
+v_min = 5;
 r_inf = 0.75;
 r_inf_s = 1;
 b = 1;
 a = 400;
-a_s = 2000;
+a_s = 4000;
 numObstacles = 14;
 
 %% Get Graph Object and Path Nodes
@@ -44,7 +44,7 @@ numObstacles = 14;
 % Set random human goals not in obstacles
 p = 100;
 goal = zeros(2, p);
-for i = 1:p
+for i = 2:p
     while true
         xRand = (xMax-1) * rand() + 1;
         yRand = (yMax-1) * rand() + 1;
@@ -54,6 +54,7 @@ for i = 1:p
         end
     end
 end
+
 
 % Make graph G
 [G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList, margin);
@@ -70,6 +71,7 @@ goalNode = nodeIDs(goalXY(2), goalXY(1));
 [path, cameFrom, gScore] = AStar(G, nodeIDs, startXY, goalXY); 
 
 path = removeColinearNodes(path);
+
 %% Create Plot and Obstacles
  
 % Create Plot
@@ -132,7 +134,7 @@ end
 
 u_0 = zeros(4,p);
 % Set random humans not in obstacles
-for i = 1:p
+for i = 2:p
     while true
         xRand = (xMax-1) * rand() + 1;
         yRand = (yMax-1) * rand() + 1;
@@ -145,10 +147,13 @@ for i = 1:p
     end
 end
 
+u_0(:,1) = [1,1,1,1];
+
 % u_0_1 = [2; 2; 1; 1];
 % u_0_2 = [11; 12;  -1; -1 ];
 % u_0_3 = [10; 9; 3; -2];
 % u_0 = [u_0_1, u_0_2, u_0_3];
+
 
 t = [];
 u = zeros(4,p,1000);
@@ -156,13 +161,28 @@ u(:,:,1) = u_0;
 dt = 0.01;
 i = 1;
 
+path = path';
+
+goal(:,1) = path(:,1);
+
+
+
 plot(goal(1,:), goal(2,:), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'g');
 %plot 
 
-h = plot(u_0(:, 1), u_0(:,2), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
+h = plot(u_0(1, 2:p), u_0(2,2:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
+robot = plot(u_0(1, 1), u_0(2,1), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'b', 'MarkerEdgeColor', 'b');
+
+waynum = 1;
 
 while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     i = i+1;
+    if norm(u(1:2,1,i-1) - goal(:,1)) < 1;
+        waynum = waynum + 1;
+        goal(:,1) = path(:,waynum);
+    end
+
+    
     F = Force_G(t,u(:,:,i-1)) + Force_O_Stat(t,u(:,:,i-1)) + Force_O_Dyn(t,u(:,:,i-1));
     
     u(1:2,:, i ) = u(1:2,:, i-1) + u(3:4,:, i-1) * dt + 1/2 * F' * dt^2;
@@ -172,19 +192,23 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
         u(3:4,:,i) = u(3:4,:,i) / norm(u(3:4,:,i)) * v_max; 
     end
 
-    if norm(u(3:4,:,i)) < v_min 
-        u(3:4,:,i) = u(3:4,:,i) / norm(u(3:4,:,i)) * v_min; 
+    if norm(u(3:4,1,i)) < v_min 
+        u(3:4,1,i) = u(3:4,1,i) / norm(u(3:4,1,i)) * v_min; 
     end
     
    
-    if i > 200
+    if i > 10000
         break
     end
    
-    x = squeeze(u(1,:,i));
-    y = squeeze(u(2,:,i));
+    x = squeeze(u(1,2:p,i));
+    y = squeeze(u(2,2:p,i));
+    x_r = squeeze(u(1,1,i));
+    y_r = squeeze(u(2,1,i));
     set(h, 'XData', x, color="red");
     set(h, 'YData', y);
+    set(robot, 'XData', x_r, color="blue");
+    set(robot, 'YData', y_r);
     
     pause(0.01);
 
