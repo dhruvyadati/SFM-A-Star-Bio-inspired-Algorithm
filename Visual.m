@@ -44,7 +44,7 @@ numObstacles = 14;
 % Set random human goals not in obstacles
 p = 100;
 goal = zeros(2, p);
-for i = 2:p
+for i = 3:p
     while true
         xRand = (xMax-1) * rand() + 1;
         yRand = (yMax-1) * rand() + 1;
@@ -134,7 +134,7 @@ end
 
 u_0 = zeros(4,p);
 % Set random humans not in obstacles
-for i = 2:p
+for i = 3:p
     while true
         xRand = (xMax-1) * rand() + 1;
         yRand = (yMax-1) * rand() + 1;
@@ -148,6 +148,7 @@ for i = 2:p
 end
 
 u_0(:,1) = [1,1,1,1];
+u_0(:,2) = [1,2,1,1];
 
 % u_0_1 = [2; 2; 1; 1];
 % u_0_2 = [11; 12;  -1; -1 ];
@@ -164,20 +165,24 @@ i = 1;
 path = path';
 
 goal(:,1) = path(:,1);
+goal(:,2) = [50,50];
 
 
 
 plot(goal(1,:), goal(2,:), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'g');
 %plot 
 
-h = plot(u_0(1, 2:p), u_0(2,2:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
+h = plot(u_0(1, 3:p), u_0(2,3:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
 robot = plot(u_0(1, 1), u_0(2,1), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'b', 'MarkerEdgeColor', 'b');
-
+robot_no_SFM = plot(u_0(1, 2), u_0(2,2), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
 waynum = 1;
 
 while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     i = i+1;
     if norm(u(1:2,1,i-1) - goal(:,1)) < 1;
+        if waynum >= size(path(1:2,:))
+            break
+        end
         waynum = waynum + 1;
         goal(:,1) = path(:,waynum);
     end
@@ -201,14 +206,18 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
         break
     end
    
-    x = squeeze(u(1,2:p,i));
-    y = squeeze(u(2,2:p,i));
+    x = squeeze(u(1,3:p,i));
+    y = squeeze(u(2,3:p,i));
     x_r = squeeze(u(1,1,i));
     y_r = squeeze(u(2,1,i));
+    x_r_n = squeeze(u(1,2,i));
+    y_r_n = squeeze(u(2,2,i));
     set(h, 'XData', x, color="red");
     set(h, 'YData', y);
     set(robot, 'XData', x_r, color="blue");
     set(robot, 'YData', y_r);
+    set(robot_no_SFM, 'XData', x_r_n, color="magenta");
+    set(robot_no_SFM, 'YData', y_r_n);
     
     pause(0.01);
 
