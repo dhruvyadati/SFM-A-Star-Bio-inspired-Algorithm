@@ -162,6 +162,14 @@ u(:,:,1) = u_0;
 dt = 0.01;
 i = 1;
 
+%collision for A* +SFM 
+coll1 = 0 ;
+% collision for SFM 
+coll2 = 0 ;
+
+%collision radius 
+safetyR = 0.3; 
+
 path = path';
 
 goal(:,1) = path(:,1);
@@ -205,7 +213,10 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     if i > 10000
         break
     end
-   
+    crowd = squeeze(u(1:2, 3:p, i));
+    coll1 = coll1+sum(vecnorm(crowd-u(1:2, 1, i)) < safetyR);
+    coll2 = coll2 + sum (vecnorm(crowd-u(1:2, 2, i)) < safetyR);
+
     x = squeeze(u(1,3:p,i));
     y = squeeze(u(2,3:p,i));
     x_r = squeeze(u(1,1,i));
@@ -222,6 +233,7 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     pause(0.01);
 
 end
+fprintf('\nCollision count:\n  Robot 1 (A* + SFM)   : %d\n  Robot 2 (SFM): %d\n', coll1, coll2);
 
 
 %% Save runs
