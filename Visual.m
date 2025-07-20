@@ -179,6 +179,7 @@ waynum = 1;
 
 while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     i = i+1;
+    
     if norm(u(1:2,1,i-1) - goal(:,1)) < 2;
         if waynum >= size(path(1:2,:))
             break
