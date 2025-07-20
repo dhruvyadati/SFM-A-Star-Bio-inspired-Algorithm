@@ -1,241 +1,132 @@
-% Used for visual of environment 
+clearvars; close all; clc;
 
-% Set the maximum area of each obstacle       
-maxArea = 150;      
-
-% Set the bounds of plot
-xMin = 1;                  
-xMax = 50;
-yMin = 1;            
-yMax = 50;
-bounds = [xMin, xMax, yMin, yMax];
+maxArea = 150;
+xMin = 1; xMax = 50; yMin = 1; yMax = 50;
+bounds = [xMin xMax yMin yMax];
 margin = 1;
 
-% Define SFM Variables
-global goal 
-global t_r
-global p
-global v_max
-global a
-global b
-global r_inf
-global v_min
-global xObsList
-global yObsList
-global numObstacles
-global a_s
-global r_inf_s
+[xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, 14, maxArea, bounds);
 
-t_r = 0.5;
-v_max = 20;
-v_min = 5;
-r_inf = 0.75;
-r_inf_s = 1;
-b = 1;
-a = 400;
-a_s = 4000;
+global goal t_r p v_max v_min a b r_inf xObsList yObsList numObstacles a_s r_inf_s
+t_r  = 0.5; v_max = 20; v_min = 5;
+a    = 400; b = 1;  r_inf   = 0.75;
+a_s  = 4000; r_inf_s = 1;
 numObstacles = 14;
 
-%% Get Graph Object and Path Nodes
-
-% Get the object list
-[xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
-
-% Set random human goals not in obstacles
-p = 100;
-goal = zeros(2, p);
-for i = 3:p
-    while true
-        xRand = (xMax-1) * rand() + 1;
-        yRand = (yMax-1) * rand() + 1;
-        if ~ptInObs(xRand, yRand, xObsList, yObsList, margin)
-            goal(:, i) = [xRand; yRand];
-            break;
-        end
-    end
-end
-
-
-% Make graph G
 [G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList, margin);
+startXY = [xMin yMin];  goalXY = [xMax yMax];
 
-% call aStar algorithm
-startXY = [xMin, yMin];
-goalXY = [xMax, yMax];
+[path, ~, ~] = AStar(G, nodeIDs, startXY, goalXY);
+path  = removeColinearNodes(path).';
+K     = size(path, 2);
 
-nodeIDs = reshape(1:(xMax * yMax), yMax, xMax);  % Matrix: (row = y, col = x)
-
-startNode = nodeIDs(startXY(2), startXY(1));  % y, x
-goalNode = nodeIDs(goalXY(2), goalXY(1));
-
-[path, cameFrom, gScore] = AStar(G, nodeIDs, startXY, goalXY); 
-
-path = removeColinearNodes(path);
-
-%% Create Plot and Obstacles
- 
-% Create Plot
-figure;
-hold on;
-axis equal;
-grid on;
-title('Pathfinding Visual Environment');
-xlabel('X'); 
-ylabel('Y');
-xlim([xMin xMax]); 
-%xticks([xMin:1:xMax]);      % Comment if grid is > 10x10 (too laggy)
-ylim([yMin yMax]);
-%yticks([xMin:1:xMax]);      % Comment if grid is > 10x10 (too laggy)
-
-% Plot obstacles
-for i = 1:numObstacles
-    fill(xObsList{i}, yObsList{i}, 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'k');
-end
-
-%% Plotting Avaliable Edges and Nodes
-
-% Compute a position for every possible node:
-[Ygrid, Xgrid] = ndgrid(1:yMax, 1:xMax);
-allPos = [Xgrid(:), Ygrid(:)];  
-
-% This is in form of [row x col] while freeNodes is node number
-freePos = allPos(freeNodeIDs, :);  
-
-% Plot graph edges - Comment if grid is > 10x10 (too laggy)
-h = plot(G, ...
-    'XData', allPos(:,1), ...
-    'YData', allPos(:,2), ...
-    'NodeLabel', {}, ...            % no labels
-    'LineStyle', '-', ...
-    'EdgeColor', [0.7 0.7 0.7], ... % light gray edges
-    'Marker', 'none');              % don't draw nodes yet
-
-% Overlay free nodes
-scatter(freePos(:,1), freePos(:,2), 5, [0.7 0.7 0.7], 'filled'); % Comment if grid is > 10x10 (too laggy)
-
-% bring everything to front/back
-uistack(h, 'bottom');
-
-%% Plotting Starting, Goal, and A-Star Path
-
-% Plot starting point and goal
-plot(startXY(1), startXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'r'); % start
-plot(goalXY(1), goalXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'g');   % goal
-
-% plot a* path
-if ~isempty(path)                                              
-    plot(path(:,1), path(:,2), 'k-', 'LineWidth', 1.5);    
-else                                                           
-    warning('No path was found :(');                        
-end                                                            
-
-
-%% Run and Plot SFM Nodes
-
-u_0 = zeros(4,p);
-% Set random humans not in obstacles
-for i = 3:p
+p    = 100;
+goal = zeros(2, p);
+for k = 3:p
     while true
-        xRand = (xMax-1) * rand() + 1;
-        yRand = (yMax-1) * rand() + 1;
-        if ~ptInObs(xRand, yRand, xObsList, yObsList, margin)
-            vxRand = randn();   % random velocity x
-            vyRand = randn();   % random velocity y
-            u_0(:, i) = [xRand; yRand; vxRand; vyRand];
-            break;
-        end
-    end
-end
-
-u_0(:,1) = [1,1,1,1];
-u_0(:,2) = [1,2,1,1];
-
-% u_0_1 = [2; 2; 1; 1];
-% u_0_2 = [11; 12;  -1; -1 ];
-% u_0_3 = [10; 9; 3; -2];
-% u_0 = [u_0_1, u_0_2, u_0_3];
-
-
-t = [];
-u = zeros(4,p,1000);
-u(:,:,1) = u_0;
-dt = 0.01;
-i = 1;
-
-path = path';
-
-goal(:,1) = path(:,1);
-goal(:,2) = [50,50];
-
-
-
-plot(goal(1,:), goal(2,:), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'g');
-%plot 
-
-h = plot(u_0(1, 3:p), u_0(2,3:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
-robot = plot(u_0(1, 1), u_0(2,1), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'b', 'MarkerEdgeColor', 'b');
-robot_no_SFM = plot(u_0(1, 2), u_0(2,2), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
-waynum = 1;
-
-while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
-    i = i+1;
-    if norm(u(1:2,1,i-1) - goal(:,1)) < 1;
-        if waynum >= size(path(1:2,:))
+        x = (xMax - 1) * rand() + 1;
+        y = (yMax - 1) * rand() + 1;
+        if ~ptInObs(x, y, xObsList, yObsList, margin)
+            goal(:, k) = [x; y];
             break
         end
-        waynum = waynum + 1;
-        goal(:,1) = path(:,waynum);
+    end
+end
+goal(:, 1) = path(:, 1);
+goal(:, 2) = goalXY.';
+
+u0 = zeros(4, p);
+u0(:, 1) = [2; 2; 1; 0];
+u0(:, 2) = [2; 3; 1; 0];
+for k = 3:p
+    while true
+        x = (xMax - 1) * rand() + 1;
+        y = (yMax - 1) * rand() + 1;
+        if ~ptInObs(x, y, xObsList, yObsList, margin)
+            u0(:, k) = [x; y; randn(); randn()];
+            break
+        end
+    end
+end
+useSFM = true(1, p);
+
+figure; hold on; axis equal; grid on
+xlabel('X'); ylabel('Y');
+title('Hybrid A*+SFM (blue) vs SFM-only (purple)');
+xlim([xMin xMax]); ylim([yMin yMax]);
+
+for k = 1:numObstacles
+    fill(xObsList{k}, yObsList{k}, 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'k');
+end
+[Yg, Xg] = ndgrid(1:yMax, 1:xMax);
+plot(G, 'XData', Xg(:), 'YData', Yg(:), 'NodeLabel', {}, ...
+     'LineStyle', '-', 'EdgeColor', [.85 .85 .85], 'Marker', 'none');
+plot(startXY(1), startXY(2), 'or', 'MarkerFaceColor', 'k');
+plot(goalXY(1), goalXY(2), 'og', 'MarkerFaceColor', 'k');
+plot(path(1, :), path(2, :), 'k-', 'LineWidth', 1.2);
+
+hPed = plot(u0(1, 3:p), u0(2, 3:p), 'ro', 'MarkerSize', 5, 'MarkerFaceColor', 'r');
+hR1  = plot(u0(1, 1),   u0(2, 1),   'bo', 'MarkerSize', 6, 'MarkerFaceColor', 'b');
+hR2  = plot(u0(1, 2),   u0(2, 2),   'mo', 'MarkerSize', 6, 'MarkerFaceColor', 'm');
+
+dt = 0.01; Nmax = 15000; i = 1;
+u = zeros(4, p, Nmax); u(:, :, 1) = u0;
+wayIdx = 1; tol = 0.3;
+
+safetyR = 0.3; comfortR = 0.6;
+minSep1 = inf; minSep2 = inf; coll1 = 0; coll2 = 0; intr1 = 0; intr2 = 0;
+
+while i < Nmax
+    if norm(u(1:2, 1, i) - goal(:, 1)) < tol && wayIdx < K
+        wayIdx  = wayIdx + 1;
+        goal(:, 1) = path(:, wayIdx);
     end
 
-    
-    F = Force_G(t,u(:,:,i-1)) + Force_O_Stat(t,u(:,:,i-1)) + Force_O_Dyn(t,u(:,:,i-1));
-    
-    u(1:2,:, i ) = u(1:2,:, i-1) + u(3:4,:, i-1) * dt + 1/2 * F' * dt^2;
-    u(3:4,:, i ) = u(3:4,:, i -1) + F' * dt; 
+    F = Force_G([], u(:, :, i)) + ...
+        Force_O_Stat([], u(:, :, i), useSFM) + ...
+        Force_O_Dyn([], u(:, :, i), useSFM);
 
-    if norm(u(3:4,:,i)) > v_max 
-        u(3:4,:,i) = u(3:4,:,i) / norm(u(3:4,:,i)) * v_max; 
+    u(3:4, :, i+1) = u(3:4, :, i) + F' * dt;
+    u(1:2, :, i+1) = u(1:2, :, i) + u(3:4, :, i+1) * dt;
+
+    v1 = norm(u(3:4, 1, i+1));
+    if v1 > v_max
+        u(3:4, 1, i+1) = u(3:4, 1, i+1) / v1 * v_max;
     end
 
-    if norm(u(3:4,1,i)) < v_min 
-        u(3:4,1,i) = u(3:4,1,i) / norm(u(3:4,1,i)) * v_min; 
+    i = i + 1;
+
+    crowd = squeeze(u(1:2, 3:p, i));
+    d1 = vecnorm(crowd - u(1:2, 1, i));
+    d2 = vecnorm(crowd - u(1:2, 2, i));
+    minSep1 = min(minSep1, min(d1));  minSep2 = min(minSep2, min(d2));
+    coll1   = coll1 + sum(d1 < safetyR); coll2 = coll2 + sum(d2 < safetyR);
+    intr1   = intr1 + sum(d1 < comfortR); intr2 = intr2 + sum(d2 < comfortR);
+
+    if mod(i, 5) == 0
+        set(hPed, 'XData', u(1, 3:p, i), 'YData', u(2, 3:p, i));
+        set(hR1,  'XData', u(1, 1, i),   'YData', u(2, 1, i));
+        set(hR2,  'XData', u(1, 2, i),   'YData', u(2, 2, i));
+        drawnow limitrate
     end
-    
-   
-    if i > 10000
+
+    if norm(u(1:2, 1, i) - goalXY') < tol && norm(u(1:2, 2, i) - goalXY') < tol
         break
     end
-   
-    x = squeeze(u(1,3:p,i));
-    y = squeeze(u(2,3:p,i));
-    x_r = squeeze(u(1,1,i));
-    y_r = squeeze(u(2,1,i));
-    x_r_n = squeeze(u(1,2,i));
-    y_r_n = squeeze(u(2,2,i));
-    set(h, 'XData', x, color="red");
-    set(h, 'YData', y);
-    set(robot, 'XData', x_r, color="blue");
-    set(robot, 'YData', y_r);
-    set(robot_no_SFM, 'XData', x_r_n, color="magenta");
-    set(robot_no_SFM, 'YData', y_r_n);
-    
-    pause(0.01);
-
 end
+u = u(:, :, 1:i); N = i;
 
+M1 = Metrics(u(:, 1, :), path, dt);
+M2 = Metrics(u(:, 2, :), path, dt);
 
-%% Save runs
+framesTot = (p - 2) * N;
+M1.minSep         = minSep1;
+M1.collisionCount = coll1;
+M1.intrusionFrac  = intr1 / framesTot;
 
-%{
-t = datetime('now','TimeZone','America/Los_Angeles','Format','d-MMM-y HH:mm:ss Z');
-% Generate a filename using the current date and time
-% Change "runs" to the directory you want to save files to
-filename = sprintf('runs/variables_%s.mat', t); 
-filename2 = sprintf('runs/region_%s.fig', t); 
-% Save your data
-save(filename);
-savefig(filename2);
-%}
+M2.minSep         = minSep2;
+M2.collisionCount = coll2;
+M2.intrusionFrac  = intr2 / framesTot;
 
-
-
+disp('Hybrid A* + SFM (blue)');   disp(M1)
+disp('SFM-only baseline (purple)'); disp(M2)
