@@ -30,11 +30,11 @@ t_r = 0.5;
 v_max = 4;
 v_min = 1;
 r_inf = 1;
-r_inf_s = 1.25;
+r_inf_s = 1;
 b = 1;
 a = 800;
 a_s = 10000;
-numObstacles = 10;
+numObstacles = 6;
 
 %% Get Graph Object and Path Nodes
 
@@ -168,8 +168,6 @@ goal(:,1) = path(:,1);
 goal(:,2) = [50,50];
 
 
-
-plot(goal(1,:), goal(2,:), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'g');
 %plot 
 
 h = plot(u_0(1, 3:p), u_0(2,3:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
@@ -177,14 +175,44 @@ robot = plot(u_0(1, 1), u_0(2,1), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'b', 
 robot_no_SFM = plot(u_0(1, 2), u_0(2,2), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
 waynum = 1;
 
+SFM_A_success = 0;
+SFM_A_time = 0
+SFM_success = 0;
+SFM_time = 0;
+
 while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
+
     i = i+1;
-    
-    if norm(u(1:2,1,i-1) - goal(:,1)) < 2;
-        if waynum >= size(path(1:2,:))
-            break
+
+    if SFM_A_success == 0 
+        
+        if norm(u(1:2,1,i-1) - [50,50]) < 2
+                SFM_A_success = 1;
+                SFM_A_time = i;
         end
-        waynum = waynum + 1;
+    end
+
+    if SFM_success == 0 
+        
+        if norm(u(1:2,2,i-1) - [50,50]) < 2
+                SFM_success = 1;
+                SFM_time = i;
+        end
+    end
+      
+    if SFM_success == 1  && SFM_A_success == 1
+        break
+    end
+
+
+    
+
+    if norm(u(1:2,1,i-1) - goal(:,1)) < 2;
+         waynum = waynum + 1;
+        if waynum > size(path(1:2,:))
+            waynum = waynum -1;
+        end
+       
         goal(:,1) = path(:,waynum);
     end
 
@@ -203,8 +231,8 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
         end
     end
     
-   
-    if i > 10000
+    % Change to make the time for the simulation different by timesteps
+    if i > 3000
         break
     end
    
@@ -221,7 +249,7 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     set(robot_no_SFM, 'XData', x_r_n, color="magenta");
     set(robot_no_SFM, 'YData', y_r_n);
     
-    pause(0.01);
+    pause(dt);
 
 end
 
@@ -240,4 +268,5 @@ savefig(filename2);
 %}
 
 
-
+fprintf("SFM + A* success = %d, time taken = %d\n", SFM_A_success, SFM_A_time);
+fprintf("SFM success = %d, time taken = %d\n", SFM_success, SFM_time);
