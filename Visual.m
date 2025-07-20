@@ -167,13 +167,25 @@ coll1 = 0 ;
 % collision for SFM 
 coll2 = 0 ;
 
-%collision radius 
-safetyR = 0.3; 
+%arrival for A* + SFM 
+arrival1 = NaN ;
 
+%arrival for SFM 
+arrival2 = NaN ;
+%collision radius 
+safetyR = 0.3; % might be to big. TODO: tune this parameter to make it more accurate
+
+optimalLen = sum(sqrt(diff(path(1,:)).^2 + diff(path(2,:)).^2));
+% total distance of blue robot (A* + SFM)
+totalDist1 = 0;
+
+% total distance of red robot (SFM)
+totalDist2 = 0;
 path = path';
 
 goal(:,1) = path(:,1);
 goal(:,2) = [50,50];
+
 
 
 
@@ -209,13 +221,29 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
         u(3:4,1,i) = u(3:4,1,i) / norm(u(3:4,1,i)) * v_min; 
     end
     
-   
+    %calculates total time for robot 1 
+    if (isnan(arrival1) && (norm(u(1:2, 1, i) - goalXY') < 0.1))
+        arrival1 = (i-1)*dt
+    end 
+    %calculates total tiem for robot 2
+    if (isnan(arrival2) && (norm(u(1:2, 2, i) - goalXY') < 0.1))
+        arrival2 = (i-1) * dt
+    end 
+
     if i > 10000
         break
     end
+
+    %update the traveled distance 
+    totalDist1 = totalDist1 + norm( u(1:2, 1, i) - u(1:2, 1, i-1));
+    totalDist2 = totalDist2 + norm (u (1:2, 2, i)- u(1: 2, 2, i-1));
+    %extract all the x and y positions of all the pedestrians 
     crowd = squeeze(u(1:2, 3:p, i));
+    %updates collision counts 
+    %gets the euclidean distance from 
     coll1 = coll1+sum(vecnorm(crowd-u(1:2, 1, i)) < safetyR);
     coll2 = coll2 + sum (vecnorm(crowd-u(1:2, 2, i)) < safetyR);
+
 
     x = squeeze(u(1,3:p,i));
     y = squeeze(u(2,3:p,i));
@@ -233,6 +261,23 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     pause(0.01);
 
 end
+
+if isnan(arrival1)
+    arrival1 = (i-1) * dt; 
+end
+
+if isnan(arrival2)
+    arrival2 = (i-1) * dt; 
+end
+%successful if euclidean distance between goal and xy position of robot<0.1
+succ1 = norm(u(1:2, 1, end) - goalXY') < 0.1; 
+succ2 = norm(u(1:2, 2, end) - goalXY') < 0.1; 
+
+SWPL1 = (succ1 * optimalLen)/ totalDist1;
+SWPL2 = (succ2 * optimalLen)/ totalDist2;
+
+fprintf('\nSuccess Weighted Path Length:\n  Robot 1 (A* + SFM)   :%d\n  Robot 2 (SFM): %d\n', SWPL1, SWPL2);
+fprintf('\nTravel Time:\n  Robot 1 (A* + SFM)   : %.4f\n  Robot 2 (SFM): %.4f\n', arrival1, arrival2);
 fprintf('\nCollision count:\n  Robot 1 (A* + SFM)   : %d\n  Robot 2 (SFM): %d\n', coll1, coll2);
 
 
