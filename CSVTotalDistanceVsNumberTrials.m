@@ -1,6 +1,4 @@
-function TotalDistanceVsNumberTrials
-
-[dist_astarsfm, dist_sfm, SFM_A_success, SFM_success] = GetTotalDistanceVsNumberTrialsVariables;
+function CSVTotalDistanceVsNumberTrials
 
 %% Save Total Distance vs # Trials Graph
 
