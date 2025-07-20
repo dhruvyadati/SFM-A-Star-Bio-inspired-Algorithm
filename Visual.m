@@ -12,19 +12,19 @@ bounds = [xMin, xMax, yMin, yMax];
 margin = 1;
 
 % Define SFM Variables
-global goal 
-global t_r
-global p
-global v_max
-global a
-global b
-global r_inf
-global v_min
-global xObsList
-global yObsList
-global numObstacles
-global a_s
-global r_inf_s
+global goal %vector holding all coordinates for goals, first two indicies are for A* + SFM and SFM only respectively
+global t_r %reaction time variable for Force Goal
+global p %number of participants in the simulation, must be at least 2
+global v_max % maximum velocity (CHANGES REQUIRE REDOING PARAMETERS DO NOT TOUCH)
+global a % Parameter defining strength of repulsion from dynamic obstacles (Increasing this will increase overall repulsion)
+global b % Parameter defining strength of repulsion from dynamic obstacles (Increasing this will decrease overall repulsion)
+global r_inf % Radius of influence for dynamic obstacles
+global v_min % minimum velocity
+global xObsList %variable holding x coordinates for every vertex for every obstacle
+global yObsList %variable holding y coordinates for every vertex for every obstacle
+global numObstacles %total number of obstacles
+global a_s % Parameter defining strength of repulsion from static obstacles (KEEP HIGH, LOWERING CAUSES GLITCHING AND TELEPORTATION)
+global r_inf_s % radius of influence for static obstacles
 
 t_r = 0.5;
 v_max = 4;
@@ -155,12 +155,18 @@ u_0(:,2) = [1,2,1,1];
 % u_0_3 = [10; 9; 3; -2];
 % u_0 = [u_0_1, u_0_2, u_0_3];
 
+% defining buffer for position and velocity, the time interval and variable
+% for time steps
 
 t = [];
 u = zeros(4,p,1000);
 u(:,:,1) = u_0;
 dt = 0.01;
 i = 1;
+
+% Restructuring path for manipulation and defining goals for A* model and
+% SFM only model
+
 
 path = path';
 
@@ -184,6 +190,9 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
 
     i = i+1;
 
+    % Code to do success checking and time taken to reach goal, remains
+    % zero if goal never reached
+
     if SFM_A_success == 0 
         
         if norm(u(1:2,1,i-1) - [50,50]) < 2
@@ -205,7 +214,7 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     end
 
 
-    
+    % Code to update waypoints for SFM + A* model
 
     if norm(u(1:2,1,i-1) - goal(:,1)) < 2;
          waynum = waynum + 1;
@@ -215,12 +224,17 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
        
         goal(:,1) = path(:,waynum);
     end
-
+    
+    %Calculation of Force for every agent including both A* model and
+    %regular SFM model and humans
     
     F = Force_G(t,u(:,:,i-1)) + Force_O_Stat(t,u(:,:,i-1)) + Force_O_Dyn(t,u(:,:,i-1));
     
     u(1:2,:, i ) = u(1:2,:, i-1) + u(3:4,:, i-1) * dt + 1/2 * F' * dt^2;
     u(3:4,:, i ) = u(3:4,:, i -1) + F' * dt; 
+
+    %updating speeds to ensure they stay within the defined values
+
     for l = 1:p
         if norm(u(3:4,l,i)) > v_max 
             u(3:4,l,i) = u(3:4,l,i) / norm(u(3:4,l,i)) * v_max; 
@@ -235,7 +249,9 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     if i > 3000
         break
     end
-   
+
+
+   % plotting data for visualization of the simulated agents.
     x = squeeze(u(1,3:p,i));
     y = squeeze(u(2,3:p,i));
     x_r = squeeze(u(1,1,i));
