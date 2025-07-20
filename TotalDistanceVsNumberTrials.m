@@ -1,7 +1,5 @@
 function TotalDistanceVsNumberTrials
 
-[dist_astarsfm, dist_sfm, SFM_A_success, SFM_success] = GetTotalDistanceVsNumberTrialsVariables;
-
 %% Save Total Distance vs # Trials Graph
 
 %fprintf('A*+SFM: %.2f\n', dist_astarsfm);
