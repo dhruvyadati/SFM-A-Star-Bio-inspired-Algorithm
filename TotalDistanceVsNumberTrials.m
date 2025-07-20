@@ -1,4 +1,6 @@
-[dist_astarsfm, dist_sfm, SFM_A_success, SFM_success] = VisualDhruv;
+function TotalDistanceVsNumberTrials
+
+[dist_astarsfm, dist_sfm, SFM_A_success, SFM_success] = GetTotalDistanceVsNumberTrialsVariables;
 
 %% Save Total Distance vs # Trials Graph
 
@@ -7,9 +9,11 @@
 
 % Create a table from the variables
 
+numberOfTrials = 2;
+
 T = table(); % Initialize empty table
-for i = 1:2
-    [dist_astarsfm, dist_sfm, SFM_A_success, SFM_success] = VisualDhruv;
+for i = 1:numberOfTrials
+    [dist_astarsfm, dist_sfm, SFM_A_success, SFM_success] = GetTotalDistanceVsNumberTrialsVariables;
     if (SFM_A_success == 0)
         dist_astarsfm = 0;
     end

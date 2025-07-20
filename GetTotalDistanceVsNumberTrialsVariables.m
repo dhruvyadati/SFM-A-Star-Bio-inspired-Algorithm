@@ -1,4 +1,4 @@
-function [dist_astarsfm, dist_sfm, SFM_A_success, SFM_success] = VisualDhruv;
+function [dist_astarsfm, dist_sfm, SFM_A_success, SFM_success] = GetTotalDistanceVsNumberTrialsVariables;
 
 % Used for visual of environment 
 
