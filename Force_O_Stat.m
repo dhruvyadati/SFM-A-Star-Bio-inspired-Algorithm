@@ -1,22 +1,27 @@
-function F = Force_O_Stat(~, u, useSFM)
-if nargin < 3
-    useSFM = true(1, size(u, 2));
-end
+function [F] = Force_O_Stat(t,u)
+    global xObsList
+    global yObsList
+    global p
+    global numObstacles
+    global b
+    global a_s
+    global r_inf_s
 
-global xObsList yObsList numObstacles p a_s b r_inf_s
-
-x = u(1:2,:);
-F = zeros(2, p);
-
-for i = 1:p
-    if ~useSFM(i), continue, end
-    for j = 1:numObstacles
-        [d, xc, yc] = p_poly_dist(x(1, i), x(2, i), xObsList{j}, yObsList{j});
-        if d > r_inf_s, continue, end
-        dv = [xc; yc] - x(:, i);
-        F(:, i) = F(:, i) - (a_s * exp(-d) / b) * dv / max(d, 1e-6);
+    x = u(1:2,:);
+    vel = u(3:4,:);
+    F = zeros(2, p);
+    for i = 1:p 
+        for j = 1:numObstacles
+            [d, x_d, y_d] = p_poly_dist(x(1,i), x(2,i), xObsList{j}, yObsList{j});
+            dist_v = [x_d; y_d];
+            dist_v = dist_v -  x(1:2, i);
+            if d > r_inf_s
+                continue
+            end
+            F_ij = (a_s * exp(-d)/b)  * - dist_v;
+            F(:,i) = F(:,i) + F_ij;
+        end
     end
-end
-
-F = F.';
+   
+   F = F';
 end
