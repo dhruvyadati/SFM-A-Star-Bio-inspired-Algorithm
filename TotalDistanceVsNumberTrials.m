@@ -25,5 +25,3 @@ for i = 1:numberOfTrials
 end
 
 writetable(T, 'PathLengthData.csv');
-
-
