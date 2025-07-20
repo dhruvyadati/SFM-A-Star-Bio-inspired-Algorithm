@@ -27,14 +27,14 @@ global a_s
 global r_inf_s
 
 t_r = 0.5;
-v_max = 20;
-v_min = 5;
-r_inf = 0.75;
-r_inf_s = 1;
+v_max = 4;
+v_min = 1;
+r_inf = 1;
+r_inf_s = 1.25;
 b = 1;
-a = 400;
-a_s = 4000;
-numObstacles = 14;
+a = 800;
+a_s = 10000;
+numObstacles = 10;
 
 %% Get Graph Object and Path Nodes
 
@@ -147,7 +147,7 @@ for i = 3:p
     end
 end
 
-u_0(:,1) = [1,1,1,1];
+u_0(:,1) = [2,1,1,1];
 u_0(:,2) = [1,2,1,1];
 
 % u_0_1 = [2; 2; 1; 1];
@@ -179,7 +179,7 @@ waynum = 1;
 
 while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     i = i+1;
-    if norm(u(1:2,1,i-1) - goal(:,1)) < 1;
+    if norm(u(1:2,1,i-1) - goal(:,1)) < 2;
         if waynum >= size(path(1:2,:))
             break
         end
@@ -192,13 +192,14 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     
     u(1:2,:, i ) = u(1:2,:, i-1) + u(3:4,:, i-1) * dt + 1/2 * F' * dt^2;
     u(3:4,:, i ) = u(3:4,:, i -1) + F' * dt; 
+    for l = 1:p
+        if norm(u(3:4,l,i)) > v_max 
+            u(3:4,l,i) = u(3:4,l,i) / norm(u(3:4,l,i)) * v_max; 
+        end
 
-    if norm(u(3:4,:,i)) > v_max 
-        u(3:4,:,i) = u(3:4,:,i) / norm(u(3:4,:,i)) * v_max; 
-    end
-
-    if norm(u(3:4,1,i)) < v_min 
-        u(3:4,1,i) = u(3:4,1,i) / norm(u(3:4,1,i)) * v_min; 
+        if norm(u(3:4,l,i)) < v_min 
+            u(3:4,l,i) = u(3:4,l,i) / norm(u(3:4,l,i)) * v_min; 
+        end
     end
     
    
