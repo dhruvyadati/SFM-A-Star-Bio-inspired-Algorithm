@@ -1,5 +1,7 @@
 % Used for visual of environment 
 
+%rng(1, "twister");
+
 % Set the maximum area of each obstacle       
 maxArea = 150;      
 
@@ -113,7 +115,7 @@ h = plot(G, ...
 % Overlay free nodes
 scatter(freePos(:,1), freePos(:,2), 5, [0.7 0.7 0.7], 'filled'); % Comment if grid is > 10x10 (too laggy)
 
-% bring everything to front/back
+% Bring everything to front/back
 uistack(h, 'bottom');
 
 %% Plotting Starting, Goal, and A-Star Path
@@ -162,11 +164,29 @@ u(:,:,1) = u_0;
 dt = 0.01;
 i = 1;
 
+%collision for A* +SFM 
+coll1 = 0 ;
+% collision for SFM 
+coll2 = 0 ;
+
+%arrival for A* + SFM 
+arrival1 = NaN ;
+
+%arrival for SFM 
+arrival2 = NaN ;
+%collision radius 
+safetyR = 0.3; % might be to big. TODO: tune this parameter to make it more accurate
+
+optimalLen = sum(sqrt(diff(path(1,:)).^2 + diff(path(2,:)).^2));
+% total distance of blue robot (A* + SFM)
+totalDist1 = 0;
+
+% total distance of red robot (SFM)
+totalDist2 = 0;
 path = path';
 
 goal(:,1) = path(:,1);
 goal(:,2) = [50,50];
-
 
 
 plot(goal(1,:), goal(2,:), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'g');

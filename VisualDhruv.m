@@ -1,4 +1,8 @@
+function [dist_astarsfm, dist_sfm] = VisualDhruv
+
 % Used for visual of environment 
+
+%rng(2, "twister");
 
 % Set the maximum area of each obstacle       
 maxArea = 150;      
@@ -27,14 +31,14 @@ global a_s
 global r_inf_s
 
 t_r = 0.5;
-v_max = 20;
-v_min = 5;
-r_inf = 0.75;
-r_inf_s = 1;
+v_max = 4;
+v_min = 1;
+r_inf = 1;
+r_inf_s = 1.25;
 b = 1;
-a = 400;
-a_s = 4000;
-numObstacles = 14;
+a = 800;
+a_s = 10000;
+numObstacles = 10;
 
 %% Get Graph Object and Path Nodes
 
@@ -42,7 +46,7 @@ numObstacles = 14;
 [xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
 
 % Set random human goals not in obstacles
-p = 100;
+p = 20;
 goal = zeros(2, p);
 for i = 3:p
     while true
@@ -147,7 +151,7 @@ for i = 3:p
     end
 end
 
-u_0(:,1) = [1,1,1,1];
+u_0(:,1) = [2,1,1,1];
 u_0(:,2) = [1,2,1,1];
 
 % u_0_1 = [2; 2; 1; 1];
@@ -157,7 +161,7 @@ u_0(:,2) = [1,2,1,1];
 
 
 t = [];
-u = zeros(4,p,1000);
+u = zeros(4,p,10000);
 u(:,:,1) = u_0;
 dt = 0.01;
 i = 1;
@@ -172,14 +176,15 @@ goal(:,2) = [50,50];
 plot(goal(1,:), goal(2,:), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'g');
 %plot 
 
-h = plot(u_0(1, 2:p), u_0(2,2:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
+h = plot(u_0(1, 3:p), u_0(2,3:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
 robot = plot(u_0(1, 1), u_0(2,1), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'b', 'MarkerEdgeColor', 'b');
-
+robot_no_SFM = plot(u_0(1, 2), u_0(2,2), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
 waynum = 1;
 
 while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     i = i+1;
-    if norm(u(1:2,1,i-1) - goal(:,1)) < 1;
+    
+    if norm(u(1:2,1,i-1) - goal(:,1)) < 2;
         if waynum >= size(path(1:2,:))
             break
         end
@@ -192,13 +197,14 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     
     u(1:2,:, i ) = u(1:2,:, i-1) + u(3:4,:, i-1) * dt + 1/2 * F' * dt^2;
     u(3:4,:, i ) = u(3:4,:, i -1) + F' * dt; 
+    for l = 1:p
+        if norm(u(3:4,l,i)) > v_max 
+            u(3:4,l,i) = u(3:4,l,i) / norm(u(3:4,l,i)) * v_max; 
+        end
 
-    if norm(u(3:4,:,i)) > v_max 
-        u(3:4,:,i) = u(3:4,:,i) / norm(u(3:4,:,i)) * v_max; 
-    end
-
-    if norm(u(3:4,1,i)) < v_min 
-        u(3:4,1,i) = u(3:4,1,i) / norm(u(3:4,1,i)) * v_min; 
+        if norm(u(3:4,l,i)) < v_min 
+            u(3:4,l,i) = u(3:4,l,i) / norm(u(3:4,l,i)) * v_min; 
+        end
     end
     
    
@@ -206,32 +212,41 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
         break
     end
    
-    x = squeeze(u(1,2:p,i));
-    y = squeeze(u(2,2:p,i));
+    x = squeeze(u(1,3:p,i));
+    y = squeeze(u(2,3:p,i));
     x_r = squeeze(u(1,1,i));
     y_r = squeeze(u(2,1,i));
+    x_r_n = squeeze(u(1,2,i));
+    y_r_n = squeeze(u(2,2,i));
     set(h, 'XData', x, color="red");
     set(h, 'YData', y);
     set(robot, 'XData', x_r, color="blue");
     set(robot, 'YData', y_r);
+    set(robot_no_SFM, 'XData', x_r_n, color="magenta");
+    set(robot_no_SFM, 'YData', y_r_n);
     
     pause(0.01);
 
 end
 
+% Calculate distance traveled by A*+SFM
+pos_astarsfm = squeeze(u(1:2,1,1:i));  % [2 x N] positions
+diffs_astarsfm = diff(pos_astarsfm, 1, 2);  % [2 x N-1] differences
+dist_astarsfm = sum(vecnorm(diffs_astarsfm));  % total distance
+
+% Calculate distance traveled by SFM-only
+pos_sfm = squeeze(u(1:2,2,1:i));  % [2 x N] positions
+diffs_sfm = diff(pos_sfm, 1, 2);  % [2 x N-1] differences
+dist_sfm = sum(vecnorm(diffs_sfm));  % total distance
 
 %% Save runs
 
-%{
 t = datetime('now','TimeZone','America/Los_Angeles','Format','d-MMM-y HH:mm:ss Z');
-% Generate a filename using the current date and time
+% Generate variables and figures using the current date and time
 % Change "runs" to the directory you want to save files to
-filename = sprintf('runs/variables_%s.mat', t); 
-filename2 = sprintf('runs/region_%s.fig', t); 
+variables = sprintf('runs/variables_%s.mat', t); 
+figures = sprintf('runs/region_%s.fig', t); 
+
 % Save your data
-save(filename);
-savefig(filename2);
-%}
-
-
-
+save(variables);
+savefig(figures);
