@@ -1,4 +1,8 @@
+function [dist_astarsfm, dist_sfm, SFM_A_success, SFM_success] = GetTotalDistanceVsNumberTrialsVariables;
+
 % Used for visual of environment 
+
+%rng(3, "twister");
 
 % Set the maximum area of each obstacle       
 maxArea = 150;      
@@ -12,29 +16,29 @@ bounds = [xMin, xMax, yMin, yMax];
 margin = 1;
 
 % Define SFM Variables
-global goal 
-global t_r
-global p
-global v_max
-global a
-global b
-global r_inf
-global v_min
-global xObsList
-global yObsList
-global numObstacles
-global a_s
-global r_inf_s
+global goal                 % Vector holding all coordinates for goals, first two indicies are for A* + SFM and SFM only respectively
+global t_r                  % Reaction time variable for Force Goal
+global p                    % Number of participants in the simulation, must be at least 2
+global v_max                % Maximum velocity (CHANGES REQUIRE REDOING PARAMETERS DO NOT TOUCH)
+global a                    % Parameter defining strength of repulsion from dynamic obstacles (Increasing this will increase overall repulsion)
+global b                    % Parameter defining strength of repulsion from dynamic obstacles (Increasing this will decrease overall repulsion)
+global r_inf                % Radius of influence for dynamic obstacles
+global v_min                % Minimum velocity
+global xObsList             % Variable holding x coordinates for every vertex for every obstacle
+global yObsList             % Variable holding y coordinates for every vertex for every obstacle
+global numObstacles         % Total number of obstacles
+global a_s                  % Parameter defining strength of repulsion from static obstacles (KEEP HIGH, LOWERING CAUSES GLITCHING AND TELEPORTATION)
+global r_inf_s              % Radius of influence for static obstacles
 
 t_r = 0.5;
-v_max = 20;
-v_min = 5;
-r_inf = 0.75;
+v_max = 4;
+v_min = 1;
+r_inf = 1;
 r_inf_s = 1;
 b = 1;
-a = 400;
-a_s = 4000;
-numObstacles = 14;
+a = 800;
+a_s = 10000;
+numObstacles = 6;
 
 %% Get Graph Object and Path Nodes
 
@@ -147,7 +151,7 @@ for i = 3:p
     end
 end
 
-u_0(:,1) = [1,1,1,1];
+u_0(:,1) = [2,1,1,1];
 u_0(:,2) = [1,2,1,1];
 
 % u_0_1 = [2; 2; 1; 1];
@@ -155,12 +159,18 @@ u_0(:,2) = [1,2,1,1];
 % u_0_3 = [10; 9; 3; -2];
 % u_0 = [u_0_1, u_0_2, u_0_3];
 
+% Defining buffer for position and velocity, the time interval and variable
+% for time steps
 
 t = [];
-u = zeros(4,p,1000);
+u = zeros(4,p,5000);
 u(:,:,1) = u_0;
 dt = 0.01;
 i = 1;
+
+% Restructuring path for manipulation and defining goals for A* model and
+% SFM only model
+
 
 path = path';
 
@@ -168,70 +178,113 @@ goal(:,1) = path(:,1);
 goal(:,2) = [50,50];
 
 
-
-plot(goal(1,:), goal(2,:), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'g');
 %plot 
 
-h = plot(u_0(1, 2:p), u_0(2,2:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
+h = plot(u_0(1, 3:p), u_0(2,3:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
 robot = plot(u_0(1, 1), u_0(2,1), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'b', 'MarkerEdgeColor', 'b');
-
+robot_no_SFM = plot(u_0(1, 2), u_0(2,2), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
 waynum = 1;
 
+SFM_A_success = 0;
+SFM_A_time = 0;
+SFM_success = 0;
+SFM_time = 0;
+
 while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
+
     i = i+1;
-    if norm(u(1:2,1,i-1) - goal(:,1)) < 1;
-        if waynum >= size(path(1:2,:))
-            break
+
+    % Code to do success checking and time taken to reach goal, remains
+    % zero if goal never reached
+
+    if SFM_A_success == 0 
+        if norm(u(1:2,1,i-1) - [50,50]) < 2
+                SFM_A_success = 1;
+                SFM_A_time = i;
         end
-        waynum = waynum + 1;
-        goal(:,1) = path(:,waynum);
     end
 
+    if SFM_success == 0 
+        if norm(u(1:2,2,i-1) - [50,50]) < 2
+                SFM_success = 1;
+                SFM_time = i;
+        end
+    end
+      
+    if SFM_success == 1  && SFM_A_success == 1
+        break
+    end
+
+
+    % Code to update waypoints for SFM + A* model
+    if norm(u(1:2,1,i-1) - goal(:,1)) < 2;
+         waynum = waynum + 1;
+        if waynum > size(path(1:2,:))
+            waynum = waynum -1;
+        end
+        goal(:,1) = path(:,waynum);
+    end
     
+    % Calculation of Force for every agent including both A* model and
+    % regular SFM model and humans
     F = Force_G(t,u(:,:,i-1)) + Force_O_Stat(t,u(:,:,i-1)) + Force_O_Dyn(t,u(:,:,i-1));
     
     u(1:2,:, i ) = u(1:2,:, i-1) + u(3:4,:, i-1) * dt + 1/2 * F' * dt^2;
     u(3:4,:, i ) = u(3:4,:, i -1) + F' * dt; 
 
-    if norm(u(3:4,:,i)) > v_max 
-        u(3:4,:,i) = u(3:4,:,i) / norm(u(3:4,:,i)) * v_max; 
-    end
+    % Updating speeds to ensure they stay within the defined values
+    for l = 1:p
+        if norm(u(3:4,l,i)) > v_max 
+            u(3:4,l,i) = u(3:4,l,i) / norm(u(3:4,l,i)) * v_max; 
+        end
 
-    if norm(u(3:4,1,i)) < v_min 
-        u(3:4,1,i) = u(3:4,1,i) / norm(u(3:4,1,i)) * v_min; 
+        if norm(u(3:4,l,i)) < v_min 
+            u(3:4,l,i) = u(3:4,l,i) / norm(u(3:4,l,i)) * v_min; 
+        end
     end
     
-   
-    if i > 10000
+    % Change to make the time for the simulation different by timesteps
+    if i > 3000
         break
     end
-   
-    x = squeeze(u(1,2:p,i));
-    y = squeeze(u(2,2:p,i));
+
+
+   % Plotting data for visualization of the simulated agents.
+    x = squeeze(u(1,3:p,i));
+    y = squeeze(u(2,3:p,i));
     x_r = squeeze(u(1,1,i));
     y_r = squeeze(u(2,1,i));
+    x_r_n = squeeze(u(1,2,i));
+    y_r_n = squeeze(u(2,2,i));
     set(h, 'XData', x, color="red");
     set(h, 'YData', y);
     set(robot, 'XData', x_r, color="blue");
     set(robot, 'YData', y_r);
+    set(robot_no_SFM, 'XData', x_r_n, color="magenta");
+    set(robot_no_SFM, 'YData', y_r_n);
     
-    pause(0.01);
+    pause(dt);
 
 end
 
+% Calculate distance traveled by A*+SFM
+pos_astarsfm = squeeze(u(1:2,1,1:i));  % [2 x N] positions
+diffs_astarsfm = diff(pos_astarsfm, 1, 2);  % [2 x N-1] differences
+dist_astarsfm = sum(vecnorm(diffs_astarsfm));  % total distance
+
+% Calculate distance traveled by SFM-only
+pos_sfm = squeeze(u(1:2,2,1:i));  % [2 x N] positions
+diffs_sfm = diff(pos_sfm, 1, 2);  % [2 x N-1] differences
+dist_sfm = sum(vecnorm(diffs_sfm));  % total distance
 
 %% Save runs
 
-%{
 t = datetime('now','TimeZone','America/Los_Angeles','Format','d-MMM-y HH:mm:ss Z');
-% Generate a filename using the current date and time
+% Generate variables and figures using the current date and time
 % Change "runs" to the directory you want to save files to
-filename = sprintf('runs/variables_%s.mat', t); 
-filename2 = sprintf('runs/region_%s.fig', t); 
+variables = sprintf('runs/variables_%s.mat', t); 
+figures = sprintf('runs/region_%s.fig', t); 
+
 % Save your data
-save(filename);
-savefig(filename2);
-%}
-
-
-
+save(variables);
+savefig(figures);
