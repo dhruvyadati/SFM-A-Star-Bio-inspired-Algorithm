@@ -12,29 +12,29 @@ bounds = [xMin, xMax, yMin, yMax];
 margin = 1;
 
 % Define SFM Variables
-global goal 
-global t_r
-global p
-global v_max
-global a
-global b
-global r_inf
-global v_min
-global xObsList
-global yObsList
-global numObstacles
-global a_s
-global r_inf_s
+global goal %vector holding all coordinates for goals, first two indicies are for A* + SFM and SFM only respectively
+global t_r %reaction time variable for Force Goal
+global p %number of participants in the simulation, must be at least 2
+global v_max % maximum velocity (CHANGES REQUIRE REDOING PARAMETERS DO NOT TOUCH)
+global a % Parameter defining strength of repulsion from dynamic obstacles (Increasing this will increase overall repulsion)
+global b % Parameter defining strength of repulsion from dynamic obstacles (Increasing this will decrease overall repulsion)
+global r_inf % Radius of influence for dynamic obstacles
+global v_min % minimum velocity
+global xObsList %variable holding x coordinates for every vertex for every obstacle
+global yObsList %variable holding y coordinates for every vertex for every obstacle
+global numObstacles %total number of obstacles
+global a_s % Parameter defining strength of repulsion from static obstacles (KEEP HIGH, LOWERING CAUSES GLITCHING AND TELEPORTATION)
+global r_inf_s % radius of influence for static obstacles
 
 t_r = 0.5;
-v_max = 20;
-v_min = 5;
-r_inf = 0.75;
+v_max = 4;
+v_min = 1;
+r_inf = 1;
 r_inf_s = 1;
 b = 1;
-a = 400;
-a_s = 4000;
-numObstacles = 14;
+a = 800;
+a_s = 10000;
+numObstacles = 10;
 
 %% Get Graph Object and Path Nodes
 
@@ -147,7 +147,7 @@ for i = 3:p
     end
 end
 
-u_0(:,1) = [1,1,1,1];
+u_0(:,1) = [2,1,1,1];
 u_0(:,2) = [1,2,1,1];
 
 % u_0_1 = [2; 2; 1; 1];
@@ -155,6 +155,8 @@ u_0(:,2) = [1,2,1,1];
 % u_0_3 = [10; 9; 3; -2];
 % u_0 = [u_0_1, u_0_2, u_0_3];
 
+% defining buffer for position and velocity, the time interval and variable
+% for time steps
 
 t = [];
 u = zeros(4,p,1000);
@@ -162,20 +164,10 @@ u(:,:,1) = u_0;
 dt = 0.01;
 i = 1;
 
-%collision for A* +SFM 
-coll1 = 0 ;
-% collision for SFM 
-coll2 = 0 ;
+% Restructuring path for manipulation and defining goals for A* model and
+% SFM only model
 
-%arrival for A* + SFM 
-arrival1 = NaN ;
-
-%arrival for SFM 
-arrival2 = NaN ;
-%collision radius 
-safetyR = 0.3; % might be to big. TODO: tune this parameter to make it more accurate
-
-optimalLen = sum(sqrt(diff(path(1,:)).^2 + diff(path(2,:)).^2));
+optimalLen = sum(sqrt(diff(path(:,1)).^2 + diff(path(:,2)).^2));
 % total distance of blue robot (A* + SFM)
 totalDist1 = 0;
 
@@ -187,9 +179,6 @@ goal(:,1) = path(:,1);
 goal(:,2) = [50,50];
 
 
-
-
-plot(goal(1,:), goal(2,:), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'g');
 %plot 
 
 h = plot(u_0(1, 3:p), u_0(2,3:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
@@ -197,54 +186,79 @@ robot = plot(u_0(1, 1), u_0(2,1), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'b', 
 robot_no_SFM = plot(u_0(1, 2), u_0(2,2), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
 waynum = 1;
 
+SFM_A_success = 0;
+SFM_A_time = 0
+SFM_success = 0;
+SFM_time = 0;
+
 while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
+
     i = i+1;
-    if norm(u(1:2,1,i-1) - goal(:,1)) < 1;
-        if waynum >= size(path(1:2,:))
-            break
+
+    % Code to do success checking and time taken to reach goal, remains
+    % zero if goal never reached
+
+    if SFM_A_success == 0 
+        
+        if norm(u(1:2,1,i-1) - [50,50]) < 2
+                SFM_A_success = 1;
+                SFM_A_time = i;
         end
-        waynum = waynum + 1;
-        goal(:,1) = path(:,waynum);
     end
 
+    if SFM_success == 0 
+        
+        if norm(u(1:2,2,i-1) - [50,50]) < 2
+                SFM_success = 1;
+                SFM_time = i;
+        end
+    end
+      
+    if SFM_success == 1  && SFM_A_success == 1
+        break
+    end
+
+
+    % Code to update waypoints for SFM + A* model
+
+    if norm(u(1:2,1,i-1) - goal(:,1)) < 2;
+         waynum = waynum + 1;
+        if waynum > size(path(1:2,:))
+            waynum = waynum -1;
+        end
+       
+        goal(:,1) = path(:,waynum);
+    end
+    
+    %Calculation of Force for every agent including both A* model and
+    %regular SFM model and humans
     
     F = Force_G(t,u(:,:,i-1)) + Force_O_Stat(t,u(:,:,i-1)) + Force_O_Dyn(t,u(:,:,i-1));
     
     u(1:2,:, i ) = u(1:2,:, i-1) + u(3:4,:, i-1) * dt + 1/2 * F' * dt^2;
     u(3:4,:, i ) = u(3:4,:, i -1) + F' * dt; 
 
-    if norm(u(3:4,:,i)) > v_max 
-        u(3:4,:,i) = u(3:4,:,i) / norm(u(3:4,:,i)) * v_max; 
-    end
+    %updating speeds to ensure they stay within the defined values
 
-    if norm(u(3:4,1,i)) < v_min 
-        u(3:4,1,i) = u(3:4,1,i) / norm(u(3:4,1,i)) * v_min; 
+    for l = 1:p
+        if norm(u(3:4,l,i)) > v_max 
+            u(3:4,l,i) = u(3:4,l,i) / norm(u(3:4,l,i)) * v_max; 
+        end
+
+        if norm(u(3:4,l,i)) < v_min 
+            u(3:4,l,i) = u(3:4,l,i) / norm(u(3:4,l,i)) * v_min; 
+        end
     end
     
-    %calculates total time for robot 1 
-    if (isnan(arrival1) && (norm(u(1:2, 1, i) - goalXY') < 0.1))
-        arrival1 = (i-1)*dt
-    end 
-    %calculates total tiem for robot 2
-    if (isnan(arrival2) && (norm(u(1:2, 2, i) - goalXY') < 0.1))
-        arrival2 = (i-1) * dt
-    end 
-
-    if i > 10000
+    % Change to make the time for the simulation different by timesteps
+    if i > 3000
         break
     end
-
     %update the traveled distance 
     totalDist1 = totalDist1 + norm( u(1:2, 1, i) - u(1:2, 1, i-1));
     totalDist2 = totalDist2 + norm (u (1:2, 2, i)- u(1: 2, 2, i-1));
-    %extract all the x and y positions of all the pedestrians 
-    crowd = squeeze(u(1:2, 3:p, i));
-    %updates collision counts 
-    %gets the euclidean distance from 
-    coll1 = coll1+sum(vecnorm(crowd-u(1:2, 1, i)) < safetyR);
-    coll2 = coll2 + sum (vecnorm(crowd-u(1:2, 2, i)) < safetyR);
 
-
+   % plotting data for visualization of the simulated agents.
     x = squeeze(u(1,3:p,i));
     y = squeeze(u(2,3:p,i));
     x_r = squeeze(u(1,1,i));
@@ -258,27 +272,9 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     set(robot_no_SFM, 'XData', x_r_n, color="magenta");
     set(robot_no_SFM, 'YData', y_r_n);
     
-    pause(0.01);
+    pause(dt);
 
 end
-
-if isnan(arrival1)
-    arrival1 = (i-1) * dt; 
-end
-
-if isnan(arrival2)
-    arrival2 = (i-1) * dt; 
-end
-%successful if euclidean distance between goal and xy position of robot<0.1
-succ1 = norm(u(1:2, 1, end) - goalXY') < 0.1; 
-succ2 = norm(u(1:2, 2, end) - goalXY') < 0.1; 
-
-SWPL1 = (succ1 * optimalLen)/ totalDist1;
-SWPL2 = (succ2 * optimalLen)/ totalDist2;
-
-fprintf('\nSuccess Weighted Path Length:\n  Robot 1 (A* + SFM)   :%d\n  Robot 2 (SFM): %d\n', SWPL1, SWPL2);
-fprintf('\nTravel Time:\n  Robot 1 (A* + SFM)   : %.4f\n  Robot 2 (SFM): %.4f\n', arrival1, arrival2);
-fprintf('\nCollision count:\n  Robot 1 (A* + SFM)   : %d\n  Robot 2 (SFM): %d\n', coll1, coll2);
 
 
 %% Save runs
@@ -293,6 +289,10 @@ filename2 = sprintf('runs/region_%s.fig', t);
 save(filename);
 savefig(filename2);
 %}
+SWPL1 = ((SFM_A_success * optimalLen)/ totalDist1);
+SWPL2 = ((SFM_success * optimalLen)/ totalDist2);
 
+fprintf('\nSuccess Weighted Path Length:\n  Robot 1 (A* + SFM)   :%.3f\n  Robot 2 (SFM): %.3f\n', SWPL1, SWPL2);
 
-
+fprintf("SFM + A* success = %d, time taken = %d\n", SFM_A_success, SFM_A_time);
+fprintf("SFM success = %d, time taken = %d\n", SFM_success, SFM_time);
