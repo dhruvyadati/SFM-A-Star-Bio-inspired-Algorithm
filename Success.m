@@ -37,7 +37,7 @@ r_inf_s = 1;
 b = 1;
 a = 800;
 a_s = 10000;
-numObstacles = 6;
+numObstacles = 10;
 
 %% Get Graph Object and Path Nodes
 
@@ -45,7 +45,7 @@ numObstacles = 6;
 [xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
 
 % Set random human goals not in obstacles
-p = 100;
+p = 50;
 goal = zeros(2, p);
 for i = 3:p
     while true
@@ -232,7 +232,6 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     y_r_n = squeeze(u(2,2,i));
    
     
-    pause(dt);
 
 end
 

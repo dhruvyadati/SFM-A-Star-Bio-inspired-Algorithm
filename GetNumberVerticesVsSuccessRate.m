@@ -74,6 +74,13 @@ goalNode = nodeIDs(goalXY(2), goalXY(1));
 
 [path, cameFrom, gScore] = AStar(G, nodeIDs, startXY, goalXY); 
 
+if isempty(path)
+    warning('A* did not find a path for vertex count %d. Skipping this trial.', numVertices);
+    SFM_A_success = 0;
+    SFM_success = 0;
+    return;
+end
+
 path = removeColinearNodes(path);
 
 %% Create Plot and Obstacles

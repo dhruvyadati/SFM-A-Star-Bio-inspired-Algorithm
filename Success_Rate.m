@@ -1,4 +1,4 @@
-numTrials = 1;
+numTrials = 50;
 Success_Counts = [0,0];
 for i = 1:numTrials
     Success_i = [0,0];

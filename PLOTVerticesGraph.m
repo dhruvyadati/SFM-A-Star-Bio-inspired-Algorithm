@@ -2,8 +2,8 @@ function PLOTVerticesGraph
 
 %rng(123, "twister");
 
-numVerticesMax = 10;
-numberOfTrials = 10;
+numVerticesMax = 25;
+numberOfTrials = 5;
 
 vertexCounts = 3:numVerticesMax;
 sfm_success_rates = zeros(size(vertexCounts));
@@ -19,7 +19,6 @@ for idx = 1:length(vertexCounts)
         [SFM_A_success, SFM_success] = GetNumberVerticesVsSuccessRate(vertexCount);
         sfm_success_total = sfm_success_total + SFM_success;
         astar_sfm_success_total = astar_sfm_success_total + SFM_A_success;
-        
         fprintf('Trial %d done for vertex count index %d (actual: %d vertices)\n', trial, idx, vertexCount);
     end
 
