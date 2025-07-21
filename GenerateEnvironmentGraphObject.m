@@ -4,7 +4,7 @@ function [xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numOb
 %   bounds              [xMin, xMax, yMin, yMax]
 %   xObsList, yObsList  cell arrays of obstacle vertices
 
-    rng(145, "twister");
+    % rng(145, "twister");
 
     xObsList = {};
     yObsList = {};
