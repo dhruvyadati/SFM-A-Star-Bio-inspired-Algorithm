@@ -77,7 +77,8 @@ goalNode = nodeIDs(goalXY(2), goalXY(1));
 path = removeColinearNodes(path);
 
 %% Create Plot and Obstacles
- 
+
+%{
 % Create Plot
 figure;
 hold on;
@@ -95,6 +96,7 @@ ylim([yMin yMax]);
 for i = 1:numObstacles
     fill(xObsList{i}, yObsList{i}, 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'k');
 end
+%}
 
 %% Plotting Avaliable Edges and Nodes
 
@@ -105,6 +107,7 @@ allPos = [Xgrid(:), Ygrid(:)];
 % This is in form of [row x col] while freeNodes is node number
 freePos = allPos(freeNodeIDs, :);  
 
+%{
 % Plot graph edges - Comment if grid is > 10x10 (too laggy)
 h = plot(G, ...
     'XData', allPos(:,1), ...
@@ -119,9 +122,11 @@ scatter(freePos(:,1), freePos(:,2), 5, [0.7 0.7 0.7], 'filled'); % Comment if gr
 
 % bring everything to front/back
 uistack(h, 'bottom');
+%}
 
 %% Plotting Starting, Goal, and A-Star Path
 
+%{
 % Plot starting point and goal
 plot(startXY(1), startXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'r'); % start
 plot(goalXY(1), goalXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'g');   % goal
@@ -132,7 +137,7 @@ if ~isempty(path)
 else                                                           
     warning('No path was found :(');                        
 end                                                            
-
+%}
 
 %% Run and Plot SFM Nodes
 
@@ -178,11 +183,14 @@ goal(:,1) = path(:,1);
 goal(:,2) = [50,50];
 
 
-%plot 
+% Plot SFM Nodes
 
+%{
 h = plot(u_0(1, 3:p), u_0(2,3:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
 robot = plot(u_0(1, 1), u_0(2,1), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'b', 'MarkerEdgeColor', 'b');
 robot_no_SFM = plot(u_0(1, 2), u_0(2,2), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
+%}
+
 waynum = 1;
 
 SFM_A_success = 0;
@@ -248,8 +256,8 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
         break
     end
 
-
-   % Plotting data for visualization of the simulated agents.
+   %{
+    % Plotting data for visualization of the simulated agents.
     x = squeeze(u(1,3:p,i));
     y = squeeze(u(2,3:p,i));
     x_r = squeeze(u(1,1,i));
@@ -264,6 +272,7 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     set(robot_no_SFM, 'YData', y_r_n);
     
     pause(dt);
+   %}
 
 end
 

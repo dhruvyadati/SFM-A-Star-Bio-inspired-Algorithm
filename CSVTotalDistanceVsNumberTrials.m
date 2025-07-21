@@ -1,4 +1,4 @@
-function TotalDistanceVsNumberTrials
+function CSVTotalDistanceVsNumberTrials
 
 %% Save Total Distance vs # Trials Graph
 
