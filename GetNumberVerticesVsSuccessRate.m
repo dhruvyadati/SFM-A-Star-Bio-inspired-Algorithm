@@ -38,7 +38,7 @@ r_inf_s = 1;
 b = 1;
 a = 800;
 a_s = 10000;
-numObstacles = 6;
+numObstacles = 10;
 
 %% Get Graph Object and Path Nodes
 
@@ -46,7 +46,7 @@ numObstacles = 6;
 [xObsList, yObsList] = GenerateEnvironmentNumberVertices(xMax, yMax, numObstacles, maxArea, bounds, numVertices);
 
 % Set random human goals not in obstacles
-p = 100;
+p = 50;
 goal = zeros(2, p);
 for i = 3:p
     while true
@@ -73,6 +73,13 @@ startNode = nodeIDs(startXY(2), startXY(1));  % y, x
 goalNode = nodeIDs(goalXY(2), goalXY(1));
 
 [path, cameFrom, gScore] = AStar(G, nodeIDs, startXY, goalXY); 
+
+if isempty(path)
+    warning('A* did not find a path for vertex count %d. Skipping this trial.', numVertices);
+    SFM_A_success = 0;
+    SFM_success = 0;
+    return;
+end
 
 path = removeColinearNodes(path);
 

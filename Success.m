@@ -37,7 +37,9 @@ r_inf_s = 1;
 b = 1;
 a = 800;
 a_s = 10000;
-numObstacles = 5;
+
+numObstacles = 10;
+
 
 %% Get Graph Object and Path Nodes
 
