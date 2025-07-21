@@ -37,7 +37,7 @@ r_inf_s = 1;
 b = 1;
 a = 800;
 a_s = 10000;
-numObstacles = 6;
+numObstacles = 5;
 
 %% Get Graph Object and Path Nodes
 
@@ -45,7 +45,7 @@ numObstacles = 6;
 [xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
 
 % Set random human goals not in obstacles
-p = 100;
+p = 50;
 goal = zeros(2, p);
 for i = 3:p
     while true
@@ -139,7 +139,7 @@ u_0(:,2) = [1,2,1,1];
 % for time steps
 
 t = [];
-u = zeros(4,p,1000);
+u = zeros(4,p,4000);
 u(:,:,1) = u_0;
 dt = 0.01;
 i = 1;
@@ -224,15 +224,14 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
 
 
    % Plotting data for visualization of the simulated agents.
-    x = squeeze(u(1,3:p,i));
-    y = squeeze(u(2,3:p,i));
-    x_r = squeeze(u(1,1,i));
-    y_r = squeeze(u(2,1,i));
-    x_r_n = squeeze(u(1,2,i));
-    y_r_n = squeeze(u(2,2,i));
+    %x = squeeze(u(1,3:p,i));
+    %y = squeeze(u(2,3:p,i));
+    %x_r = squeeze(u(1,1,i));
+    %y_r = squeeze(u(2,1,i));
+    %x_r_n = squeeze(u(1,2,i));
+    %y_r_n = squeeze(u(2,2,i));
    
     
-    pause(dt);
 
 end
 
