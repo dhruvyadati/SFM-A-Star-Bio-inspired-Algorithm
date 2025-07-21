@@ -44,6 +44,7 @@ numObstacles = 10;
 
 % Get the object list
 [xObsList, yObsList] = GenerateEnvironmentNumberVertices(xMax, yMax, numObstacles, maxArea, bounds, numVertices);
+numObstacles = numel(xObsList);
 
 % Set random human goals not in obstacles
 p = 50;
