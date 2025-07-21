@@ -1,5 +1,4 @@
-rng(1)
-trials = 1; 
+trials = 10; 
 
 % Maximum area vs success rate of AS and S (two graphs, x axis is max area)
 
@@ -20,15 +19,16 @@ for k = 1:numel(maxAreaValues)
 end
 
 figure;
-plot(maxAreaValues, succAS, 'bo-', 'LineWidth', 1.5);
+plot(maxAreaValues, succAS, 'rs-', 'LineWidth', 2);
 hold on;
-plot(maxAreaValues, succS, 'rs-', 'LineWidth',1.5);
+plot(maxAreaValues, succS, 'bo-', 'LineWidth',2);
 xlabel('Maximum Obstacle Area');
-ylabel('Success Rate');
-title('Maximum Area vs Success Rate of A*+SFM and SFM');
+ylabel('Average Success Rate');
+title('Average Success Rate vs. Maximum Obstacle Area');
 grid on; 
-legend('A* + SFM', 'SFM', 'Location', 'best');
+legend('A* + SFM', 'SFM Only', 'Location', 'northeast');
 
+%{
 % 9. Number of polygon vs success rate of AS and S (two graphs, x axis is max area)
 polyValues = 2:2:14;
 succAS2 = zeros(size(polyValues));
@@ -47,12 +47,13 @@ for k = 1:numel(polyValues)
 end
 
 figure;
-plot(polyValues, succAS2, 'bo-', 'LineWidth', 1.5);
+plot(polyValues, succAS2, 'rs-', 'LineWidth', 2);
 hold on;
-plot(polyValues, succS2, 'rs-', 'LineWidth',1.5);
+plot(polyValues, succS2, 'bo-', 'LineWidth',2);
 xlabel('Number of Obstacles');
-ylabel('Success Rate');
-title('Number of Obstacles vs Success Rate of A*+SFM and SFM');
-legend('A* + SFM', 'SFM', 'Location', 'best');
+ylabel('Average Success Rate');
+title('Average Success Rate vs. Number of Obstacles');
+grid on;
+legend('A* + SFM', 'SFM Only', 'Location', 'northeast');
 
-
+%}

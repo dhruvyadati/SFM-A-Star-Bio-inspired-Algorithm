@@ -43,7 +43,7 @@ numObstacles = nObs;
 [xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
 numObstacles = numel(xObsList)
 % Set random human goals not in obstacles
-p = 100;
+p = 50;
 goal = zeros(2, p);
 for i = 3:p
     while true
@@ -175,10 +175,11 @@ goal(:,2) = [50,50];
 
 
 %plot 
-
+%{
 h = plot(u_0(1, 3:p), u_0(2,3:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
 robot = plot(u_0(1, 1), u_0(2,1), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'b', 'MarkerEdgeColor', 'b');
 robot_no_SFM = plot(u_0(1, 2), u_0(2,2), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
+ %}
 waynum = 1;
 
 SFM_A_success = 0;
@@ -250,7 +251,7 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
         break
     end
 
-
+ %{
    % plotting data for visualization of the simulated agents.
     x = squeeze(u(1,3:p,i));
     y = squeeze(u(2,3:p,i));
@@ -266,7 +267,7 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     set(robot_no_SFM, 'YData', y_r_n);
     
     pause(dt);
-
+ %}
 end
 
 succAS = SFM_A_success;
