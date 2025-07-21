@@ -71,7 +71,7 @@ function PlotNetForceField_WithRepulsion()
         U(idx) = Fnet(1);
         V(idx) = Fnet(2);
 
-        if norm(Fnet) < 0.3   % ⬅️ threshold for "stuck"
+        if norm(Fnet) < 0.3   % threshold for "stuck"
             stuckMask(idx) = true;
         end
     end
