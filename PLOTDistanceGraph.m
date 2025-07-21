@@ -14,6 +14,8 @@ for i = 1:numberOfTrials
     if SFM_A_success == 1
         astar_sfm_distances(end+1) = dist_astarsfm;
     end
+
+    fprintf('Trial %d Done\n', i);
 end
 
 % Compute averages
