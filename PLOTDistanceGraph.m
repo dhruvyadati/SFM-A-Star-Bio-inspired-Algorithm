@@ -14,6 +14,8 @@ for i = 1:numberOfTrials
     if SFM_A_success == 1
         astar_sfm_distances(end+1) = dist_astarsfm;
     end
+
+    fprintf('Trial %d Done\n', i);
 end
 
 % Compute averages
@@ -25,5 +27,5 @@ figure;
 bar([avg_sfm, avg_astar_sfm]);
 set(gca, 'XTickLabel', {'SFM Only', 'A* + SFM'});
 ylabel('Average Total Distance');
-title(sprintf('Average Distance over %d Trials', numberOfTrials));
+title(sprintf('Average Total Distance over %d Trials For Each Model', numberOfTrials));
 grid on;
