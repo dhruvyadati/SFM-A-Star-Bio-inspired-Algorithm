@@ -24,7 +24,7 @@ function [F] = Force_O_Dyn(t,u)
                 continue
             end
            
-            F_ij = (a * exp(dist)/b) * dist_v;
+            F_ij = (a * exp(-dist)/b) * dist_v;
             F(:,i) =  F(:,i) + F_ij;
             
 

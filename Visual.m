@@ -1,5 +1,7 @@
 % Used for visual of environment 
 
+%rng(3, "twister");
+
 % Set the maximum area of each obstacle       
 maxArea = 150;      
 
@@ -12,6 +14,7 @@ bounds = [xMin, xMax, yMin, yMax];
 margin = 1;
 
 % Define SFM Variables
+<<<<<<< HEAD
 global goal %vector holding all coordinates for goals, first two indicies are for A* + SFM and SFM only respectively
 global t_r %reaction time variable for Force Goal
 global p %number of participants in the simulation, must be at least 2
@@ -25,6 +28,21 @@ global yObsList %variable holding y coordinates for every vertex for every obsta
 global numObstacles %total number of obstacles
 global a_s % Parameter defining strength of repulsion from static obstacles (KEEP HIGH, LOWERING CAUSES GLITCHING AND TELEPORTATION)
 global r_inf_s % radius of influence for static obstacles
+=======
+global goal                 % Vector holding all coordinates for goals, first two indicies are for A* + SFM and SFM only respectively
+global t_r                  % Reaction time variable for Force Goal
+global p                    % Number of participants in the simulation, must be at least 2
+global v_max                % Maximum velocity (CHANGES REQUIRE REDOING PARAMETERS DO NOT TOUCH)
+global a                    % Parameter defining strength of repulsion from dynamic obstacles (Increasing this will increase overall repulsion)
+global b                    % Parameter defining strength of repulsion from dynamic obstacles (Increasing this will decrease overall repulsion)
+global r_inf                % Radius of influence for dynamic obstacles
+global v_min                % Minimum velocity
+global xObsList             % Variable holding x coordinates for every vertex for every obstacle
+global yObsList             % Variable holding y coordinates for every vertex for every obstacle
+global numObstacles         % Total number of obstacles
+global a_s                  % Parameter defining strength of repulsion from static obstacles (KEEP HIGH, LOWERING CAUSES GLITCHING AND TELEPORTATION)
+global r_inf_s              % Radius of influence for static obstacles
+>>>>>>> main
 
 t_r = 0.5;
 v_max = 4;
@@ -34,7 +52,11 @@ r_inf_s = 1;
 b = 1;
 a = 800;
 a_s = 10000;
+<<<<<<< HEAD
 numObstacles = 10;
+=======
+numObstacles = 6;
+>>>>>>> main
 
 %% Get Graph Object and Path Nodes
 
@@ -59,7 +81,7 @@ end
 % Make graph G
 [G, nodeIDs, freeNodeIDs] = Graph(xMax, yMax, xObsList, yObsList, margin);
 
-% call aStar algorithm
+% Call aStar algorithm
 startXY = [xMin, yMin];
 goalXY = [xMax, yMax];
 
@@ -113,7 +135,7 @@ h = plot(G, ...
 % Overlay free nodes
 scatter(freePos(:,1), freePos(:,2), 5, [0.7 0.7 0.7], 'filled'); % Comment if grid is > 10x10 (too laggy)
 
-% bring everything to front/back
+% Bring everything to front/back
 uistack(h, 'bottom');
 
 %% Plotting Starting, Goal, and A-Star Path
@@ -122,7 +144,7 @@ uistack(h, 'bottom');
 plot(startXY(1), startXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'r'); % start
 plot(goalXY(1), goalXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'g');   % goal
 
-% plot a* path
+% Plot a* path
 if ~isempty(path)                                              
     plot(path(:,1), path(:,2), 'k-', 'LineWidth', 1.5);    
 else                                                           
@@ -155,7 +177,11 @@ u_0(:,2) = [1,2,1,1];
 % u_0_3 = [10; 9; 3; -2];
 % u_0 = [u_0_1, u_0_2, u_0_3];
 
+<<<<<<< HEAD
 % defining buffer for position and velocity, the time interval and variable
+=======
+% Defining buffer for position and velocity, the time interval and variable
+>>>>>>> main
 % for time steps
 
 t = [];
@@ -167,12 +193,19 @@ i = 1;
 % Restructuring path for manipulation and defining goals for A* model and
 % SFM only model
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
 path = path';
 
 goal(:,1) = path(:,1);
 goal(:,2) = [50,50];
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> main
 %plot 
 
 h = plot(u_0(1, 3:p), u_0(2,3:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
@@ -191,17 +224,25 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
 
     % Code to do success checking and time taken to reach goal, remains
     % zero if goal never reached
+<<<<<<< HEAD
 
     if SFM_A_success == 0 
         
+=======
+    if SFM_A_success == 0         
+>>>>>>> main
         if norm(u(1:2,1,i-1) - [50,50]) < 2
                 SFM_A_success = 1;
                 SFM_A_time = i;
         end
     end
 
+<<<<<<< HEAD
     if SFM_success == 0 
         
+=======
+    if SFM_success == 0        
+>>>>>>> main
         if norm(u(1:2,2,i-1) - [50,50]) < 2
                 SFM_success = 1;
                 SFM_time = i;
@@ -214,7 +255,10 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
 
 
     % Code to update waypoints for SFM + A* model
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
     if norm(u(1:2,1,i-1) - goal(:,1)) < 2;
          waynum = waynum + 1;
         if waynum > size(path(1:2,:))
@@ -224,15 +268,24 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
         goal(:,1) = path(:,waynum);
     end
     
+<<<<<<< HEAD
     %Calculation of Force for every agent including both A* model and
     %regular SFM model and humans
+=======
+    % Calculation of Force for every agent including both A* model and
+    % regular SFM model and humans
+>>>>>>> main
     
     F = Force_G(t,u(:,:,i-1)) + Force_O_Stat(t,u(:,:,i-1)) + Force_O_Dyn(t,u(:,:,i-1));
     
     u(1:2,:, i ) = u(1:2,:, i-1) + u(3:4,:, i-1) * dt + 1/2 * F' * dt^2;
     u(3:4,:, i ) = u(3:4,:, i -1) + F' * dt; 
 
+<<<<<<< HEAD
     %updating speeds to ensure they stay within the defined values
+=======
+    % Updating speeds to ensure they stay within the defined values
+>>>>>>> main
 
     for l = 1:p
         if norm(u(3:4,l,i)) > v_max 
@@ -250,7 +303,11 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     end
 
 
+<<<<<<< HEAD
    % plotting data for visualization of the simulated agents.
+=======
+   % Plotting data for visualization of the simulated agents.
+>>>>>>> main
     x = squeeze(u(1,3:p,i));
     y = squeeze(u(2,3:p,i));
     x_r = squeeze(u(1,1,i));

@@ -1,7 +1,18 @@
+<<<<<<<< HEAD:runExperiment.m
 function [succAS, succS] = singleRun(maxArea, nObs)
 % Used for visual of environment 
 
 % Set the maximum area of each obstacle            
+========
+function [SFM_A_success, SFM_success] = GetNumberVerticesVsSuccessRate(numVertices);
+
+% Used for visual of environment 
+
+%rng(3, "twister");
+
+% Set the maximum area of each obstacle       
+maxArea = 150;      
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
 
 % Set the bounds of plot
 xMin = 1;                  
@@ -12,6 +23,7 @@ bounds = [xMin, xMax, yMin, yMax];
 margin = 1;
 
 % Define SFM Variables
+<<<<<<<< HEAD:runExperiment.m
 global goal %vector holding all coordinates for goals, first two indicies are for A* + SFM and SFM only respectively
 global t_r %reaction time variable for Force Goal
 global p %number of participants in the simulation, must be at least 2
@@ -26,6 +38,22 @@ global yObsList %variable holding y coordinates for every vertex for every obsta
 global a_s % Parameter defining strength of repulsion from static obstacles (KEEP HIGH, LOWERING CAUSES GLITCHING AND TELEPORTATION)
 global r_inf_s % radius of influence for static obstacles
 global numObstacles
+========
+global goal                 % Vector holding all coordinates for goals, first two indicies are for A* + SFM and SFM only respectively
+global t_r                  % Reaction time variable for Force Goal
+global p                    % Number of participants in the simulation, must be at least 2
+global v_max                % Maximum velocity (CHANGES REQUIRE REDOING PARAMETERS DO NOT TOUCH)
+global a                    % Parameter defining strength of repulsion from dynamic obstacles (Increasing this will increase overall repulsion)
+global b                    % Parameter defining strength of repulsion from dynamic obstacles (Increasing this will decrease overall repulsion)
+global r_inf                % Radius of influence for dynamic obstacles
+global v_min                % Minimum velocity
+global xObsList             % Variable holding x coordinates for every vertex for every obstacle
+global yObsList             % Variable holding y coordinates for every vertex for every obstacle
+global numObstacles         % Total number of obstacles
+global a_s                  % Parameter defining strength of repulsion from static obstacles (KEEP HIGH, LOWERING CAUSES GLITCHING AND TELEPORTATION)
+global r_inf_s              % Radius of influence for static obstacles
+
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
 t_r = 0.5;
 v_max = 4;
 v_min = 1;
@@ -34,14 +62,24 @@ r_inf_s = 1;
 b = 1;
 a = 800;
 a_s = 10000;
+<<<<<<<< HEAD:runExperiment.m
 maxArea = maxArea;
 numObstacles = nObs;
+========
+numObstacles = 10;
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
 
 %% Get Graph Object and Path Nodes
 
 % Get the object list
+<<<<<<<< HEAD:runExperiment.m
 [xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
 numObstacles = numel(xObsList)
+========
+[xObsList, yObsList] = GenerateEnvironmentNumberVertices(xMax, yMax, numObstacles, maxArea, bounds, numVertices);
+numObstacles = numel(xObsList);
+
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
 % Set random human goals not in obstacles
 p = 50;
 goal = zeros(2, p);
@@ -71,11 +109,20 @@ goalNode = nodeIDs(goalXY(2), goalXY(1));
 
 [path, cameFrom, gScore] = AStar(G, nodeIDs, startXY, goalXY); 
 
+if isempty(path)
+    warning('A* did not find a path for vertex count %d. Skipping this trial.', numVertices);
+    SFM_A_success = 0;
+    SFM_success = 0;
+    return;
+end
+
 path = removeColinearNodes(path);
 
 %% Create Plot and Obstacles
  
 % Create Plot
+
+%{
 figure;
 hold on;
 axis equal;
@@ -92,6 +139,7 @@ ylim([yMin yMax]);
 for i = 1:numObstacles
     fill(xObsList{i}, yObsList{i}, 'r', 'FaceAlpha', 0.5, 'EdgeColor', 'k');
 end
+%}
 
 %% Plotting Avaliable Edges and Nodes
 
@@ -102,6 +150,7 @@ allPos = [Xgrid(:), Ygrid(:)];
 % This is in form of [row x col] while freeNodes is node number
 freePos = allPos(freeNodeIDs, :);  
 
+%{
 % Plot graph edges - Comment if grid is > 10x10 (too laggy)
 h = plot(G, ...
     'XData', allPos(:,1), ...
@@ -114,11 +163,13 @@ h = plot(G, ...
 % Overlay free nodes
 scatter(freePos(:,1), freePos(:,2), 5, [0.7 0.7 0.7], 'filled'); % Comment if grid is > 10x10 (too laggy)
 
-% bring everything to front/back
+% Bring everything to front/back
 uistack(h, 'bottom');
+%}
 
 %% Plotting Starting, Goal, and A-Star Path
 
+%{
 % Plot starting point and goal
 plot(startXY(1), startXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'r'); % start
 plot(goalXY(1), goalXY(2), 'o', 'MarkerSize', 10, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'g');   % goal
@@ -129,7 +180,7 @@ if ~isempty(path)
 else                                                           
     warning('No path was found :(');                        
 end                                                            
-
+%}
 
 %% Run and Plot SFM Nodes
 
@@ -156,11 +207,15 @@ u_0(:,2) = [1,2,1,1];
 % u_0_3 = [10; 9; 3; -2];
 % u_0 = [u_0_1, u_0_2, u_0_3];
 
+<<<<<<<< HEAD:runExperiment.m
 % defining buffer for position and velocity, the time interval and variable
+========
+% Defining buffer for position and velocity, the time interval and variable
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
 % for time steps
 
 t = [];
-u = zeros(4,p,1000);
+u = zeros(4,p,5000);
 u(:,:,1) = u_0;
 dt = 0.01;
 i = 1;
@@ -168,18 +223,31 @@ i = 1;
 % Restructuring path for manipulation and defining goals for A* model and
 % SFM only model
 
+<<<<<<<< HEAD:runExperiment.m
+========
+
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
 path = path';
 
 goal(:,1) = path(:,1);
 goal(:,2) = [50,50];
 
 
+<<<<<<<< HEAD:runExperiment.m
 %plot 
+========
+% Plot SFM 
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
 %{
 h = plot(u_0(1, 3:p), u_0(2,3:p), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'r');
 robot = plot(u_0(1, 1), u_0(2,1), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'b', 'MarkerEdgeColor', 'b');
 robot_no_SFM = plot(u_0(1, 2), u_0(2,2), 'o', 'MarkerSize', 5, 'MarkerFaceColor', 'm', 'MarkerEdgeColor', 'm');
+<<<<<<<< HEAD:runExperiment.m
  %}
+========
+%}
+
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
 waynum = 1;
 
 SFM_A_success = 0;
@@ -195,7 +263,10 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     % zero if goal never reached
 
     if SFM_A_success == 0 
+<<<<<<<< HEAD:runExperiment.m
         
+========
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
         if norm(u(1:2,1,i-1) - [50,50]) < 2
                 SFM_A_success = 1;
                 SFM_A_time = i;
@@ -203,7 +274,10 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     end
 
     if SFM_success == 0 
+<<<<<<<< HEAD:runExperiment.m
         
+========
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
         if norm(u(1:2,2,i-1) - [50,50]) < 2
                 SFM_success = 1;
                 SFM_time = i;
@@ -216,24 +290,35 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
 
 
     % Code to update waypoints for SFM + A* model
+<<<<<<<< HEAD:runExperiment.m
 
+========
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
     if norm(u(1:2,1,i-1) - goal(:,1)) < 2;
          waynum = waynum + 1;
         if waynum > size(path(1:2,:))
             waynum = waynum -1;
         end
+<<<<<<<< HEAD:runExperiment.m
        
         goal(:,1) = path(:,waynum);
     end
     
     %Calculation of Force for every agent including both A* model and
     %regular SFM model and humans
+========
+        goal(:,1) = path(:,waynum);
+    end
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
     
+    % Calculation of Force for every agent including both A* model and
+    % regular SFM model and humans
     F = Force_G(t,u(:,:,i-1)) + Force_O_Stat(t,u(:,:,i-1)) + Force_O_Dyn(t,u(:,:,i-1));
     
     u(1:2,:, i ) = u(1:2,:, i-1) + u(3:4,:, i-1) * dt + 1/2 * F' * dt^2;
     u(3:4,:, i ) = u(3:4,:, i -1) + F' * dt; 
 
+<<<<<<<< HEAD:runExperiment.m
     %updating speeds to ensure they stay within the defined values
 
     for l = 1:p
@@ -241,6 +326,14 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
             u(3:4,l,i) = u(3:4,l,i) / norm(u(3:4,l,i)) * v_max; 
         end
 
+========
+    % Updating speeds to ensure they stay within the defined values
+    for l = 1:p
+        if norm(u(3:4,l,i)) > v_max 
+            u(3:4,l,i) = u(3:4,l,i) / norm(u(3:4,l,i)) * v_max; 
+        end
+
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
         if norm(u(3:4,l,i)) < v_min 
             u(3:4,l,i) = u(3:4,l,i) / norm(u(3:4,l,i)) * v_min; 
         end
@@ -251,8 +344,16 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
         break
     end
 
+<<<<<<<< HEAD:runExperiment.m
  %{
    % plotting data for visualization of the simulated agents.
+========
+
+
+   % Plotting data for visualization of the simulated agents.
+
+   %{
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
     x = squeeze(u(1,3:p,i));
     y = squeeze(u(2,3:p,i));
     x_r = squeeze(u(1,1,i));
@@ -267,6 +368,7 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     set(robot_no_SFM, 'YData', y_r_n);
     
     pause(dt);
+<<<<<<<< HEAD:runExperiment.m
  %}
 end
 
@@ -274,3 +376,20 @@ succAS = SFM_A_success;
 succS  = SFM_success;
 
 end
+========
+   %}
+
+end
+
+%% Save runs
+
+t = datetime('now','TimeZone','America/Los_Angeles','Format','d-MMM-y HH:mm:ss Z');
+% Generate variables and figures using the current date and time
+% Change "runs" to the directory you want to save files to
+variables = sprintf('runs/variables_%s.mat', t); 
+figures = sprintf('runs/region_%s.fig', t); 
+
+% Save your data
+save(variables);
+savefig(figures);
+>>>>>>>> main:GetNumberVerticesVsSuccessRate.m
