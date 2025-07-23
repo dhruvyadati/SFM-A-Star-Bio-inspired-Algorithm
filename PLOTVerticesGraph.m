@@ -20,19 +20,6 @@ for idx = 1:length(vertexCounts)
     end
 end
 
-% Compute mean and std dev
-sfm_success_rates = mean(sfm_success_trials, 1);
-astar_sfm_success_rates = mean(astar_sfm_success_trials, 1);
-sfm_std = std(sfm_success_trials, 0, 1);
-astar_sfm_std = std(astar_sfm_success_trials, 0, 1);
-
-% Display standard deviations in console
-disp('Standard deviation for SFM-only success rates:');
-disp(sfm_std);
-
-disp('Standard deviation for A*+SFM success rates:');
-disp(astar_sfm_std);
-
 % Plotting
 figure;
 hold on;

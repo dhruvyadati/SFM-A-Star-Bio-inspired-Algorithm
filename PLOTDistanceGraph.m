@@ -18,12 +18,6 @@ for i = 1:numberOfTrials
     fprintf('Trial %d Done\n', i);
 end
 
-% Compute averages and standard deviations
-avg_sfm = mean(sfm_distances);
-avg_astar_sfm = mean(astar_sfm_distances);
-std_sfm = std(sfm_distances);
-std_astar_sfm = std(astar_sfm_distances);
-
 % Display
 fprintf('SFM Only - Mean: %.3f, Std: %.3f\n', avg_sfm, std_sfm);
 fprintf('A* + SFM - Mean: %.3f, Std: %.3f\n', avg_astar_sfm, std_astar_sfm);

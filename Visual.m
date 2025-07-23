@@ -1,7 +1,5 @@
 % Used for visual of environment 
 
-%rng(3, "twister");
-
 % Set the maximum area of each obstacle       
 maxArea = 150;      
 
@@ -36,7 +34,7 @@ r_inf_s = 1;
 b = 1;
 a = 800;
 a_s = 10000;
-numObstacles = 6;
+numObstacles = 10;
 
 %% Get Graph Object and Path Nodes
 
@@ -44,7 +42,7 @@ numObstacles = 6;
 [xObsList, yObsList] = GenerateEnvironmentGraphObject(xMax, yMax, numObstacles, maxArea, bounds);
 
 % Set random human goals not in obstacles
-p = 100;
+p = 50;
 goal = zeros(2, p);
 for i = 3:p
     while true
@@ -81,7 +79,7 @@ figure;
 hold on;
 axis equal;
 grid on;
-title('Pathfinding Visual Environment');
+%title('Pathfinding Visual Environment');
 xlabel('X'); 
 ylabel('Y');
 xlim([xMin xMax]); 
@@ -182,7 +180,7 @@ robot_no_SFM = plot(u_0(1, 2), u_0(2,2), 'o', 'MarkerSize', 5, 'MarkerFaceColor'
 waynum = 1;
 
 SFM_A_success = 0;
-SFM_A_time = 0
+SFM_A_time = 0;
 SFM_success = 0;
 SFM_time = 0;
 
@@ -256,11 +254,11 @@ while any(any(abs(u(1:2,:,i)-goal) > 0.1) ~= 0)
     y_r_n = squeeze(u(2,2,i));
     set(h, 'XData', x, color="red");
     set(h, 'YData', y);
-    set(robot, 'XData', x_r, color="blue");
+    set(robot, 'XData', x_r, 'MarkerSize', 10, color="blue");
     set(robot, 'YData', y_r);
-    set(robot_no_SFM, 'XData', x_r_n, color="magenta");
+    set(robot_no_SFM, 'XData', x_r_n, 'MarkerSize', 10, color="magenta");
     set(robot_no_SFM, 'YData', y_r_n);
-    
+
     pause(dt);
 
 end
