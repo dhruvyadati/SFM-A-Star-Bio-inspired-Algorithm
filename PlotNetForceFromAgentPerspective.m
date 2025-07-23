@@ -1,4 +1,4 @@
-function PlotNetForceField_WithRepulsion()
+function results = PlotNetForceFromAgentPerspective()
     % Plot net force vectors (goal + static obstacle repulsion)
     % assuming an agent is placed at each free grid point.
 
@@ -49,32 +49,104 @@ function PlotNetForceField_WithRepulsion()
     path = removeColinearNodes(path);
 
     %% Compute Net Forces at Each Grid Point
-    for idx = 1:numel(X)
-        x = X(idx);
-        y = Y(idx);
-
-        if ptInObs(x, y, xObsList, yObsList, margin)
-            U(idx) = NaN;
-            V(idx) = NaN;
-            continue;
-        end
-
-        % Place dummy agent
-        u_tmp = zeros(4,1);
-        u_tmp(1:2) = [x; y];
-        u_tmp(3:4) = [0; 0];
-
-        Fg = Force_G(0, u_tmp);
-        Fo = Force_O_Stat(0, u_tmp);
-        Fnet = Fg + Fo;
-
-        U(idx) = Fnet(1);
-        V(idx) = Fnet(2);
-
-        if norm(Fnet) < 0.3   % threshold for "stuck"
-            stuckMask(idx) = true;
+    for i = 1:size(X, 1)
+        for j = 1:size(X, 2)
+            x = X(i, j);
+            y = Y(i, j);
+    
+            if ptInObs(x, y, xObsList, yObsList, margin)
+                U(i, j) = NaN;
+                V(i, j) = NaN;
+                continue;
+            end
+    
+            u_tmp = zeros(4,1);
+            u_tmp(1:2) = [x; y];
+            u_tmp(3:4) = [0; 0];
+    
+            Fg = Force_G(0, u_tmp);
+            Fo = Force_O_Stat(0, u_tmp);
+            Fnet = Fg + Fo;
+    
+            U(i, j) = Fnet(1);
+            V(i, j) = Fnet(2);
+    
+            if norm(Fnet) < 0.3
+                stuckMask(i, j) = true;
+            end
         end
     end
+
+
+    %% 3D Surface of Force Magnitudes
+    
+    Z = sqrt(U.^2 + V.^2);
+    
+    % Clean up NaNs for plotting
+    Z(isnan(Z)) = 0;  % For visualization only
+    
+    % Plot 3D surface
+    figure;
+    surf(X, Y, Z, 'EdgeColor', 'none');
+    colormap(turbo);
+    colorbar;
+    xlabel('X'); ylabel('Y'); zlabel('||F_{net}||');
+    title('3D Surface of Net Force Magnitudes');
+    view(45, 30); % angled 3D view
+
+    % Number of points that are getting trapped
+    trapPoints = sum(Z(:) < 0.3);
+    trapRatio = trapPoints / numel(Z);
+
+    % Path overlap points
+    Z_path = interp2(X, Y, Z, path(:,1), path(:,2));
+    totalForceAlongPath = sum(Z_path);
+    normForceCost = totalForceAlongPath / size(path,1);
+
+    % Force Gradient Map
+    [gradX, gradY] = gradient(Z, 0.25);  % 0.25 is the step size used in meshgrid
+    gradMagnitude = sqrt(gradX.^2 + gradY.^2);
+
+    avgGradient = mean(gradMagnitude(:), 'omitnan');
+    maxGradient = max(gradMagnitude(:));
+
+    
+    figure;
+    imagesc(gradMagnitude); colormap(hot); colorbar;
+    title('Force Gradient Magnitude');
+
+
+    % Basin of Attraction Sizes
+    % Basins = connected zones where an agent could get stuck.
+    % Each Basin is a distinct trap zone
+
+    figure;
+    stuckThresh = 0.3;
+    isStuck = Z < stuckThresh;
+    
+    CC = bwconncomp(isStuck);
+    numBasins = CC.NumObjects;
+    basinSizes = cellfun(@numel, CC.PixelIdxList);
+
+    meanBasinSize = mean(basinSizes);
+    maxBasinSize = max(basinSizes);
+
+
+    fprintf('Number of Trap Points: %d\n', trapPoints);
+    fprintf('Trap Ratio: %.3f\n', trapRatio);
+    fprintf('Force Cost Along Path: %.2f\n', totalForceAlongPath);
+    fprintf('Normalized Force Cost: %.2f\n', normForceCost);
+    fprintf('Average Gradient: %.3f\n', avgGradient);
+    fprintf('Max Gradient: %.3f\n', maxGradient);
+    fprintf('Number of Basins: %d\n', numBasins);
+    fprintf('Mean Basin Size: %.2f\n', meanBasinSize);
+    fprintf('Max Basin Size: %d\n', maxBasinSize);
+
+    basinMap = labelmatrix(CC);
+    figure;
+    imagesc(basinMap); colormap(jet); colorbar;
+    title('Basins of Attraction');
+
 
     %% Plotting
     figure; hold on; axis equal;
@@ -112,7 +184,66 @@ function PlotNetForceField_WithRepulsion()
     if ~isempty(path)                                              
         plot(path(:,1), path(:,2), 'k-', 'LineWidth', 1.5);    
     else                                                           
-        warning('No path was found :(');                        
+        warning('No path  found');                        
     end       
+
+    %{
+    % Plot forces acting on A* path nodes
+    for k = 1:size(path,1)
+        px = path(k,1);
+        py = path(k,2);
+        
+        if ptInObs(px, py, xObsList, yObsList, margin)
+            continue; % Skip obstacle-covered nodes
+        end
+
+        u_tmp = zeros(4,1);
+        u_tmp(1:2) = [px; py];
+        u_tmp(3:4) = [0; 0];
+
+        Fg = Force_G(0, u_tmp);
+        Fo = Force_O_Stat(0, u_tmp);
+        Fnet = Fg + Fo;
+
+        % Plot vector at this path point
+        quiver(px, py, Fnet(1), Fnet(2), 0.006, 'm', 'LineWidth', 1.5);
+    end
+    %}
+
+    %% Plot Force Gradient With Path
+    stepSize = 0.25;
+    
+    % Path is in real (x,y), heatmap index = coordinate / step size
+    pathX_idx = (path(:,1) - 1) / stepSize + 1;
+    pathY_idx = (path(:,2) - 1) / stepSize + 1;
+    
+    figure;
+    imagesc(gradMagnitude); colormap(hot); colorbar;
+    title('Force Gradient Magnitude');
+    axis equal tight;
+    set(gca, 'YDir', 'normal');
+    hold on;
+    
+    plot(pathX_idx, pathY_idx, 'w-', 'LineWidth', 1.5);  % Match to heatmap index
+
+ 
+
+    %% Return Metrics Struct
+    results = struct();
+    results.trapPoints = trapPoints;
+    results.trapRatio = trapRatio;
+    results.totalForceAlongPath = totalForceAlongPath;
+    results.normForceCost = normForceCost;
+    results.avgGradient = avgGradient;
+    results.maxGradient = maxGradient;
+    results.numBasins = numBasins;
+    results.meanBasinSize = meanBasinSize;
+    results.maxBasinSize = maxBasinSize;
+
+
+
+
+
+
 
 end
