@@ -2,6 +2,8 @@ function results = PlotNetForceFromAgentPerspective()
     % Plot net force vectors (goal + static obstacle repulsion)
     % assuming an agent is placed at each free grid point.
 
+    rng(1234567, "twister");
+
     %% Global SFM Setup
     global goal t_r p v_max v_min xObsList yObsList numObstacles a b a_s r_inf r_inf_s
 
@@ -9,7 +11,7 @@ function results = PlotNetForceFromAgentPerspective()
     xMin = 1; xMax = 50;
     yMin = 1; yMax = 50;
     bounds = [xMin xMax yMin yMax];
-    margin = 0;
+    margin = 0.5;
     maxArea = 150;
     numObstacles = 10;
     goal = [xMax; yMax];
@@ -19,10 +21,10 @@ function results = PlotNetForceFromAgentPerspective()
     v_max = 4;
     v_min = 1;
     r_inf = 1;
-    r_inf_s = 1.5;   
+    r_inf_s = 3.5;   
     b = 1;
     a = 800;
-    a_s = 1000;    
+    a_s = 3000;    
     p = 1;
     
     %% Environment & Grid
@@ -152,7 +154,7 @@ function results = PlotNetForceFromAgentPerspective()
     figure; hold on; axis equal;
     xlim([xMin xMax]); ylim([yMin yMax]);
     xlabel('X'); ylabel('Y');
-    title('Net Force Field with SFM Trap Risk Heatmap');
+    %title('Net Force Field');
     grid on;
     
     % Obstacles
@@ -187,28 +189,32 @@ function results = PlotNetForceFromAgentPerspective()
         warning('No path  found');                        
     end       
 
-    %{
-    % Plot forces acting on A* path nodes
-    for k = 1:size(path,1)
+    
+    %% Plot forces acting on A* path nodes
+
+    for k = 1:(size(path,1) - 1)
         px = path(k,1);
         py = path(k,2);
-        
+        next_px = path(k+1,1);
+        next_py = path(k+1,2);
+
         if ptInObs(px, py, xObsList, yObsList, margin)
-            continue; % Skip obstacle-covered nodes
+            continue;
         end
 
-        u_tmp = zeros(4,1);
-        u_tmp(1:2) = [px; py];
-        u_tmp(3:4) = [0; 0];
+        % Vector pointing to next path point
+        dirVec = [next_px - px, next_py - py];
+        dirVec = dirVec / norm(dirVec); 
 
-        Fg = Force_G(0, u_tmp);
-        Fo = Force_O_Stat(0, u_tmp);
-        Fnet = Fg + Fo;
+        scaleFactor = 1.5;
+        dirVec = scaleFactor * dirVec;
+        quiver(px, py, dirVec(1), dirVec(2), 0, ...
+               'm', 'LineWidth', 1, 'MaxHeadSize', 1.5);
 
-        % Plot vector at this path point
-        quiver(px, py, Fnet(1), Fnet(2), 0.006, 'm', 'LineWidth', 1.5);
     end
-    %}
+
+
+    
 
     %% Plot Force Gradient With Path
     stepSize = 0.25;
