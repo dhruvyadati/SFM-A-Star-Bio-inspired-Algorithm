@@ -9,7 +9,7 @@ vertexCounts = 3:numVerticesMax;
 sfm_success_rates = zeros(size(vertexCounts));
 astar_sfm_success_rates = zeros(size(vertexCounts));
 sfm_success_trials = zeros(numberOfTrials, length(vertexCounts));
-astar_sfm_success_trials = zeros(numberOfTrials, leAngth(vertexCounts));
+astar_sfm_success_trials = zeros(numberOfTrials, length(vertexCounts));
 
 for i = 1:length(vertexCounts)
     vertexCount = vertexCounts(i);
