@@ -31,8 +31,8 @@ hold on;
 errorbar(1:2, barData, [std_sfm, std_astar_sfm], '.k', 'LineWidth', 1.5);
 
 set(gca, 'XTickLabel', {'SFM Only', 'A* + SFM'});
-ylabel('Average Total Distance');
-title(sprintf('Average Total Distance over %d Trials (with Std Dev)', numberOfTrials));
+%ylabel('Average Total Distance');
+%title(sprintf('Average Total Distance over %d Trials (with Std Dev)', numberOfTrials));
 grid on;
 
 end

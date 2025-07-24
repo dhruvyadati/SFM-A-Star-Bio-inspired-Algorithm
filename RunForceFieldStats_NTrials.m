@@ -16,7 +16,7 @@ function RunForceFieldStats_NTrials()
     for i = 1:N
         fprintf("Running trial %d of %d...\n", i, N);
 
-        % Call your modified plotting function that returns metrics
+        % Call modified plotting function that returns metrics
         stats = PlotNetForceFromAgentPerspective();
 
         % Accumulate metrics
@@ -29,7 +29,7 @@ function RunForceFieldStats_NTrials()
         meanBasinSize_all(i) = stats.meanBasinSize;
         maxBasinSize_all(i)  = stats.maxBasinSize;
 
-        close all; % Optional: close figures each trial to avoid clutter
+        close all;
     end
 
     %% Average and STD results
