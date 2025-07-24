@@ -1,4 +1,4 @@
-numTrials = 4;
+numTrials = 100;
 
 dist_trials = zeros(numTrials, 2, 3000);
 for i = 1:numTrials
@@ -16,8 +16,8 @@ CI = squeeze(CI);
 
 x_plot = [1:3000, fliplr(1:3000)];
 
-y_plot_A = [dist_avg(1,:) - CI(1,:),flipud(dist_avg(1,:) + CI(1,:))];
-y_plot_SFM = [dist_avg(2,:) - CI(2,:),flipud(dist_avg(2,:) + CI(2,:))];
+y_plot_A = [dist_avg(1,:) - CI(1,:),fliplr(dist_avg(1,:) + CI(1,:))];
+y_plot_SFM = [dist_avg(2,:) - CI(2,:),fliplr(dist_avg(2,:) + CI(2,:))];
 
 
 
