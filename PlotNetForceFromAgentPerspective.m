@@ -2,7 +2,7 @@ function results = PlotNetForceFromAgentPerspective()
     % Plot net force vectors (goal + static obstacle repulsion)
     % assuming an agent is placed at each free grid point.
 
-    rng(1234567, "twister");
+    %rng(1234567, "twister");
 
     %% Global SFM Setup
     global goal t_r p v_max v_min xObsList yObsList numObstacles a b a_s r_inf r_inf_s
@@ -235,21 +235,17 @@ function results = PlotNetForceFromAgentPerspective()
  
 
     %% Return Metrics Struct
-    results = struct();
-    results.trapPoints = trapPoints;
-    results.trapRatio = trapRatio;
-    results.totalForceAlongPath = totalForceAlongPath;
-    results.normForceCost = normForceCost;
-    results.avgGradient = avgGradient;
-    results.maxGradient = maxGradient;
-    results.numBasins = numBasins;
-    results.meanBasinSize = meanBasinSize;
-    results.maxBasinSize = maxBasinSize;
-
-
-
-
-
+    results = struct(...
+        'trapPoints', trapPoints, ...
+        'trapRatio', trapRatio, ...
+        'totalForceAlongPath', totalForceAlongPath, ...
+        'normForceCost', normForceCost, ...
+        'avgGradient', avgGradient, ...
+        'maxGradient', maxGradient, ...
+        'numBasins', numBasins, ...
+        'meanBasinSize', meanBasinSize, ...
+        'maxBasinSize', maxBasinSize ...
+    );
 
 
 end

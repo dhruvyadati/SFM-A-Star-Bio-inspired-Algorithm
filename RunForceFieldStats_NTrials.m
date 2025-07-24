@@ -4,6 +4,7 @@ function RunForceFieldStats_NTrials()
     N = 50;
 
     % Store metrics
+    trapPoints_all = zeros(1, N);
     trapRatio_all = zeros(1, N);
     totalForce_all = zeros(1, N);
     normForce_all = zeros(1, N);
@@ -20,6 +21,7 @@ function RunForceFieldStats_NTrials()
         stats = PlotNetForceFromAgentPerspective();
 
         % Accumulate metrics
+        trapPoints_all(i)    = stats.trapPoints;
         trapRatio_all(i)     = stats.trapRatio;
         totalForce_all(i)    = stats.totalForceAlongPath;
         normForce_all(i)     = stats.normForceCost;
@@ -34,6 +36,8 @@ function RunForceFieldStats_NTrials()
 
     %% Average and STD results
     results = struct(...
+        'trapPoints_avg', mean(trapPoints_all), ...
+        'trapPoints_std', std(trapPoints_all), ...
         'trapRatio_avg', mean(trapRatio_all), ...
         'trapRatio_std', std(trapRatio_all), ...
         'totalForce_avg', mean(totalForce_all), ...
