@@ -3,14 +3,17 @@
 % Saves seeds for reproducibility and runs a Wilcoxon rank-sum test
 % (non-parametric, suitable since only successful trials are included).
 
-numberOfTrials = 50;
+numberOfTrials = 300;
 
 dist_astar_all = [];   % distances for A*+SFM (successful trials only)
 dist_sfm_all   = [];   % distances for SFM-only (successful trials only)
 
-% Distinct, saved, reproducible seed per trial (see Success_Rate.m note:
-% never use `s = rng('shuffle'); rng(s.Seed)` — it resets every trial to seed 0).
-rng('shuffle');
+% Fixed master seed -> distinct, saved, reproducible per-trial seed.
+% (See Success_Rate.m note: never use `s = rng('shuffle'); rng(s.Seed)` —
+% it resets every trial to seed 0.) A fixed master seed makes the whole
+% experiment reproducible from a single number, and every per-trial seed
+% is still logged to runs/ for exact replay.
+rng(20260619, 'twister');
 trial_seeds = randi([1, 2^31-1], numberOfTrials, 1);
 
 % Per-trial records for the committed seed log (runs/)

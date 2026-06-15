@@ -8,3 +8,9 @@
 *.fig
 /PathLengthData.csv
 runs/region_*.fig
+
+# Run logs — verbose MATLAB stdout, regenerable, not needed for reproduction.
+runs/logs/
+
+# Staging copies of regenerated figures; the canonical figures live in paper/.
+runs/figures/
