@@ -1,1 +1,10 @@
+# OS cruft
 .DS_Store
+
+# Generated result data — bulky and re-derivable from the seeds.
+# The small per-trial seed logs under runs/ are committed and are what
+# make a run reproducible (rng(seed) regenerates the exact environment).
+*.mat
+*.fig
+/PathLengthData.csv
+runs/region_*.fig
