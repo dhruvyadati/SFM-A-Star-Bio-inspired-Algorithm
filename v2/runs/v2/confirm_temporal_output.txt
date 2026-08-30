@@ -1,0 +1,45 @@
+==========================================================================
+CONDITION-SPECIFIC TRANSITIONS + TEMPORAL ANALYSIS
+POST-OUTCOME EXPLORATORY — hypothesis-generating, not confirmatory
+==========================================================================
+
+Among hybrid runs that were SAFE without the filter (n = 176):
+  became unsafe   :   37  = 21.0%
+  became deadlock :    8  = 4.5%
+  degraded at all :   45  = 25.6%
+  (the marginal 7.4% uses all 500 scenarios as denominator; this
+   conditional rate is the risk to a run that was already safe)
+
+==========================================================================
+Per condition: hybrid -> hybrid-ttc
+==========================================================================
+condition               delta      disc   u>s   u>d   s>u   s>d   act%  stop s
+--------------------------------------------------------------------------
+baseline    +0.184 [+0.088,+0.280]  31/8        31    13     7     1  12.5     3.4
+dense       +0.056 [-0.024,+0.136]  16/9        16    21     9     0  15.8     5.1
+cluttered   -0.024 [-0.112,+0.064]  16/19       16    10    16     3   9.5     2.9
+bigObs      +0.096 [+0.008,+0.184]  21/9        20    11     5     4  10.6     3.6
+
+==========================================================================
+Temporal / motion profile of the hybrid-ttc run, by transition group
+==========================================================================
+group                   n  act frac   stop s  stopEps  firstAct s   meanV  pathLen   dur s
+------------------------------------------------------------------------------------------
+safe -> safe          131     0.039     1.20      2.7        23.9   1.174     80.0    68.3
+safe -> unsafe         37     0.103     3.81      4.4        20.6   1.096     76.9    70.3
+unsafe -> safe         83     0.076     1.72      3.4        18.4   1.129     77.7    69.0
+unsafe -> deadlock     55     0.327     7.27      3.9        12.6   0.864     34.6    39.5
+
+Paired change relative to the SAME scenario without the filter:
+group                  d stop s   d meanV  d pathLen   d dur s
+--------------------------------------------------------------
+safe -> safe              +0.63    -0.047       -0.0      +2.8
+safe -> unsafe            +3.26    -0.124       -0.0      +7.2
+unsafe -> safe            +1.16    -0.078       -0.5      +4.3
+unsafe -> deadlock        +6.71    -0.328      -42.8     -25.4
+
+Reading, stated as competing candidates rather than a conclusion:
+  exposure    -> safe->unsafe shows MORE stop time and activation than
+                 safe->safe, and longer duration in the crowd
+  diversion   -> similar stop time but different path length / route
+  pre-interv. -> little activation at all in these cases

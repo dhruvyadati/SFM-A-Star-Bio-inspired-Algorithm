@@ -1,0 +1,137 @@
+AMENDMENT G2 - CALIBRATION ANALYSIS
+Reporting only. No trial is simulated; no arm is run on the evaluation
+pool. The selection rule is reproduced verbatim as frozen.
+
+========================================================================
+1. MANIPULATION VALIDITY (RE-DERIVED FROM STORED GEOMETRY)
+========================================================================
+  The generator's stored boolean flags are NOT read. Each condition is
+  recomputed from the scenario's own obstacles, map change and route,
+  using segment-polygon and Hausdorff code independent of the suite.
+
+  calibration pool: 50/50 (100.0%) pass all four conditions
+    Hausdorff separation: median 6.0 m   min 3.0 m   max 28.4 m
+
+  evaluation pool: 150/150 (100.0%) pass all four conditions
+    Hausdorff separation: median 5.8 m   min 3.0 m   max 28.4 m
+
+  Verified independently of the generator: the original route was
+  valid before the map change; the original REMAINING route is
+  invalid after it; a valid alternate exists; and the alternate
+  differs materially from the original.
+
+  calibration data: 950 rows, 19 configs, 50 scenarios, 63.9 min wall clock
+
+========================================================================
+2. PARAMETER SCREEN (N = 50, SCREENING ONLY)
+========================================================================
+  arm A (parameter-free): safe 0.000   unsafe 0.080   deadlock 0.920   other 0.000
+
+  Screen: reject any configuration whose arm-C unsafe rate exceeds
+  arm A's by more than +0.05. This is a SCREENING rule at n = 50,
+  NOT a non-inferiority test, and must never be reported as evidence
+  that arm C preserves safety.
+
+  stall/prog      C safe  d_unsafe   C dead  replan    adv  pre  pass
+  2.0/0.1          0.000    +0.240    0.680    1.76   0.06    1    NO
+  2.0/0.3          0.000    +0.280    0.640    1.98   0.06    3    NO
+  2.0/0.5          0.000    +0.280    0.640    1.98   0.08    3    NO
+  3.0/0.1          0.000    +0.160    0.760    1.76   0.02    1    NO
+  3.0/0.3          0.000    +0.160    0.760    1.78   0.02    1    NO
+  3.0/0.5          0.000    +0.160    0.760    1.80   0.02    1    NO
+  4.0/0.1          0.000    +0.160    0.760    1.54   0.02    0    NO
+  4.0/0.3          0.000    +0.160    0.760    1.70   0.02    0    NO
+  4.0/0.5          0.000    +0.160    0.760    1.76   0.02    1    NO
+
+========================================================================
+3. SELECTED SHARED TRIGGER
+========================================================================
+  NO configuration passed the calibration safety screen.
+  Per the Amendment F precedent this is a negative calibration
+  result: the evaluation pool is NOT launched.
+
+========================================================================
+4. PRE-TRIGGER CONTAMINATION (MEASURED COVARIATE, NEVER SUPPRESSED)
+========================================================================
+  stall/prog      scenarios     pre/total replans
+  2.0/0.1              1/50                  1/88
+  2.0/0.3              3/50                  3/99
+  2.0/0.5              3/50                  3/99
+  3.0/0.1              1/50                  1/88
+  3.0/0.3              1/50                  1/89
+  3.0/0.5              1/50                  1/90
+  4.0/0.1              0/50                  0/77
+  4.0/0.3              0/50                  0/85
+  4.0/0.5              1/50                  1/88
+
+  Arm C is a general event-triggered recovery controller evaluated in
+  path-invalidation scenarios. It is NOT a post-invalidation replanner:
+  it fires on any progress stall, and a small fraction of its replans
+  preceded the map change due to ordinary congestion.
+
+========================================================================
+5'. DESCRIPTIVE OUTCOMES - ALL CONFIGURATIONS (NO SELECTION MADE)
+========================================================================
+  Safe goal completion is the PRIMARY endpoint of Amendment G2.
+
+  arm               safe        unsafe      deadlock      replans          adv
+  A                0.000         0.080         0.920         0.00         0.00
+  B (x9)           0.000   0.100-0.100   0.900-0.900    0.00-0.00    0.02-0.06
+  C (x9)           0.000   0.240-0.360   0.640-0.760    1.54-1.98    0.02-0.08
+
+  *** PRIMARY ENDPOINT IS DEGENERATE ***
+  Safe goal completion is 0.000 for arm A and for all 18 arm-B and
+  arm-C configurations: 0 of 950 runs ended in a safe goal arrival.
+  The prespecified primary comparison (safe completion, A vs C, paired)
+  therefore cannot be made on this pool. This is independent of the
+  safety screen and would hold even if the screen were removed.
+
+========================================================================
+6'. FAMILY BREAKDOWN (DIAGNOSTIC AT N = 10/FAMILY)
+========================================================================
+  family                 n      A safe/unsafe/dead    C safe/unsafe/dead (range)
+  corridor_closed       10          0.00/0.00/1.00      0.00/0.30-0.40/0.60-0.70
+  passage_switch        10          0.00/0.20/0.80      0.00/0.40-0.50/0.50-0.60
+  pocket_formed         10          0.00/0.00/1.00      0.00/0.10-0.10/0.90-0.90
+  wall_displaces        10          0.00/0.10/0.90      0.00/0.10-0.20/0.80-0.90
+  waypoint_enclosed     10          0.00/0.10/0.90      0.00/0.30-0.70/0.30-0.70
+
+  No family produces a safe completion under any arm or configuration.
+  The negative result is uniform, not driven by one family.
+
+========================================================================
+7'. COMPONENT CONTRASTS (PAIRED, RANGES ACROSS THE 9 CONFIGURATIONS)
+========================================================================
+  contrast  outcome        delta (range)    discordant
+  B vs A    safe        +0.000 .. +0.000           0-0
+            unsafe      +0.020 .. +0.020           1-1
+            deadlock    -0.020 .. -0.020           1-1
+
+  C vs B    safe        +0.000 .. +0.000           0-0
+            unsafe      +0.140 .. +0.260          7-13
+            deadlock    -0.260 .. -0.140          7-13
+
+  B vs A isolates waypoint advancement: it fires 0.02-0.06 times per
+  scenario and moves at most one scenario out of deadlock. Advancement
+  is inert on this pool.
+  C vs B isolates replanning: it reduces deadlock substantially but
+  every run it recovers arrives with contact, never safely. Replanning
+  converts deadlock into unsafe arrival on this pool.
+
+========================================================================
+8. OUTCOME OF THE G2 CALIBRATION
+========================================================================
+  NEGATIVE CALIBRATION RESULT. Two independent grounds:
+
+    (a) No configuration passes the frozen safety screen.
+    (b) The primary endpoint is degenerate: safe goal completion
+        is 0.000 for every arm and every configuration.
+
+  Per the frozen protocol and the Amendment F precedent, the
+  150-scenario EVALUATION POOL IS NOT LAUNCHED. It remains
+  untouched and geometrically validated.
+
+  The screen must NOT be relaxed and the pool must NOT be
+  regenerated to yield safe completions. Selecting scenario
+  difficulty to produce a desired outcome is the error that
+  retired Amendment G.

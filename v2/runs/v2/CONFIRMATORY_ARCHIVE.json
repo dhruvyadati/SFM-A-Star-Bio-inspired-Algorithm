@@ -1,0 +1,77 @@
+{
+ "sealed": "2026-07-31",
+ "study": "Confirmatory: does TTC filtering improve safe-goal success under A* guidance?",
+ "protocol": "resubmission/CONFIRMATORY_PROTOCOL.md",
+ "chronology": [
+  "1. 500 scenarios generated from the frozen seed list (sha256 fc590516...)",
+  "2. 2000 runs executed once; 0 failed",
+  "3. Integrity gate FAILED on a stale expected hash for analyze_confirm.py",
+  "4. On-disk file verified against the already-dated Amendment B; matched",
+  "5. NO result file was opened or analysed before that verification",
+  "6. Stale environment record corrected, reason logged",
+  "7. Gate re-run and PASSED",
+  "8. Frozen primary analysis executed",
+  "9. Secondary, transition and mediator analyses executed in the fixed order",
+  "10. Post-outcome exploratory analyses run and labelled as such"
+ ],
+ "gate_note": "The gate did not pass on first execution. It detected a stale record, which is the behaviour intended. Described this way rather than as an unqualified pass.",
+ "hashes": {
+  "inputs": {
+   "v2/runs/v2/confirm_seeds.json": "fc5905167372c689a637f4274ba11885ac0f0120a0ea77eb035952e46f511f1d",
+   "v2/runs/v2/confirm_manifest.json": "6ec3752a1e6576437cec6ca033eac3ff37ac995446b539d7eb58278bca30755f",
+   "v2/runs/v2/confirm_environment.json": "206508bce316502855bac203181cbbc6fda1a1c1e082dbc5eb17fd2ba3257e01"
+  },
+  "confirmatory_executables": {
+   "py/sfm.py": "5e7d40f0ea8e229a5ff40b9031e8affe6ffbaaa1e804b42dec01eab03a00654d",
+   "py/ttc.py": "b89dcad9104b6db9501ba377e9feaaea9e1c3a757d38e581d8518caa8494ecf1",
+   "py/run_confirm.py": "9bcd64642c34f96968035b425df6d509ea9f9fdedd694bbe5c55afbfd382155b",
+   "v2/SfmParams.m": "aa7d0f2329cedfa4e243b0d79aa986679131011c8898920a280ec6a43d0f044f",
+   "v2/RunTrial.m": "47ed2452e17933c2be54f947dde489cee8387249afb21feb5262b3ff3cb75c4b",
+   "v2/ComputeForces.m": "49165196ba68c68281a4f88ce87fe15264e9ab6f573206cea3f298f76377e166",
+   "v2/MakeScenario.m": "7f9113796fba2c9152e887425ceac5eb32224aabee6c5649c32d8c02afd99373",
+   "v2/Export_ConfirmScenarios.m": "5767e18198eb448a02acbf1bdf81f1668b179370de1f52b51dee8962e01ed7d0"
+  },
+  "frozen_analysis": {
+   "py/verify_confirm.py": "026ef1c6e8b18b519792f3c4d681eeb23297b8e695b9a3244cfaff41839363d1",
+   "py/analyze_confirm.py": "a6f2d566523ede3c728fc94b834b0e6808f149dcbd2c9bfa0521a797754bc866"
+  },
+  "pre_outcome_exploratory": {
+   "py/transition_table.py": "147c2e39d69d0f470904ee5fee6d4481d87d8cbbeb27bdcc8b5522686bcf12ce"
+  },
+  "post_outcome_exploratory": {
+   "py/transition_temporal.py": "ddea77862e5c90fa3c77b400515638f3fefc8d53ee142288cbc21bf480570c77",
+   "py/temporal_ordering.py": "76d6207ada33d14f4ee622251128825929dcb650c27bea05b5dcdfa6bebacb13",
+   "py/group_uncertainty.py": "80d8630e5ddca6285ad42be70282670e7272f6c2c7f0b6cea733881f37614a1d",
+   "py/sfm_explore.py": "bbfcc0ceefdb2a0b08639c0a809c5581e8b09b47f3af6ab0cdb1c302971b9ad6"
+  },
+  "raw_results": {
+   "v2/runs/v2/confirm_factorial.json": "3892404078d40782ad876fa516ef8d0f83b15cae4ed61950aeeeed8341f5bb3a"
+  },
+  "outputs": {
+   "v2/runs/v2/confirm_analysis_output.txt": "ec8d57003eedb7c67b0f650082a2085e521257483fd5d318383000b6d025aafc",
+   "v2/runs/v2/confirm_transition_output.txt": "80e2b603c2ab74223e808ffa868532ae9ddeb0549167c4e20a5c6e1ffd0e899a",
+   "v2/runs/v2/confirm_temporal_output.txt": "6d32f751d74363fa71934587bf002edcd1efb2fd5c852839084bbcdbbb9e511d"
+  }
+ },
+ "headline": {
+  "primary_delta": 0.078,
+  "primary_ci": [
+   0.034,
+   0.122
+  ],
+  "primary_p": 0.0007559,
+  "discordant": "84/45",
+  "threshold": 0.075,
+  "branch": "positive; interval spans the prespecified meaningful threshold; insufficient evidence the benefit reaches that magnitude",
+  "unsafe_arrival_delta": -0.198,
+  "deadlock_delta": 0.12,
+  "goal_arrival_delta": -0.12,
+  "ttc_unguided_delta": -0.004,
+  "interaction_delta": 0.082,
+  "interaction_ci": [
+   0.034,
+   0.13
+  ],
+  "interaction_development": 0.087
+ }
+}

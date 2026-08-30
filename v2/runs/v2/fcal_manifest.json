@@ -1,0 +1,16 @@
+{
+ "set": "F_calibration",
+ "n": 160,
+ "per_condition": {
+  "baseline": 40,
+  "dense": 40,
+  "cluttered": 40,
+  "bigObs": 40
+ },
+ "seed_min": 2147483648,
+ "seed_max": 2150483687,
+ "n_rejected": 0,
+ "collective_sha256": "1dc1b1d2928f961f812dc84daeab92243cde300a4561afeef9f6a91146ec2492",
+ "generator_sha256": "cae6ec6ec8d7a7e3",
+ "status": "CALIBRATION ONLY. Results from this set may never be presented as the formal Amendment F recovery test."
+}

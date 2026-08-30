@@ -1,0 +1,64 @@
+========================================================================
+CONFIRMATORY ANALYSIS — frozen protocol, executed once
+========================================================================
+scenarios with all four arms : 500
+runs failed                  : 0
+scenarios dropped (any arm)  : 0
+  baseline   125
+  dense      125
+  cluttered  125
+  bigObs     125
+
+========================================================================
+PRIMARY: does TTC improve safe-goal success under A* guidance?
+========================================================================
+  equal-condition Delta : +0.0780
+  95% CI (bootstrap)    : [+0.0340, +0.1220]
+  exact McNemar         : p = 7.559e-04   discordant 84/45
+  smallest meaningful   : +0.075
+
+  DECISION (rules fixed in advance):
+  -> Positive, interval spans the meaningful threshold.
+     Evidence of benefit; INSUFFICIENT evidence it reaches the
+     magnitude prespecified as worth having.
+
+========================================================================
+SECONDARY (ordered, prespecified — not separate discoveries)
+========================================================================
+  1. unsafe arrival, hyb->hyb-ttc    -0.1980 [-0.2461,-0.1500]  disc 39/138  p=3.59e-14
+  2. deadlock, hyb->hyb-ttc          +0.1200 [+0.0920,+0.1500]  disc 63/3  p=1.30e-15
+  3. goal arrival, hyb->hyb-ttc      -0.1200 [-0.1500,-0.0900]  disc 3/63  p=1.30e-15
+  4. guidance effect, with TTC       +0.3920 [+0.3460,+0.4360]  disc 206/10  p=9.84e-49
+  5. guidance effect, no TTC         +0.3100 [+0.2659,+0.3540]  disc 170/15  p=1.94e-34
+  6. TTC effect, unguided            -0.0040 [-0.0240,+0.0160]  disc 12/14  p=8.45e-01
+
+  7. guidance x TTC interaction      +0.0820 [+0.0340,+0.1300]
+     (secondary factorial; study not primarily powered for this)
+
+  8. condition-specific primary effect (descriptive, not powered)
+     baseline     +0.1840   n=125
+     dense        +0.0560   n=125
+     cluttered    -0.0240   n=125
+     bigObs       +0.0960   n=125
+
+  Mutually exclusive outcomes by arm (%)
+  arm              safe   unsafe  deadlock  timeout
+  sfm               4.2     19.2      73.0      3.6
+  sfm-ttc           3.8      6.6      88.0      1.6
+  hybrid           35.2     62.8       2.0      0.0
+  hybrid-ttc       43.0     43.0      14.0      0.0
+
+========================================================================
+MEDIATOR ANALYSES (Amendment A.2 — exploratory, post-treatment)
+========================================================================
+  Activation and motion response, paired
+  comparison                ttcActive   stopTime  meanSpeed   stopEps
+  hybrid -> hybrid-ttc          0.121      +3.10     -0.125     +2.06
+  sfm -> sfm-ttc                0.224      +1.28     -0.043    -25.51
+
+  Temporal ordering: does deadlock follow sustained activation?
+    hybrid-ttc   70 deadlocks: 67 preceded by sustained activation, 3 with no sustained activation at all
+    sfm-ttc      440 deadlocks: 362 preceded by sustained activation, 73 with no sustained activation at all
+
+  Deadlock preceding activation would weaken the proposed pathway.
+  These are post-treatment variables; no mediated proportion is claimed.

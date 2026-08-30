@@ -1,0 +1,94 @@
+{
+ "purpose": "Computational-cost characterisation for the discussion section. Captured 6 Aug 2026; not yet decided whether it enters the paper.",
+ "scenario": {
+  "name": "baseline_2147483648",
+  "obstacles": 10,
+  "agents": 49,
+  "dt": 0.01,
+  "steps": 6216,
+  "outcome": "success"
+ },
+ "wall_clock_s": 62.53,
+ "hotspots": [
+  {
+   "function": "run_trial",
+   "file": "sfm_explore.py",
+   "cumtime_s": 62.53,
+   "tottime_s": 3.55,
+   "calls": 1,
+   "pct_of_total": 100.0
+  },
+  {
+   "function": "compute_forces",
+   "file": "sfm_explore.py",
+   "cumtime_s": 55.4,
+   "tottime_s": 10.81,
+   "calls": 6216,
+   "pct_of_total": 88.6
+  },
+  {
+   "function": "poly_signed_distance_many",
+   "file": "sfm_explore.py",
+   "cumtime_s": 42.92,
+   "tottime_s": 18.82,
+   "calls": 62160,
+   "pct_of_total": 68.6
+  },
+  {
+   "function": "roll",
+   "file": "numeric.py",
+   "cumtime_s": 16.95,
+   "tottime_s": 12.01,
+   "calls": 497280,
+   "pct_of_total": 27.1
+  },
+  {
+   "function": "ttc_brake_ex",
+   "file": "ttc.py",
+   "cumtime_s": 3.44,
+   "tottime_s": 1.02,
+   "calls": 6216,
+   "pct_of_total": 5.5
+  },
+  {
+   "function": "_wrapfunc",
+   "file": "fromnumeric.py",
+   "cumtime_s": 2.82,
+   "tottime_s": 0.45,
+   "calls": 167832,
+   "pct_of_total": 4.5
+  }
+ ],
+ "hardware": {
+  "cpu": "Intel Core i9-9880H @ 2.30 GHz",
+  "physical_cores": 8,
+  "logical_cores": 16,
+  "gpus": [
+   "AMD Radeon Pro 5500M (4 GB)",
+   "Intel UHD Graphics 630"
+  ],
+  "cuda_available": false,
+  "torch_installed": false
+ },
+ "gpu_assessment": {
+  "verdict": "GPU acceleration would not help and would most likely be slower.",
+  "reasons": [
+   "Per-call arrays are tiny: 49 agents against ~6-vertex polygons. Kernel launch overhead (5-20 us, several kernels per call) exceeds the arithmetic it would replace.",
+   "The integrator is sequential: semi-implicit Euler makes step n+1 depend on step n, so there is no timestep parallelism.",
+   "No CUDA device is present; the discrete GPU is AMD and PyTorch is not installed.",
+   "Parallelism is already exploited on the correct axis -- independent trials run concurrently across CPU workers."
+  ],
+  "theoretical_alternative": "Batching many trials as tensors (e.g. 1000 x 49 agents) would amortise launch overhead, but requires re-implementing the engine with batched semantics in torch or JAX. That is a separate validated-infrastructure project, not an optimisation, and would break bit-exact agreement with the MATLAB reference."
+ },
+ "optimisation_available": {
+  "finding": "np.roll is called 497,280 times per trial (27% of runtime), recomputing an unchanging polygon edge rotation every call.",
+  "estimated_gain": "~1.5-2x on CPU by precomputing polygon edges once per scenario.",
+  "why_not_applied": "Any change to compute_forces invalidates the cross-language validation chain: bit-exact MATLAB agreement, archived hashes, and the verify_confirm gate. Completed studies would need re-running for consistency. Not worth re-validating the foundation mid-write."
+ },
+ "recommended_scaling": "More CPU cores. A 32-64 core machine gives 3-6x with no code change and preserves determinism exactly.",
+ "reportable_scale_figures": {
+  "guided_trial_s": "15-20 (48 pedestrians, dt=0.01 s)",
+  "deadlocking_trial_s": "35-40 (full 15,000-step horizon)",
+  "orca_responsive": "slower again; RVO2 solves every step for every pedestrian"
+ }
+}

@@ -1,0 +1,32 @@
+{
+ "seed_sha256": "fc5905167372c689a637f4274ba11885ac0f0120a0ea77eb035952e46f511f1d",
+ "base": 31415926,
+ "per_condition": 125,
+ "conditions": [
+  "baseline",
+  "dense",
+  "cluttered",
+  "bigObs"
+ ],
+ "code": {
+  "py/sfm.py": "5b87920431375303",
+  "py/ttc.py": "b89dcad9104b6db9",
+  "py/run_dev_factorial.py": "e0058c3e57ecb996",
+  "v2/SfmParams.m": "aa7d0f2329cedfa4",
+  "v2/RunTrial.m": "47ed2452e17933c2",
+  "v2/ComputeForces.m": "49165196ba68c682",
+  "v2/MakeScenario.m": "7f9113796fba2c91",
+  "v2/Export_DevScenarios.m": "3446544161198ebd"
+ },
+ "code_amended_2026_07_31": {
+  "py/sfm.py": "5e7d40f0ea8e229a",
+  "py/ttc.py": "b89dcad9104b6db9",
+  "py/run_dev_factorial.py": "e0058c3e57ecb996",
+  "v2/SfmParams.m": "aa7d0f2329cedfa4",
+  "v2/RunTrial.m": "47ed2452e17933c2",
+  "v2/ComputeForces.m": "49165196ba68c682",
+  "v2/MakeScenario.m": "7f9113796fba2c91",
+  "v2/Export_ConfirmScenarios.m": "5767e18198eb448a"
+ },
+ "amendment": "Mediator instrumentation added to py/sfm.py before any confirmatory outcome existed. Seed set unchanged."
+}

@@ -1,0 +1,228 @@
+{
+ "generated_from": "repository state, not transcribed",
+ "gate": "Stage A calibration sweep is BLOCKED until every finding is fixed",
+ "key_hashes": {
+  "py/ttc.py": "f7ea7f6093296ffc",
+  "py/recovery.py": "02707d64c39fc625",
+  "py/path_progress.py": "448bed0a0d90b2e2",
+  "py/sfm_explore.py": "1d853348e8bf237e",
+  "archive/confirm_code/py/ttc.py": "b89dcad9104b6db9",
+  "archive/confirm_code/py/verify_confirm.py": "026ef1c6e8b18b51"
+ },
+ "counts": {
+  "fixed": 13,
+  "partial": 0,
+  "open": 0
+ },
+ "findings": [
+  {
+   "id": "R1",
+   "finding": "PathProgress lost backward motion across a passed waypoint",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "Monotone index replaced by a displacement-plausibility bound. Reproduced the reported case before fixing; regression test is the reviewer's exact walk 0.9/1.1/0.8/0.2.",
+   "evidence": {
+    "py/path_progress.py": {
+     "present": true,
+     "sha256": "448bed0a0d90b2e2"
+    },
+    "py/test_path_progress.py": {
+     "present": true,
+     "sha256": "bbcf3c435b597095"
+    }
+   }
+  },
+  {
+   "id": "R2",
+   "finding": "Recovery/path/TTC tests absent from the bundle",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "39 tests across four suites, one command: python3 -m pytest py/test_*.py",
+   "evidence": {
+    "py/test_path_progress.py": {
+     "present": true,
+     "sha256": "bbcf3c435b597095"
+    },
+    "py/test_ttc_result_compatibility.py": {
+     "present": true,
+     "sha256": "5a05f98b7a76a44b"
+    },
+    "py/test_recovery_integration.py": {
+     "present": true,
+     "sha256": "0ae84b112e7ceca3"
+    },
+    "py/test_recovery_state_machine.py": {
+     "present": true,
+     "sha256": "b6af3fddd902810b"
+    }
+   }
+  },
+  {
+   "id": "R3",
+   "finding": "Test_AnalyzeDose.py failed",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "Synthetic generator now mirrors the real shared-centre labelling. It passed when written, then analyze_dose.py changed and it was not re-run.",
+   "evidence": {
+    "py/Test_AnalyzeDose.py": {
+     "present": true,
+     "sha256": "207a299151eee7c3"
+    }
+   }
+  },
+  {
+   "id": "R4",
+   "finding": "Modified py/ttc.py broke historical integrity verification",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "Confirmatory sources archived separately; manifest NOT rewritten.",
+   "evidence": {
+    "archive/confirm_code/py/ttc.py": {
+     "present": true,
+     "sha256": "b89dcad9104b6db9"
+    },
+    "py/test_ttc_result_compatibility.py": {
+     "present": true,
+     "sha256": "5a05f98b7a76a44b"
+    }
+   }
+  },
+  {
+   "id": "R5",
+   "finding": "verify_fcal.py cannot run from the compact bundle",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "README documents regeneration (matlab -batch Export_FCalibration; verify_fcal.py) with the expected hash, and classifies the geometry and replay checks as recorded historical checks.",
+   "evidence": {
+    "py/verify_fcal.py": {
+     "present": true,
+     "sha256": "e32493fcb04b77e9"
+    },
+    "../paper/mentor_review/README.md": {
+     "present": true,
+     "sha256": "fbd3ba02bda170b7"
+    }
+   }
+  },
+  {
+   "id": "R6",
+   "finding": "Recovery code integrated nowhere",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "Wired into run_trial with fixed execution order; six end-to-end tests.",
+   "evidence": {
+    "py/sfm_explore.py": {
+     "present": true,
+     "sha256": "1d853348e8bf237e"
+    },
+    "py/test_recovery_integration.py": {
+     "present": true,
+     "sha256": "0ae84b112e7ceca3"
+    }
+   }
+  },
+  {
+   "id": "R7",
+   "finding": "Progress/activation window one step short of documented",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "int(round(window/dt))+1; constructor rejects non-multiples of dt.",
+   "evidence": {
+    "py/recovery.py": {
+     "present": true,
+     "sha256": "02707d64c39fc625"
+    }
+   }
+  },
+  {
+   "id": "R8",
+   "finding": "Emergency flags need an exact semantic invariant",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "Flags derive from the same weights as the command. Precedence tested mid-episode against a PINNED fixture (1013 co-occurrences, 0 violations) so it can no longer skip.",
+   "evidence": {
+    "py/ttc.py": {
+     "present": true,
+     "sha256": "f7ea7f6093296ffc"
+    },
+    "py/test_recovery_integration.py": {
+     "present": true,
+     "sha256": "0ae84b112e7ceca3"
+    },
+    "v2/runs/v2/integration_fixtures.json": {
+     "present": true,
+     "sha256": "bd10f11655676b66"
+    }
+   }
+  },
+  {
+   "id": "R9",
+   "finding": "Cooldown semantics not reflected in metrics",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "Termination reason, suppressed triggers, rearmed state and release integral all recorded.",
+   "evidence": {
+    "py/recovery.py": {
+     "present": true,
+     "sha256": "02707d64c39fc625"
+    }
+   }
+  },
+  {
+   "id": "R10",
+   "finding": "Amendment F stale in several material places",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "Progress definition, prospective pool, Stage A grid, selection rule, cooldown semantics, episode cap and live hashes all updated.",
+   "evidence": {
+    "../resubmission/AMENDMENT_F_DRAFT.md": {
+     "present": true,
+     "sha256": "cf30c5272f28f101"
+    }
+   }
+  },
+  {
+   "id": "R11",
+   "finding": "Environment record mixes superseded and current claims",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "Every line of the superseded section is quoted, so no sentence in it reads or greps as a current statement.",
+   "evidence": {
+    "../resubmission/ENVIRONMENT.md": {
+     "present": true,
+     "sha256": "67cd50dade357f5b"
+    }
+   }
+  },
+  {
+   "id": "R12",
+   "finding": "No executable environment specification",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "Tiers report which analyses each unlocks, and flag MATLAB installed but off PATH -- the check that originally failed.",
+   "evidence": {
+    "requirements.txt": {
+     "present": true,
+     "sha256": "d186968dd951fca1"
+    },
+    "py/check_environment.py": {
+     "present": true,
+     "sha256": "05d57a8feab9ff27"
+    }
+   }
+  },
+  {
+   "id": "R13",
+   "finding": "README reproduction order should lead with integrity checks",
+   "claimed_status": "fixed",
+   "effective_status": "fixed",
+   "note": "check_environment -> verify_confirm -> review_status -> tests -> analyses.",
+   "evidence": {
+    "../paper/mentor_review/README.md": {
+     "present": true,
+     "sha256": "fbd3ba02bda170b7"
+    }
+   }
+  }
+ ]
+}

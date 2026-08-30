@@ -1,0 +1,40 @@
+{
+ "date": "2026-07-31",
+ "platform": "macOS-26.5.1-x86_64-i386-64bit-Mach-O",
+ "python": "3.13.2",
+ "numpy": "2.3.1",
+ "matlab": "25.2.0.3177638 (R2025b) Update 5",
+ "rvo2": "sybrenstuvel/Python-RVO2 @ c2c46ba",
+ "launch_command": "python3 py/run_confirm.py",
+ "workers": 12,
+ "hashes": {
+  "py/sfm.py": "5e7d40f0ea8e229a",
+  "py/ttc.py": "b89dcad9104b6db9",
+  "v2/SfmParams.m": "aa7d0f2329cedfa4",
+  "v2/RunTrial.m": "47ed2452e17933c2",
+  "v2/ComputeForces.m": "49165196ba68c682",
+  "v2/MakeScenario.m": "7f9113796fba2c91",
+  "v2/Export_ConfirmScenarios.m": "5767e18198eb448a",
+  "v2/runs/v2/confirm_seeds.json": "fc5905167372c689",
+  "py/analyze_confirm.py": "a6f2d566523ede3c",
+  "py/verify_confirm.py": "026ef1c6e8b18b51",
+  "py/transition_table.py": "147c2e39d69d0f47"
+ },
+ "validation_with_instrumented_code": {
+  "canonical_7": "pass, 1e-14",
+  "ttc_canonical_7": "pass, 6e-13",
+  "trial_config_32_pairs": "pass, exact",
+  "randomised_48_runs": "pass, 4.1e-12",
+  "conclusion": "Instrumentation is observational. The instrumented executable reproduces the unchanged, independently-written MATLAB references at roundoff, so prior validation covers the code that produces confirmation."
+ },
+ "analysis_frozen": "written before any confirmatory outcome was inspected",
+ "hash_record_corrections": [
+  {
+   "file": "py/analyze_confirm.py",
+   "from": "6e587a08857a66d9",
+   "to": "a6f2d566523ede3c",
+   "date": "2026-07-31",
+   "reason": "Amendment B added a fifth decision branch for an entirely negative interval, distinguishing a harmful effect from a failure to replicate. The environment record retained the pre-amendment hash; the integrity gate caught the discrepancy. Record corrected to match the amended protocol. No computed quantity changed, and the change predates any outcome access."
+  }
+ ]
+}

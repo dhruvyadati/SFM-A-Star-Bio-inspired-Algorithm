@@ -14,3 +14,21 @@ runs/logs/
 
 # Staging copies of regenerated figures; the canonical figures live in paper/.
 runs/figures/
+
+# Python bytecode and pytest state — regenerable, never provenance.
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Scenario pools that were generated and geometrically validated but that NO arm
+# ever ran on. Nothing in the paper is computed from them, and both are exactly
+# regenerable from the committed generator plus the seed list in their manifest:
+#   RETIRED_export_gblock_eval/  <- py/make_blockage_suite.py + gblock_manifest.json
+#   export_g2_eval/              <- py/make_g2_suite.py       + g2_manifest.json
+# The manifests ARE committed, so the provenance record is complete without the
+# 8.2 MB of scenario files.
+v2/runs/v2/RETIRED_export_gblock_eval/
+v2/runs/v2/export_g2_eval/
+
+# Raw progress logs from long runs; regenerable, not provenance.
+v2/runs/v2/*_run.log

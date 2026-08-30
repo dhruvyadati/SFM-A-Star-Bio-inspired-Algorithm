@@ -1,0 +1,12 @@
+# Archived-analysis dependencies. Sufficient to reproduce every result in the
+# paper from the archived JSON outputs.
+numpy>=1.24
+pytest>=7.0
+
+# OPTIONAL — only for the ORCA-responsive pedestrian study (Amendment E).
+# Not needed to reproduce the SFM confirmatory, dose-response or trajectory
+# results. Build notes in resubmission/ENVIRONMENT.md.
+#   pyrvo2  (import name: rvo2)  -- built from source, no PyPI wheel
+#
+# MATLAB-only: scenario generation (v2/Export_*.m). No toolboxes required.
+#   MATLAB R2025b or compatible. NOT needed for any analysis.

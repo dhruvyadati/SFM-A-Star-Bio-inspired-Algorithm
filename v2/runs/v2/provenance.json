@@ -1,0 +1,124 @@
+{
+ "hardware": {
+  "cpu": "Intel(R) Core(TM) i9-9880H CPU @ 2.30GHz",
+  "logical_cores": 16,
+  "physical_cores": 8,
+  "ram_gb": 16,
+  "arch": "x86_64"
+ },
+ "os": "macOS 26.5.1",
+ "python": "3.13.2",
+ "packages": {
+  "numpy": "2.3.1",
+  "scipy": "1.16.3",
+  "matplotlib": "3.10.8",
+  "rvo2": "unversioned",
+  "gym": "0.26.2",
+  "pytest": "9.0.2"
+ },
+ "matlab": "25.2.0.3177638 (R2025b) Update 5",
+ "external": {
+  "CrowdNav": {
+   "commit": "20d678085c06831e658a65b9e20c8bb6f6ecdc10",
+   "remote": "https://github.com/vita-epfl/CrowdNav.git"
+  }
+ },
+ "studies": [
+  {
+   "study": "confirmatory factorial",
+   "stack": "MATLAB + Python",
+   "file": "confirm_factorial.json",
+   "runs": 2000,
+   "size_mb": 1.35,
+   "present": true,
+   "wall_clock_s": null,
+   "workers": null,
+   "note": "predates timing instrumentation"
+  },
+  {
+   "study": "dose-response sweep",
+   "stack": "Python",
+   "file": "dose_response.json",
+   "runs": 9000,
+   "size_mb": 3.86,
+   "present": true,
+   "wall_clock_s": null,
+   "workers": 12,
+   "note": "ran to completion; wall clock not instrumented"
+  },
+  {
+   "study": "ORCA-responsive pedestrians",
+   "stack": "Python + RVO2",
+   "file": "reciprocal.json",
+   "runs": 3900,
+   "size_mb": 1.43,
+   "present": true,
+   "wall_clock_s": 21600,
+   "workers": 12,
+   "note": "approx 6 h observed; ORCA solve dominates"
+  },
+  {
+   "study": "CrowdNav external transfer",
+   "stack": "Python + CrowdNav",
+   "file": "crowdnav_transfer.json",
+   "runs": 960,
+   "size_mb": 0.45,
+   "present": true,
+   "wall_clock_s": null,
+   "workers": 10,
+   "note": "wall clock not instrumented"
+  },
+  {
+   "study": "recovery Stage A calibration",
+   "stack": "Python",
+   "file": "stage_a.json",
+   "runs": 3200,
+   "size_mb": 1.11,
+   "present": true,
+   "wall_clock_s": null,
+   "workers": 10,
+   "note": "3200 runs present; earlier record incorrectly marked this study absent"
+  },
+  {
+   "study": "recovery Stage B screen",
+   "stack": "Python",
+   "file": "stage_b.json",
+   "runs": 8960,
+   "size_mb": 2.14,
+   "present": true,
+   "wall_clock_s": null,
+   "workers": 10,
+   "note": "Stage B futility screen; no candidate cleared both gates"
+  },
+  {
+   "study": "Amendment G2 path-invalidation calibration",
+   "stack": "Python",
+   "file": "g2_calib.json",
+   "runs": 950,
+   "size_mb": 0.22,
+   "present": true,
+   "wall_clock_s": 3832.4,
+   "workers": 10,
+   "note": "Negative calibration result; the 150-scenario evaluation pool was never run"
+  },
+  {
+   "study": "Reviewer-item closure runs (1.11, 1.34, 1.37)",
+   "stack": "Python",
+   "file": "reviewer_closure.json",
+   "runs": 2500,
+   "size_mb": 0.95,
+   "present": true,
+   "wall_clock_s": 12196.0,
+   "workers": 10,
+   "note": "Frozen protocol REVIEWER_CLOSURE_PROTOCOL.md; 0 failed runs"
+  }
+ ],
+ "caveat": "Wall-clock times are given only where measured. Null means the run predates timing instrumentation and no estimate is substituted.",
+ "total_simulation_runs": 31470,
+ "retired": {
+  "Amendment G blockage suite": "Retired for construct-validity failure before any evaluation arm ran. Its 200-scenario evaluation pool was never run on by any arm and is NOT published: nothing in the paper is computed from it. It is exactly regenerable with py/make_blockage_suite.py from the accepted seed list in gblock_manifest.json, both of which are committed. The calibration pool it was screened on (export_gblock_calib/) IS published, because results were computed from it. Neither pool may be repurposed: both carry the retired design's assumptions.",
+  "Amendment G2 evaluation pool": "150 scenarios, generated and geometrically validated (manipulation check 200/200) but never run on by any arm following the negative calibration result. NOT published, for the same reason: no reported result depends on it. Exactly regenerable with py/make_g2_suite.py from the accepted seed list in g2_manifest.json, both committed. The 50-scenario calibration pool (export_g2_calib/) IS published."
+ },
+ "last_updated": "2026-08-31",
+ "publication_policy": "Scenario pools are published where a reported result was computed from them. Pools that no arm ever ran on are omitted and regenerated from generator + manifest seeds. One exception: export_fcal/ (Amendment F calibration, 160 scenarios) is published IN FULL because its generator was not retained and fcal_manifest.json records only a seed range, not the accepted seed list, so it is not regenerable from this repository."
+}

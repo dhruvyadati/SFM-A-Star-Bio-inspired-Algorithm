@@ -1,0 +1,57 @@
+{
+ "stage": "A",
+ "frozen": "2026-08-05",
+ "status": "CALIBRATION ONLY \u2014 never presentable as the formal recovery test",
+ "margins": {
+  "cal_unsafe_tol": 0.05,
+  "cal_rescue_floor": -0.15,
+  "gate1_unsafe_ni": 0.025,
+  "gate2_rescue_ni": -0.1,
+  "gate3_deadlock_min": -0.05,
+  "target_power": 0.9
+ },
+ "screening_action": {
+  "relax": 0.6,
+  "max_recovery": 3.0,
+  "exit_hold": 1.0,
+  "cooldown": 2.0,
+  "max_episodes": 2,
+  "note": "screening defaults, NOT selected values"
+ },
+ "grid": {
+  "window": [
+   2.0,
+   3.0,
+   4.0
+  ],
+  "theta_prog": [
+   0.1,
+   0.2,
+   0.3
+  ],
+  "theta_act": [
+   0.6,
+   0.8
+  ]
+ },
+ "scenarios": {
+  "set": "export_fcal",
+  "n": 160,
+  "sha256_prefix": "1dc1b1d2928f961f"
+ },
+ "code": {
+  "run_stage_a.py": "c06ddec7812ab999",
+  "recovery.py": "02707d64c39fc625",
+  "path_progress.py": "448bed0a0d90b2e2",
+  "ttc.py": "79eb547da816bee5",
+  "sfm_explore.py": "1d853348e8bf237e"
+ },
+ "selection_rule": [
+  "1 reject d_unsafe > +0.050",
+  "2 reject d_rescue < -0.150",
+  "3 lowest deadlock",
+  "4 fewer episodes",
+  "5 shorter release time",
+  "6 weaker intervention (larger window, larger required progress)"
+ ]
+}

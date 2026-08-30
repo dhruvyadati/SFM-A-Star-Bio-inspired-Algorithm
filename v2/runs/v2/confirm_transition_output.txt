@@ -1,0 +1,74 @@
+========================================================================
+OUTCOME-TRANSITION DECOMPOSITION (extends Amendment A.2 item 4)
+========================================================================
+
+========================================================================
+hybrid  ->  hybrid-ttc
+========================================================================
+
+  rows = hybrid (without), columns = hybrid-ttc (with), n = 500
+                  safe    unsafe  deadlock     other   row tot
+  ------------------------------------------------------------
+  safe             131        37         8         0       176
+  unsafe            83       176        55         0       314
+  deadlock           1         2         7         0        10
+  other              0         0         0         0         0
+  col tot          215       215        70         0
+
+  unchanged outcome: 314/500 (62.8%)
+
+  transition               count   % of n  interpretation
+  ------------------------------------------------------------------------------
+  unsafe -> safe              83    16.6%  genuine rescue: contact averted, goal still reached
+  unsafe -> deadlock          55    11.0%  safety bought by abandoning progress
+  safe -> deadlock             8     1.6%  harmful overconstraint: a good run broken
+  deadlock -> safe             1     0.2%  improved recovery
+  safe -> unsafe              37     7.4%  safety LOST
+
+  net safety rescues (unsafe->safe minus safe->unsafe) : +46
+  runs converted TO deadlock                           : 63
+  runs converted FROM deadlock or unsafe TO safe       : 84
+
+  A filter that rescues many unsafe arrivals while converting as
+  many good runs into deadlock is a trade, not an improvement. The
+  aggregate delta alone cannot distinguish those cases.
+
+========================================================================
+sfm  ->  sfm-ttc
+========================================================================
+
+  rows = sfm (without), columns = sfm-ttc (with), n = 500
+                  safe    unsafe  deadlock     other   row tot
+  ------------------------------------------------------------
+  safe               7         5         9         0        21
+  unsafe            11        24        61         0        96
+  deadlock           1         4       360         0       365
+  other              0         0        10         8        18
+  col tot           19        33       440         8
+
+  unchanged outcome: 399/500 (79.8%)
+
+  transition               count   % of n  interpretation
+  ------------------------------------------------------------------------------
+  unsafe -> safe              11     2.2%  genuine rescue: contact averted, goal still reached
+  unsafe -> deadlock          61    12.2%  safety bought by abandoning progress
+  safe -> deadlock             9     1.8%  harmful overconstraint: a good run broken
+  deadlock -> safe             1     0.2%  improved recovery
+  safe -> unsafe               5     1.0%  safety LOST
+
+  net safety rescues (unsafe->safe minus safe->unsafe) : +6
+  runs converted TO deadlock                           : 70
+  runs converted FROM deadlock or unsafe TO safe       : 12
+
+  A filter that rescues many unsafe arrivals while converting as
+  many good runs into deadlock is a trade, not an improvement. The
+  aggregate delta alone cannot distinguish those cases.
+
+========================================================================
+Per condition, hybrid -> hybrid-ttc (descriptive)
+========================================================================
+  condition        n  uns->safe  uns->dead  safe->dead  dead->safe
+  baseline       125         31         13           1           0
+  dense          125         16         21           0           0
+  cluttered      125         16         10           3           0
+  bigObs         125         20         11           4           1

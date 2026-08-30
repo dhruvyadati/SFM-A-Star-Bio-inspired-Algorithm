@@ -1,0 +1,246 @@
+{
+ "files": {
+  "inputs": {
+   "v2/runs/v2/confirm_factorial.json": {
+    "bytes": 1348112,
+    "sha256": "3892404078d40782ad876fa516ef8d0f83b15cae4ed61950aeeeed8341f5bb3a"
+   }
+  },
+  "raw_outputs": {
+   "v2/runs/v2/dose_response.json": {
+    "bytes": 3864024,
+    "sha256": "b297bf59b0b388280f124da5827de3cae7980d843fe761803df502db55ea9b18"
+   },
+   "v2/runs/v2/reciprocal.json": {
+    "bytes": 1426563,
+    "sha256": "0d32f8f471c463986d6e5bd7a580c1d7b4c99f7d1d5d0cd3a8a1c7dd97be61bd"
+   },
+   "v2/runs/v2/trajectory_diversion.json": {
+    "bytes": 67381,
+    "sha256": "72aaf2ca0ab2d2193bd7a2b9262088da04f23d71928bbca031d06944824241b3"
+   },
+   "v2/runs/v2/trajectory_diversion_paths.npz": {
+    "bytes": 2249941,
+    "sha256": "f304854c4f2a9fdf50b6c777a139dddda395b92f3b19a463304c3bceedb50137"
+   }
+  },
+  "scripts": {
+   "py/Test_AnalyzeDose.py": {
+    "bytes": 6489,
+    "sha256": "e6bf92140d9fc6f9e86b5fc7295dc2a2dcb40ce43fd02b0b2b6b234ca376b54a"
+   },
+   "py/analyze_dose.py": {
+    "bytes": 15559,
+    "sha256": "214ed9d6f99c08ea4c0ce46eb9a6c444a8293f1307e3c7938069b018ac4b6363"
+   },
+   "py/analyze_reciprocal.py": {
+    "bytes": 8702,
+    "sha256": "97fb833aaa0640aff744bebee7abd8a12e018fdce659ba6a98047e82055ba11c"
+   },
+   "py/diversion_diagnostics.py": {
+    "bytes": 8257,
+    "sha256": "373f8dade86eb8708b9a621648038b39b90143d7b43b0aa8976a5f371e3ead4b"
+   },
+   "py/diversion_verdict.py": {
+    "bytes": 8876,
+    "sha256": "fec9966815b9f588f8d58ebae934a5a95cc9a79f43574abc7cc04db670655fdb"
+   },
+   "py/dose_response.py": {
+    "bytes": 4840,
+    "sha256": "a1f69cdb3def13e7bc25f65305cd9fa89b01e6f216a64ab867be563924dbafce"
+   },
+   "py/orca_cap_diagnostic.py": {
+    "bytes": 4871,
+    "sha256": "820281642fcc60a896dbe69b43b538ba0cccaad39a994bf2fd7d7aee9996088f"
+   },
+   "py/reciprocal.py": {
+    "bytes": 5297,
+    "sha256": "d2430a01ff3a500cf93c803310310bec844bfe65c9bd7a7300fb44564c1f9b60"
+   },
+   "py/run_reciprocal.py": {
+    "bytes": 3556,
+    "sha256": "2ac0a97b3b0fc49c75f41874e10785e5f973355e1e3d77f44fab4a7eae2511c4"
+   },
+   "py/sfm_explore.py": {
+    "bytes": 19798,
+    "sha256": "d841bf73089a885d75fc26caf91a5ce9f78027d1acc1ee9dae75f0077d101010"
+   },
+   "py/trajectory_diversion.py": {
+    "bytes": 14284,
+    "sha256": "416aac3c502376d2e5aaee758b3b56fa9b5b7dd70db3647947c45aa81468792e"
+   },
+   "py/ttc.py": {
+    "bytes": 3571,
+    "sha256": "b89dcad9104b6db9501ba377e9feaaea9e1c3a757d38e581d8518caa8494ecf1"
+   }
+  }
+ },
+ "history": [
+  {
+   "raw_outputs_unchanged": true,
+   "reason": "analyze_dose.py: shared-centre label resolution added after first archive. dose_response.py deduplicates the three sweeps' common centre under the single label ttcHorizon=2.0; the analysis was looking for ttcStop=0.8 and ttcMinGap=0.4, which do not exist as labels. Caught by the one-factor-at-a-time assertion, which would otherwise have silently skipped both factors. No frozen quantity changed; raw outputs untouched.",
+   "superseded": [
+    "py/analyze_dose.py: 9acb679ff0f0 -> 214ed9d6f99c"
+   ]
+  },
+  {
+   "raw_outputs_unchanged": true,
+   "reason": "Amendment E outputs added to the manifest: reciprocal.json plus the four reciprocal-study scripts. analyze_dose.py digest also moves because sfm_explore.py gained the pedestrian hook (verified inert, 16 paired runs x 20 fields, 0 mismatches). No previously archived RAW OUTPUT changed.",
+   "superseded": [
+    "py/sfm_explore.py: a3639091ca7c -> d841bf73089a"
+   ]
+  }
+ ],
+ "provenance": {
+  "dose_response": {
+   "complete": true,
+   "configs": [
+    "no-filter",
+    "ttcHorizon=1.0",
+    "ttcHorizon=1.5",
+    "ttcHorizon=2.0",
+    "ttcHorizon=3.0",
+    "ttcMinGap=0.2",
+    "ttcMinGap=0.6",
+    "ttcStop=0.4",
+    "ttcStop=1.2"
+   ],
+   "expected_runs": 9000,
+   "planners": [
+    "hybrid",
+    "sfm"
+   ],
+   "runs": 9000,
+   "scenarios": 500
+  },
+  "trajectory_diversion": {
+   "safe -> safe": {
+    "n": 37,
+    "scenarios": [
+     "conf_baseline_1068205825",
+     "conf_baseline_1233505307",
+     "conf_baseline_1700766084",
+     "conf_baseline_2017033474",
+     "conf_baseline_327684554",
+     "conf_baseline_609528134",
+     "conf_baseline_716930043",
+     "conf_bigObs_1041351244",
+     "conf_bigObs_114392345",
+     "conf_bigObs_1372690098",
+     "conf_bigObs_155645196",
+     "conf_bigObs_1719187386",
+     "conf_bigObs_1844813324",
+     "conf_bigObs_1962853309",
+     "conf_bigObs_222532297",
+     "conf_bigObs_309654022",
+     "conf_bigObs_460002202",
+     "conf_bigObs_74685819",
+     "conf_bigObs_889326060",
+     "conf_cluttered_1041447126",
+     "conf_cluttered_1309240606",
+     "conf_cluttered_1471148738",
+     "conf_cluttered_1586717614",
+     "conf_cluttered_1922477206",
+     "conf_cluttered_1964050661",
+     "conf_cluttered_229964256",
+     "conf_cluttered_307658122",
+     "conf_cluttered_469266428",
+     "conf_cluttered_646395932",
+     "conf_cluttered_743765042",
+     "conf_cluttered_79465492",
+     "conf_cluttered_900306474",
+     "conf_dense_1135830135",
+     "conf_dense_1291650960",
+     "conf_dense_1983429750",
+     "conf_dense_53442948",
+     "conf_dense_862265182"
+    ]
+   },
+   "safe -> unsafe": {
+    "n": 37,
+    "scenarios": [
+     "conf_baseline_1048466869",
+     "conf_baseline_1066234470",
+     "conf_baseline_1725016048",
+     "conf_baseline_1804189503",
+     "conf_baseline_1940462283",
+     "conf_baseline_783080784",
+     "conf_baseline_978445649",
+     "conf_bigObs_1301954581",
+     "conf_bigObs_1583603131",
+     "conf_bigObs_1737269226",
+     "conf_bigObs_2078452347",
+     "conf_bigObs_835785",
+     "conf_cluttered_1165609075",
+     "conf_cluttered_1408484377",
+     "conf_cluttered_1492416396",
+     "conf_cluttered_1493036892",
+     "conf_cluttered_1555068098",
+     "conf_cluttered_1579382409",
+     "conf_cluttered_1620642670",
+     "conf_cluttered_1687758163",
+     "conf_cluttered_1760235877",
+     "conf_cluttered_1948136544",
+     "conf_cluttered_456935096",
+     "conf_cluttered_501938374",
+     "conf_cluttered_723112289",
+     "conf_cluttered_824508344",
+     "conf_cluttered_915911577",
+     "conf_cluttered_927394842",
+     "conf_dense_1071514192",
+     "conf_dense_1319228967",
+     "conf_dense_1742758815",
+     "conf_dense_2019112157",
+     "conf_dense_305807449",
+     "conf_dense_406515927",
+     "conf_dense_470760796",
+     "conf_dense_532674675",
+     "conf_dense_993153425"
+    ]
+   },
+   "unsafe -> safe": {
+    "n": 37,
+    "scenarios": [
+     "conf_baseline_1114008635",
+     "conf_baseline_1158313871",
+     "conf_baseline_1231358620",
+     "conf_baseline_1366531104",
+     "conf_baseline_1670001742",
+     "conf_baseline_1758432449",
+     "conf_baseline_1832691561",
+     "conf_baseline_187913087",
+     "conf_baseline_1978918077",
+     "conf_baseline_270260644",
+     "conf_baseline_286291733",
+     "conf_baseline_598977271",
+     "conf_baseline_777685780",
+     "conf_baseline_978107738",
+     "conf_bigObs_1191383836",
+     "conf_bigObs_1352387903",
+     "conf_bigObs_1505629324",
+     "conf_bigObs_1590895868",
+     "conf_bigObs_1805645701",
+     "conf_bigObs_1991904630",
+     "conf_bigObs_471597779",
+     "conf_bigObs_560553631",
+     "conf_bigObs_94222769",
+     "conf_cluttered_129790117",
+     "conf_cluttered_1700386490",
+     "conf_cluttered_2109206904",
+     "conf_cluttered_526772151",
+     "conf_cluttered_609672970",
+     "conf_cluttered_804005225",
+     "conf_cluttered_96525991",
+     "conf_dense_1199298276",
+     "conf_dense_1422195498",
+     "conf_dense_1619783294",
+     "conf_dense_1916727173",
+     "conf_dense_2131191",
+     "conf_dense_321623100",
+     "conf_dense_746065475"
+    ]
+   }
+  }
+ },
+ "status": "Follow-up analyses. Mechanistic and exploratory. The dose-response sweep is a PAIRED FOLLOW-UP on the confirmed scenario set (Amendment D.1), not an independent replication. The trajectory analysis is conditional on outcome transition class and cannot estimate prevalence across all 500 scenarios."
+}
