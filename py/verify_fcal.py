@@ -123,6 +123,10 @@ if FAST:
     mismatch = []
 else:
     print(f"\n4. DETERMINISM (unmodified arms, {DETERMINISM_SAMPLE} scenarios)")
+    # Defect fixed 2026-08-31: `mismatch` was initialised only on the --fast
+    # branch, so the full determinism replay raised NameError and had never
+    # completed. The check below is therefore run here for the first time.
+    mismatch = []
     for p in files[:: max(1, len(files) // DETERMINISM_SAMPLE)][:DETERMINISM_SAMPLE]:
         for ttc in (False, True):
             a = run_trial(Scenario.load(str(p)), "hybrid", log=False, ttc=ttc)

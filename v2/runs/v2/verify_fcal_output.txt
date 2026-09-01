@@ -1,0 +1,30 @@
+==============================================================================
+F CALIBRATION SET — INTEGRITY CHECKS
+==============================================================================
+
+1. COUNTS
+  PASS  160 scenarios exported  got 160
+  PASS  baseline: 40  got 40
+  PASS  dense: 40  got 40
+  PASS  cluttered: 40  got 40
+  PASS  bigObs: 40  got 40
+  rejected during generation: 0 (reported, as the protocol requires)
+
+2. SEED DISJOINTNESS
+  PASS  no overlap with any prior seed  800 prior seeds checked, overlap=[]
+  PASS  all new seeds >= 2^31  min=2147483648
+  PASS  prior seeds all < 2^31  max=2147023434
+
+3. LOADABILITY
+  PASS  every scenario loads with waypoints and pedestrians
+
+4. DETERMINISM (unmodified arms, 6 scenarios)
+  PASS  hybrid and hybrid-TTC reproduce exactly on repeat  0 mismatches
+
+5. ARCHIVE
+  PASS  set unchanged since first archive
+  collective sha256: 1dc1b1d2928f961f812dc84daeab9224
+
+==============================================================================
+ALL CHECKS PASSED — calibration set is sound and archived.
+Calibration thresholds may now be chosen on THIS set only.

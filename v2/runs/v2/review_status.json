@@ -2,10 +2,10 @@
  "generated_from": "repository state, not transcribed",
  "gate": "Stage A calibration sweep is BLOCKED until every finding is fixed",
  "key_hashes": {
-  "py/ttc.py": "f7ea7f6093296ffc",
+  "py/ttc.py": "79eb547da816bee5",
   "py/recovery.py": "02707d64c39fc625",
   "py/path_progress.py": "448bed0a0d90b2e2",
-  "py/sfm_explore.py": "1d853348e8bf237e",
+  "py/sfm_explore.py": "4eeb48dab83bec59",
   "archive/confirm_code/py/ttc.py": "b89dcad9104b6db9",
   "archive/confirm_code/py/verify_confirm.py": "026ef1c6e8b18b51"
  },
@@ -96,11 +96,11 @@
    "evidence": {
     "py/verify_fcal.py": {
      "present": true,
-     "sha256": "e32493fcb04b77e9"
+     "sha256": "2a7bd2f00bd10e94"
     },
-    "../paper/mentor_review/README.md": {
+    "README.md": {
      "present": true,
-     "sha256": "fbd3ba02bda170b7"
+     "sha256": "d4348c2646e5eb57"
     }
    }
   },
@@ -113,7 +113,7 @@
    "evidence": {
     "py/sfm_explore.py": {
      "present": true,
-     "sha256": "1d853348e8bf237e"
+     "sha256": "4eeb48dab83bec59"
     },
     "py/test_recovery_integration.py": {
      "present": true,
@@ -143,7 +143,7 @@
    "evidence": {
     "py/ttc.py": {
      "present": true,
-     "sha256": "f7ea7f6093296ffc"
+     "sha256": "79eb547da816bee5"
     },
     "py/test_recovery_integration.py": {
      "present": true,
@@ -177,7 +177,7 @@
    "evidence": {
     "../resubmission/AMENDMENT_F_DRAFT.md": {
      "present": true,
-     "sha256": "cf30c5272f28f101"
+     "sha256": "0fb77c470acc8395"
     }
    }
   },
@@ -218,9 +218,9 @@
    "effective_status": "fixed",
    "note": "check_environment -> verify_confirm -> review_status -> tests -> analyses.",
    "evidence": {
-    "../paper/mentor_review/README.md": {
+    "README.md": {
      "present": true,
-     "sha256": "fbd3ba02bda170b7"
+     "sha256": "d4348c2646e5eb57"
     }
    }
   }

@@ -1,0 +1,79 @@
+REVIEWER ITEMS 1.11 / 1.34 / 1.37 -- RESULTS
+Frozen protocol: resubmission/REVIEWER_CLOSURE_PROTOCOL.md
+Analysis written before results existed. Executed once.
+
+  runs        : 2500   (failed 0)
+  wall clock  : 203.3 min
+  period      : 2.0 s (1.11, frozen single value)
+
+==========================================================================
+VALIDITY CHECK -- 1.34 NOMINAL CELL MUST REPRODUCE THE REFERENCE ARM
+==========================================================================
+  nominal cell scenarios matched to the frozen hybrid arm : 100
+  identical safe/goal/deadlock outcomes                   : 100/100
+  -> PASS: the screen's nominal cell reproduces the frozen arm.
+
+==========================================================================
+1.11 -- A* + PERIODIC REPLANNING BASELINE
+==========================================================================
+
+  hybrid-periodic vs hybrid (one-shot)   (n = 500 paired scenarios)
+    outcome              ref       arm       delta                95% CI   McNemar p
+    safe               0.352     0.334      -0.018      [-0.050, +0.012]       0.314
+                                   discordant  arm-only 27 / ref-only 36
+    goal               0.980     0.986      +0.006      [-0.004, +0.016]       0.453
+                                     discordant  arm-only 5 / ref-only 2
+    deadlock           0.020     0.014      -0.006      [-0.016, +0.004]       0.453
+                                     discordant  arm-only 2 / ref-only 5
+
+  replans per scenario: mean 28.7  median 29  max 35   (failed: mean 3.17)
+
+==========================================================================
+1.37 -- COLLINEAR-PRUNING ABLATION
+==========================================================================
+
+  hybrid-nopruning vs hybrid (pruned)   (n = 500 paired scenarios)
+    outcome              ref       arm       delta                95% CI   McNemar p
+    safe               0.352     0.352      +0.000      [-0.028, +0.028]       1.000
+                                   discordant  arm-only 26 / ref-only 26
+    goal               0.980     1.000      +0.020      [+0.008, +0.034]       0.002
+                                    discordant  arm-only 10 / ref-only 0
+    deadlock           0.020     0.000      -0.020      [-0.034, -0.008]       0.002
+                                    discordant  arm-only 0 / ref-only 10
+
+  min obstacle gap (reviewer 1.38 -- does pruning cut corners?)
+    pruned 0.345 m   unpruned 0.517 m   delta +0.171 m  [+0.161, +0.181]
+    A pruned path that cut corners would show a SMALLER gap than unpruned.
+
+  Components already closed by the frozen factorial, not re-run:
+    SFM local control      -> `sfm` arm
+    one-shot A* guidance   -> hybrid vs sfm, safe +0.310, discordant 170/15
+    waypoint thresholding  -> 1.34 factor rWaypoint below
+
+==========================================================================
+1.34 -- BOUNDED ONE-FACTOR-AT-A-TIME SENSITIVITY SCREEN
+==========================================================================
+  DESCRIPTIVE ONLY. n = 100 per cell. No cell is ranked as a
+  recommendation, no level is 'best', and the nominal parameters are
+  NOT changed on the basis of this screen.
+
+  cell                     safe     goal   deadlock     d(safe)
+  NOMINAL                 0.340    0.970      0.030          --
+  tau=0.35                0.310    0.970      0.030      -0.030
+  tau=0.7                 0.380    0.990      0.010      +0.040
+  v0Robot=1.0             0.360    0.960      0.040      +0.020
+  v0Robot=1.6             0.350    1.000      0.000      +0.010
+  aPed=1.5                0.300    0.970      0.030      -0.040
+  aPed=3.0                0.380    0.960      0.040      +0.040
+  aObs=6.0                0.340    0.970      0.030      +0.000
+  aObs=15.0               0.340    0.960      0.040      +0.000
+  rInfPed=3.0             0.340    0.970      0.030      +0.000
+  rInfPed=7.0             0.340    0.970      0.030      +0.000
+  rWaypoint=1.0           0.370    1.000      0.000      +0.030
+  rWaypoint=3.0           0.260    0.850      0.130      -0.080
+  dt=0.005                0.310    0.970      0.030      -0.030
+  dt=0.02                 0.310    0.960      0.040      -0.030
+
+  Read this as a screen for FRAGILITY, not for tuning: a factor whose
+  two levels straddle nominal with small movement indicates the
+  conclusion does not hinge on that parameter.

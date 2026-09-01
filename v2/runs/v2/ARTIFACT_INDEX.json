@@ -1,0 +1,127 @@
+{
+ "recorded": "2026-08-31",
+ "purpose": "Traceability index: for every result artefact, what produced it, what analyses it, where its analysed output is persisted, and where its conclusions are recorded.",
+ "known_gap": "Entries with persisted_output = null were analysed by scripts that printed to stdout without saving. Their conclusions are recorded in the documents named under conclusions_recorded_in. They were NOT re-run for this index, deliberately: re-running would regenerate bootstrap intervals under fresh RNG draws and could differ in the third decimal from the numbers already frozen in those documents.",
+ "artefacts": {
+  "confirm_factorial.json": {
+   "description": "Confirmatory four-arm factorial, 2000 runs",
+   "present": true,
+   "size_mb": 1.35,
+   "sha256_16": "3892404078d40782",
+   "produced_by": "MATLAB export + py/sfm_explore.py",
+   "analysed_by": "py/analyze_confirm.py",
+   "persisted_output": "v2/runs/v2/confirm_analysis_output.txt",
+   "conclusions_recorded_in": "PAPER_LOG.md section 2"
+  },
+  "dose_response.json": {
+   "description": "TTC dose-response sweep, 9000 runs",
+   "present": true,
+   "size_mb": 3.86,
+   "sha256_16": "b297bf59b0b38828",
+   "produced_by": "py/dose_response.py",
+   "analysed_by": "py/analyze_dose.py",
+   "persisted_output": "v2/runs/v2/dose_analysis_output.txt",
+   "conclusions_recorded_in": "PAPER_LOG.md section 2b"
+  },
+  "reciprocal.json": {
+   "description": "ORCA-responsive pedestrian study, 3900 runs",
+   "present": true,
+   "size_mb": 1.43,
+   "sha256_16": "0d32f8f471c46398",
+   "produced_by": "py/reciprocal.py",
+   "analysed_by": "py/analyze_reciprocal.py",
+   "persisted_output": "v2/runs/v2/reciprocal_analysis_output.txt",
+   "conclusions_recorded_in": "PAPER_LOG.md section 2c"
+  },
+  "crowdnav_transfer.json": {
+   "description": "CrowdNav external transfer, 960 runs",
+   "present": true,
+   "size_mb": 0.45,
+   "sha256_16": "3b12765ca06c09a1",
+   "produced_by": "py/crowdnav_transfer.py (external CrowdNav commit pinned in provenance.json)",
+   "analysed_by": null,
+   "persisted_output": null,
+   "conclusions_recorded_in": "PAPER_LOG.md section 2e"
+  },
+  "stage_a.json": {
+   "description": "Recovery Stage A calibration, 3200 runs",
+   "present": true,
+   "size_mb": 1.11,
+   "sha256_16": "cf21bc0dfbfc513c",
+   "produced_by": "py/run_stage_a.py",
+   "analysed_by": "reporting embedded in py/run_stage_a.py",
+   "persisted_output": null,
+   "conclusions_recorded_in": "PAPER_LOG.md section 2g"
+  },
+  "stage_b.json": {
+   "description": "Recovery Stage B futility screen, 8960 runs",
+   "present": true,
+   "size_mb": 2.14,
+   "sha256_16": "6307c1c37eb80b35",
+   "produced_by": "py/run_stage_b.py",
+   "analysed_by": "reporting embedded in py/run_stage_b.py",
+   "persisted_output": null,
+   "conclusions_recorded_in": "PAPER_LOG.md section 2i"
+  },
+  "trajectory_diversion.json": {
+   "description": "Trajectory diversion / exposure analysis",
+   "present": true,
+   "size_mb": 0.07,
+   "sha256_16": "72aaf2ca0ab2d219",
+   "produced_by": "py/trajectory_diversion.py",
+   "analysed_by": "py/diversion_verdict.py",
+   "persisted_output": null,
+   "conclusions_recorded_in": "PAPER_LOG.md section 2b"
+  },
+  "orca_cap_diagnostic.json": {
+   "description": "ORCA neighbour-cap diagnostic",
+   "present": true,
+   "size_mb": 0.01,
+   "sha256_16": "68e485f7afe0fff4",
+   "produced_by": "py/orca_cap_diagnostic.py",
+   "analysed_by": "self-reporting",
+   "persisted_output": null,
+   "conclusions_recorded_in": "PAPER_LOG.md section 2c"
+  },
+  "penetration_precision.json": {
+   "description": "Contact penetration precision check",
+   "present": true,
+   "size_mb": 0.03,
+   "sha256_16": "0c3004e81c284dfb",
+   "produced_by": "py/penetration_precision.py",
+   "analysed_by": "self-reporting",
+   "persisted_output": null,
+   "conclusions_recorded_in": "PAPER_LOG.md section 2"
+  },
+  "g2_calib.json": {
+   "description": "Amendment G2 path-invalidation calibration, 950 runs",
+   "present": true,
+   "size_mb": 0.22,
+   "sha256_16": "b92a20f564744fe6",
+   "produced_by": "py/run_g2_calib.py",
+   "analysed_by": "py/analyze_g2_calib.py",
+   "persisted_output": "v2/runs/v2/g2_calib_output.txt",
+   "conclusions_recorded_in": "AMENDMENT_G2_DRAFT.md appendix"
+  },
+  "reviewer_closure.json": {
+   "description": "Reviewer items 1.11/1.34/1.37, 2500 runs",
+   "present": true,
+   "size_mb": 0.95,
+   "sha256_16": "3d7328fdcfd25ac6",
+   "produced_by": "py/run_reviewer_closure.py",
+   "analysed_by": "py/analyze_reviewer_closure.py",
+   "persisted_output": "v2/runs/v2/reviewer_closure_output.txt",
+   "conclusions_recorded_in": "PAPER_LOG.md section 2j"
+  },
+  "phase0_per_trial.csv": {
+   "description": "Phase 0 matched two-arm set, 200 trials",
+   "present": true,
+   "size_mb": 0.04,
+   "sha256_16": "247ca023e4de3943",
+   "produced_by": "NOT ARCHIVED - see phase0_provenance.json",
+   "analysed_by": "py/analyze_rgoal_sensitivity.py",
+   "persisted_output": "v2/runs/v2/rgoal_sensitivity_output.txt",
+   "conclusions_recorded_in": "PAPER_LOG.md section 2, reviewer 1.13"
+  }
+ }
+}

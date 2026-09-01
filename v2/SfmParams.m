@@ -87,7 +87,12 @@ P.goal       = [50 50];
 P.rGoal      = 0.5;            % m, goal acceptance radius
 P.vGoal      = 0.10;           % m/s, speed must be below this to count
 P.dwellSteps = 100;            % 1.0 s the robot must REMAIN inside rGoal
-P.rGoalSweep = [0.25 0.5 1.0]; % reported sensitivity band
+% P.rGoalSweep was declared here as a 'reported sensitivity band' but was never
+% referenced by any script and no sweep was ever run from it. Reviewer 1.13 is
+% answered instead by re-scoring the frozen Phase 0 outputs over goal radii; see
+% py/analyze_rgoal_sensitivity.py and v2/runs/v2/phase0_provenance.json.
+% Retained as a comment so the earlier record remains legible.
+% P.rGoalSweep = [0.25 0.5 1.0];
 % Arrival requires position, SPEED, and dwell together, with no contact
 % during the dwell window. A 2 m radius was too coarse to defend against a
 % 0.35 m robot on a 1 m grid, and it made the final-distance metric almost
