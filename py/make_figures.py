@@ -25,6 +25,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
 from sfm_explore import Params, Scenario, run_trial
+from reporting_stats import stable_seed, reporting_ci
 
 R = Path("v2/runs/v2")
 FIG = Path("../paper/figures")
@@ -261,7 +262,7 @@ def fig_dose():
                 c = "ttcHorizon=2.0" if x == DEF[f] else f"{f}={x}"
                 v = np.array([by["hybrid"][c][s]["category"] == key for s in scens],
                              float)
-                g = np.random.default_rng(abs(hash((f, x, key))) % 2**32)
+                g = np.random.default_rng(stable_seed((f, x, key)))
                 bs = v[g.integers(0, len(v), size=(2000, len(v)))].mean(axis=1)
                 m.append(v.mean()); lo.append(np.percentile(bs, 2.5))
                 hi.append(np.percentile(bs, 97.5))
@@ -317,11 +318,7 @@ def fig_models():
             rec[r["scenario"]][r["arm"]] = r
     cn = json.load(open(R / "crowdnav_transfer.json"))
 
-    def ci(vals, key):
-        v = np.asarray(vals, float)
-        g = np.random.default_rng(abs(hash(key)) % 2**32)
-        bs = v[g.integers(0, len(v), size=(4000, len(v)))].mean(axis=1)
-        return v.mean(), np.percentile(bs, 2.5), np.percentile(bs, 97.5)
+    ci = reporting_ci
 
     def dpair(pairs, a, b, key, tag):
         c = lambda r: r["category"] if "category" in r else cat(r)
@@ -341,14 +338,14 @@ def fig_models():
         return ci(v, tag) + (base,)
 
     settings = [
-        ("Custom sim\nSFM pedestrians", dpair(conf, "hybrid", "hybrid-ttc", "unsafe", "a1"),
-         dpair(conf, "hybrid", "hybrid-ttc", "deadlock", "a2")),
-        ("Custom sim\nORCA-responsive", dpair(rec, "disabled", "ttc0.40", "unsafe", "b1"),
-         dpair(rec, "disabled", "ttc0.40", "deadlock", "b2")),
-        ("CrowdNav\nrobot invisible", dcn(False, "collision", "c1"),
-         dcn(False, "deadlock", "c2")),
-        ("CrowdNav\nrobot visible", dcn(True, "collision", "d1"),
-         dcn(True, "deadlock", "d2")),
+        ("Custom sim\nSFM pedestrians", dpair(conf, "hybrid", "hybrid-ttc", "unsafe", "x1"),
+         dpair(conf, "hybrid", "hybrid-ttc", "deadlock", "x2")),
+        ("Custom sim\nORCA-responsive", dpair(rec, "disabled", "ttc0.40", "unsafe", "x3"),
+         dpair(rec, "disabled", "ttc0.40", "deadlock", "x4")),
+        ("CrowdNav (0.25 s)\nrobot invisible", dcn(False, "collision", "x5"),
+         dcn(False, "deadlock", "x6")),
+        ("CrowdNav (0.25 s)\nrobot visible", dcn(True, "collision", "x7"),
+         dcn(True, "deadlock", "x8")),
     ]
     x = np.arange(4); w = 0.34
     fig, ax = plt.subplots(figsize=(6.2, 2.9))

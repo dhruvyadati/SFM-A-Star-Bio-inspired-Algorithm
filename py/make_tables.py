@@ -58,10 +58,7 @@ rec=defaultdict(dict)
 for r in json.load(open(R/"reciprocal.json")):
     if r["set"]=="confirm" and r["responsibility"]=="reciprocal": rec[r["scenario"]][r["arm"]]=r
 cn=json.load(open(R/"crowdnav_transfer.json"))
-def ci(v,key):
-    v=np.asarray(v,float); g=np.random.default_rng(abs(hash(key))%2**32)
-    bs=v[g.integers(0,len(v),size=(4000,len(v)))].mean(axis=1)
-    return v.mean(), np.percentile(bs,2.5), np.percentile(bs,97.5)
+from reporting_stats import reporting_ci as ci
 def dpair(pairs,a,b,key,tag):
     c=lambda r: r["category"] if "category" in r else cat(r)
     pr=[p for p in pairs.values() if a in p and b in p]
@@ -79,9 +76,9 @@ ROWS=[("Custom", "SFM (weak repulsion)", "unsafe arrival",
        dpair(conf,'hybrid','hybrid-ttc','unsafe','x1'), dpair(conf,'hybrid','hybrid-ttc','deadlock','x2')),
       ("Custom", "ORCA-responsive, asymmetric", "unsafe arrival",
        dpair(rec,'disabled','ttc0.40','unsafe','x3'), dpair(rec,'disabled','ttc0.40','deadlock','x4')),
-      ("CrowdNav", "robot invisible to humans", "collision",
+      ("CrowdNav", "robot invisible, $0.25$ s", "collision",
        dcn(False,'collision','x5'), dcn(False,'deadlock','x6')),
-      ("CrowdNav", "robot visible to humans", "collision",
+      ("CrowdNav", "robot visible, $0.25$ s", "collision",
        dcn(True,'collision','x7'), dcn(True,'deadlock','x8'))]
 L=[r"\begin{tabular}{lllrrr}", r"\toprule",
    r"Environment & Pedestrian response & Safety endpoint & Baseline (\%) & $\Delta$ safety & $\Delta$ deadlock \\", r"\midrule"]
@@ -116,3 +113,23 @@ L+=[r"\midrule", f"Total & {tot} & 100 \\\\", r"\bottomrule", r"\end{tabular}"]
 (T/"internal"/"t4_reviewer_status_INTERNAL.tex").write_text("\n".join(L))
 print("  internal/t4_reviewer_status_INTERNAL.tex  (NOT for the paper)")
 print(f"\n  tables -> {T}")
+
+# T6 — complete timestep disclosure, including overlapping matched subsets.
+L = [r"\begin{tabular}{llrrrrr}", r"\toprule",
+     r"Visibility & Step and subset & $n$ & Collision ref. & Collision TTC & Deadlock ref. & Deadlock TTC \\",
+     r"\midrule"]
+for vis in (False, True):
+    for dt, limit, label in ((.25, 50, "$0.25$ s, full"),
+                             (.25, 10, "$0.25$ s, matched subset"),
+                             (.01, 10, "$0.01$ s, matched subset")):
+        arm_rows = {arm: [r for r in cn if r['visible'] == vis
+                         and r['dt'] == dt and r['seed'] < limit
+                         and r['arm'] == arm] for arm in ('reference', 'ttc')}
+        a, b = arm_rows['reference'], arm_rows['ttc']
+        assert len(a) == len(b) == (200 if limit == 50 else 40)
+        cells = ['Visible' if vis else 'Invisible', label, str(len(a))]
+        cells += [str(sum(r[key] for r in group))
+                  for key in ('collision', 'deadlock') for group in (a, b)]
+        L.append(' & '.join(cells) + r' \\')
+L += [r"\bottomrule", r"\end{tabular}"]
+w('t6_crowdnav_timestep', '\n'.join(L) + '\n')

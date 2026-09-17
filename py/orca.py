@@ -115,12 +115,16 @@ def _add_obstacles(sim, obstacles):
 
 def run_trial_orca(S: Scenario, mode: str = "orca_robot",
                    cfg: OrcaConfig | None = None,
-                   planner: str = "direct", log: bool = False):
+                   planner: str = "direct", log: bool = False,
+                   aligned: bool = False):
     """Run one trial with the robot controlled by ORCA.
 
     mode     'orca_robot' (pedestrians stay SFM) or 'orca_crowd' (all ORCA)
     planner  'direct' (head for the goal) or 'hybrid' (follow A* waypoints)
+    aligned  shared pre-update state, contact samples and waypoint timing
     """
+    if aligned and mode != "orca_robot":
+        raise ValueError("Aligned stepping requires orca_robot mode")
     if cfg is None:
         cfg = OrcaConfig()
     P = S.params
@@ -195,18 +199,26 @@ def run_trial_orca(S: Scenario, mode: str = "orca_robot",
     traj = np.zeros((2, P.maxSteps)) if log else None
 
     for step in range(1, P.maxSteps + 1):
+        # Aligned mode uses one shared pre-update snapshot for both controllers.
+        if aligned:
+            F, mpg, mog = compute_forces(x, v, goals, radii, v0, S.obstacles, P)
+            for i, pid in enumerate(pids):
+                sim.setAgentPosition(pid, tuple(x[:, i + 1]))
+                sim.setAgentVelocity(pid, tuple(v[:, i + 1]))
         # --- pedestrians: SFM in orca_robot, ORCA in orca_crowd -----------
         if mode == "orca_robot" and nPed:
-            F, mpg, mog = compute_forces(x, v, goals, radii, v0, S.obstacles, P)
+            if not aligned:
+                F, mpg, mog = compute_forces(x, v, goals, radii, v0, S.obstacles, P)
             v[:, 1:] = v[:, 1:] + F[:, 1:] * P.dt
             sp = np.hypot(v[0, 1:], v[1, 1:])
             over = sp > P.vMax
             if over.any():
                 v[:, 1:][:, over] = v[:, 1:][:, over] / sp[over] * P.vMax
-            x[:, 1:] = x[:, 1:] + v[:, 1:] * P.dt
-            for i, pid in enumerate(pids):
-                sim.setAgentPosition(pid, (float(x[0, i + 1]), float(x[1, i + 1])))
-                sim.setAgentVelocity(pid, (float(v[0, i + 1]), float(v[1, i + 1])))
+            if not aligned:
+                x[:, 1:] = x[:, 1:] + v[:, 1:] * P.dt
+                for i, pid in enumerate(pids):
+                    sim.setAgentPosition(pid, (float(x[0, i + 1]), float(x[1, i + 1])))
+                    sim.setAgentVelocity(pid, (float(v[0, i + 1]), float(v[1, i + 1])))
         elif nPed:
             for i, pid in enumerate(pids):
                 gp = goals[:, i + 1] - np.array(sim.getAgentPosition(pid))
@@ -217,7 +229,7 @@ def run_trial_orca(S: Scenario, mode: str = "orca_robot",
         # --- robot preferred velocity -------------------------------------
         rpos = np.array(sim.getAgentPosition(rid))
         if planner == "hybrid":
-            if (np.hypot(*(rpos - S.waypoints[:, wi])) < P.rWaypoint
+            if (not aligned and np.hypot(*(rpos - S.waypoints[:, wi])) < P.rWaypoint
                     and wi < S.waypoints.shape[1] - 1):
                 wi += 1
             target = S.waypoints[:, wi]
@@ -232,6 +244,8 @@ def run_trial_orca(S: Scenario, mode: str = "orca_robot",
         sim.setAgentPrefVelocity(rid, pref)
 
         sim.doStep()
+        if aligned:
+            x[:, 1:] = x[:, 1:] + v[:, 1:] * P.dt
 
         new_rpos = np.array(sim.getAgentPosition(rid))
         rvel = np.array(sim.getAgentVelocity(rid))
@@ -246,17 +260,20 @@ def run_trial_orca(S: Scenario, mode: str = "orca_robot",
         if log:
             traj[:, step - 1] = new_rpos
 
-        # --- clearances ----------------------------------------------------
-        if nPed:
-            gaps = np.hypot(x[0, 1:] - x[0, 0], x[1, 1:] - x[1, 0]) - (P.rRobot + P.rPed)
-            gp = float(gaps.min())
+        # Score the same pre-update gaps as the SFM controller in aligned mode.
+        if aligned:
+            gp, go = float(mpg[0]), float(mog[0])
         else:
-            gp = math.inf
-        go = math.inf
-        for verts in S.obstacles:
-            from sfm import poly_signed_distance
-            dS, _ = poly_signed_distance(x[0, 0], x[1, 0], verts)
-            go = min(go, dS - P.rRobot)
+            if nPed:
+                gaps = np.hypot(x[0, 1:] - x[0, 0], x[1, 1:] - x[1, 0]) - (P.rRobot + P.rPed)
+                gp = float(gaps.min())
+            else:
+                gp = math.inf
+            go = math.inf
+            for verts in S.obstacles:
+                from sfm import poly_signed_distance
+                dS, _ = poly_signed_distance(x[0, 0], x[1, 0], verts)
+                go = min(go, dS - P.rRobot)
         min_pg, min_og = min(min_pg, gp), min(min_og, go)
         if gp < 0:
             if not in_ped:
@@ -268,6 +285,11 @@ def run_trial_orca(S: Scenario, mode: str = "orca_robot",
                 obs_col += 1; in_obs = True
         else:
             in_obs = False
+
+        if aligned and planner == "hybrid":
+            if (np.hypot(*(x[:, 0] - S.waypoints[:, wi])) < P.rWaypoint
+                    and wi < S.waypoints.shape[1] - 1):
+                wi += 1
 
         # --- pedestrian goal pool ------------------------------------------
         for i in range(1, 1 + nPed):
