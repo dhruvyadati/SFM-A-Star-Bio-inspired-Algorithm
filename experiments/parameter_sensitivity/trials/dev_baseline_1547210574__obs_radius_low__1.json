@@ -1,0 +1,17 @@
+{
+  "scenario": "dev_baseline_1547210574",
+  "condition": "baseline",
+  "setting": "obs_radius_low",
+  "arm": "hybrid-ttc",
+  "failed": false,
+  "outcome": "success",
+  "safe": 0,
+  "unsafe_goal": 1,
+  "deadlock": 0,
+  "timeout": 0,
+  "contacts": 2,
+  "steps": 7213,
+  "path_len": 77.46248573993975,
+  "min_ped_gap": -0.028172969111877055,
+  "min_obs_gap": 0.32098301313041677
+}

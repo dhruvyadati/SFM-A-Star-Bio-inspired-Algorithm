@@ -1,0 +1,128 @@
+{
+  "nominal": {
+    "hybrid": {
+      "safe": 27,
+      "unsafe_goal": 71,
+      "deadlock": 2,
+      "timeout": 0,
+      "any_contact": 73
+    },
+    "hybrid-ttc": {
+      "safe": 33,
+      "unsafe_goal": 50,
+      "deadlock": 17,
+      "timeout": 0,
+      "any_contact": 61
+    },
+    "paired_ttc_safe_difference_pp": 6,
+    "change_from_nominal_pp": 0
+  },
+  "ped_speed_low": {
+    "hybrid": {
+      "safe": 31,
+      "unsafe_goal": 66,
+      "deadlock": 3,
+      "timeout": 0,
+      "any_contact": 68
+    },
+    "hybrid-ttc": {
+      "safe": 42,
+      "unsafe_goal": 34,
+      "deadlock": 24,
+      "timeout": 0,
+      "any_contact": 46
+    },
+    "paired_ttc_safe_difference_pp": 11,
+    "change_from_nominal_pp": 5
+  },
+  "ped_speed_high": {
+    "hybrid": {
+      "safe": 37,
+      "unsafe_goal": 62,
+      "deadlock": 1,
+      "timeout": 0,
+      "any_contact": 63
+    },
+    "hybrid-ttc": {
+      "safe": 38,
+      "unsafe_goal": 45,
+      "deadlock": 17,
+      "timeout": 0,
+      "any_contact": 57
+    },
+    "paired_ttc_safe_difference_pp": 1,
+    "change_from_nominal_pp": -5
+  },
+  "obs_radius_low": {
+    "hybrid": {
+      "safe": 28,
+      "unsafe_goal": 69,
+      "deadlock": 3,
+      "timeout": 0,
+      "any_contact": 72
+    },
+    "hybrid-ttc": {
+      "safe": 33,
+      "unsafe_goal": 50,
+      "deadlock": 17,
+      "timeout": 0,
+      "any_contact": 61
+    },
+    "paired_ttc_safe_difference_pp": 5,
+    "change_from_nominal_pp": -1
+  },
+  "obs_radius_high": {
+    "hybrid": {
+      "safe": 27,
+      "unsafe_goal": 71,
+      "deadlock": 2,
+      "timeout": 0,
+      "any_contact": 73
+    },
+    "hybrid-ttc": {
+      "safe": 33,
+      "unsafe_goal": 50,
+      "deadlock": 17,
+      "timeout": 0,
+      "any_contact": 61
+    },
+    "paired_ttc_safe_difference_pp": 6,
+    "change_from_nominal_pp": 0
+  },
+  "speed_cap_low": {
+    "hybrid": {
+      "safe": 28,
+      "unsafe_goal": 69,
+      "deadlock": 3,
+      "timeout": 0,
+      "any_contact": 72
+    },
+    "hybrid-ttc": {
+      "safe": 33,
+      "unsafe_goal": 51,
+      "deadlock": 16,
+      "timeout": 0,
+      "any_contact": 60
+    },
+    "paired_ttc_safe_difference_pp": 5,
+    "change_from_nominal_pp": -1
+  },
+  "speed_cap_high": {
+    "hybrid": {
+      "safe": 27,
+      "unsafe_goal": 70,
+      "deadlock": 3,
+      "timeout": 0,
+      "any_contact": 72
+    },
+    "hybrid-ttc": {
+      "safe": 41,
+      "unsafe_goal": 43,
+      "deadlock": 16,
+      "timeout": 0,
+      "any_contact": 53
+    },
+    "paired_ttc_safe_difference_pp": 14,
+    "change_from_nominal_pp": 8
+  }
+}

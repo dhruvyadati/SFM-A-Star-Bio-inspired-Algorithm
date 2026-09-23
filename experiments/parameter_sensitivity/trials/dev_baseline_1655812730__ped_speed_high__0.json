@@ -1,0 +1,17 @@
+{
+  "scenario": "dev_baseline_1655812730",
+  "condition": "baseline",
+  "setting": "ped_speed_high",
+  "arm": "hybrid",
+  "failed": false,
+  "outcome": "success",
+  "safe": 1,
+  "unsafe_goal": 0,
+  "deadlock": 0,
+  "timeout": 0,
+  "contacts": 0,
+  "steps": 5940,
+  "path_len": 72.6206888002587,
+  "min_ped_gap": 0.4272240637019862,
+  "min_obs_gap": 0.4276624619221867
+}

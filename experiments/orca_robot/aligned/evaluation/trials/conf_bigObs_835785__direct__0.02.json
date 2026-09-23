@@ -1,0 +1,18 @@
+{
+  "duration_seconds": 57.050000000000004,
+  "elapsed_seconds": 20.15209276600217,
+  "final_dist": 19.696943561859136,
+  "final_speed": 0.00487483270676554,
+  "margin": 0.02,
+  "min_obs_gap": 1.0092846496334573e-06,
+  "min_ped_gap": 0.02712199526505865,
+  "obs_collisions": 0,
+  "outcome": "deadlock",
+  "path_length": 52.7742775635328,
+  "ped_collisions": 0,
+  "planner": "direct",
+  "safe": false,
+  "scenario": "conf_bigObs_835785",
+  "scenario_sha256": "4358be95d433c25d804a3ae84c7e0059f474f98b708f57c38e57d9406021e800",
+  "steps": 5705
+}

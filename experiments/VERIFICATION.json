@@ -1,0 +1,14 @@
+{
+  "raw_trial_and_trace_files_unchanged": 5418,
+  "orca_development_trials": 3000,
+  "orca_evaluation_trials": 1000,
+  "parameter_screen_trials": 1400,
+  "verified_trace_records": 8,
+  "numerical_analysis_outputs_match": true,
+  "regenerated_png_files_identical": 6,
+  "existing_executable_changes": "Repository path resolution only",
+  "active_manifest_changes": "Runner hashes only; original manifests and runners preserved in provenance/",
+  "simulation_rerun": false,
+  "ignored_payload_files": 0,
+  "oversize_payload_files": 0
+}

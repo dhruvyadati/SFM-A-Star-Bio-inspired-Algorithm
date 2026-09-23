@@ -1,0 +1,9 @@
+{
+  "scenario": "conf_cluttered_1031467010",
+  "condition": "cluttered",
+  "arm": "hybrid-ttc",
+  "outcome": "deadlock",
+  "steps": 4292,
+  "contacts": 4,
+  "matches_saved_endpoints": true
+}

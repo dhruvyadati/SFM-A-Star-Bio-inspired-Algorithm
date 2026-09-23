@@ -1,0 +1,17 @@
+{
+  "scenario": "dev_dense_1033966033",
+  "condition": "dense",
+  "setting": "speed_cap_low",
+  "arm": "hybrid",
+  "failed": false,
+  "outcome": "success",
+  "safe": 0,
+  "unsafe_goal": 1,
+  "deadlock": 0,
+  "timeout": 0,
+  "contacts": 2,
+  "steps": 7009,
+  "path_len": 81.68695381568652,
+  "min_ped_gap": -0.06241055072042068,
+  "min_obs_gap": 0.22419644913022896
+}

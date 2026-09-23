@@ -1,0 +1,9 @@
+{
+  "scenario": "conf_bigObs_1003239581",
+  "condition": "bigObs",
+  "arm": "hybrid-ttc",
+  "outcome": "success",
+  "steps": 6824,
+  "contacts": 0,
+  "matches_saved_endpoints": true
+}

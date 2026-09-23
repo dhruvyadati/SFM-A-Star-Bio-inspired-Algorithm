@@ -92,3 +92,9 @@ not require this helper.
 Original software is licensed under the MIT License; see `LICENSE`.
 Original simulation data and documentation are licensed under CC BY 4.0; see
 `DATA_LICENSE.md`. Existing third-party licenses and notices remain applicable.
+
+## Additional experiment results
+
+See [experiments/README.md](experiments/README.md) for saved ORCA comparisons,
+parameter sensitivity, clearance diagnostics, trajectory replays, and commands
+to verify file checksums and regenerate analyses without running simulations.

@@ -1,0 +1,9 @@
+{
+  "scenario": "conf_baseline_1012999080",
+  "condition": "baseline",
+  "arm": "hybrid",
+  "outcome": "success",
+  "steps": 6524,
+  "contacts": 3,
+  "matches_saved_endpoints": true
+}

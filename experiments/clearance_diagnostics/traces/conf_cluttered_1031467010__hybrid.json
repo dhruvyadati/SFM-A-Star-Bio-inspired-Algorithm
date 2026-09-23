@@ -1,0 +1,9 @@
+{
+  "scenario": "conf_cluttered_1031467010",
+  "condition": "cluttered",
+  "arm": "hybrid",
+  "outcome": "success",
+  "steps": 6684,
+  "contacts": 1,
+  "matches_saved_endpoints": true
+}

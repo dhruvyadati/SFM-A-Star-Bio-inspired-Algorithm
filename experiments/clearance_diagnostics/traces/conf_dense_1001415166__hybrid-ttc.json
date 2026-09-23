@@ -1,0 +1,9 @@
+{
+  "scenario": "conf_dense_1001415166",
+  "condition": "dense",
+  "arm": "hybrid-ttc",
+  "outcome": "success",
+  "steps": 7317,
+  "contacts": 3,
+  "matches_saved_endpoints": true
+}

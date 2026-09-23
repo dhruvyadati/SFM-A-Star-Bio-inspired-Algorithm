@@ -1,0 +1,17 @@
+{
+  "scenario": "dev_bigObs_1197316405",
+  "condition": "bigObs",
+  "setting": "ped_speed_high",
+  "arm": "hybrid-ttc",
+  "failed": false,
+  "outcome": "success",
+  "safe": 0,
+  "unsafe_goal": 1,
+  "deadlock": 0,
+  "timeout": 0,
+  "contacts": 2,
+  "steps": 7677,
+  "path_len": 83.62159048194401,
+  "min_ped_gap": -0.09106553170926401,
+  "min_obs_gap": 0.31762612488922726
+}

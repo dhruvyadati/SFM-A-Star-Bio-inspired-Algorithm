@@ -1,0 +1,23 @@
+{
+  "complete": true,
+  "completed": 1000,
+  "expected": 1000,
+  "groups": [
+    {
+      "contacts": 7167,
+      "deadlock": 0.74,
+      "margin": 0.02,
+      "n": 500,
+      "planner": "direct",
+      "safe": 0.076
+    },
+    {
+      "contacts": 239,
+      "deadlock": 0.046,
+      "margin": 0.02,
+      "n": 500,
+      "planner": "hybrid",
+      "safe": 0.852
+    }
+  ]
+}

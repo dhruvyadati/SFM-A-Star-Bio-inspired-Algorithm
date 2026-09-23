@@ -1,0 +1,18 @@
+{
+  "duration_seconds": 62.47,
+  "elapsed_seconds": 33.79163700800564,
+  "final_dist": 0.07966052486577055,
+  "final_speed": 0.05211759812011378,
+  "margin": 0.02,
+  "min_obs_gap": 8.351865276035042e-07,
+  "min_ped_gap": 0.020423526020042826,
+  "obs_collisions": 0,
+  "outcome": "success",
+  "path_length": 76.80779342364983,
+  "ped_collisions": 0,
+  "planner": "hybrid",
+  "safe": true,
+  "scenario": "conf_cluttered_926814221",
+  "scenario_sha256": "7ac79f86908dfaee8d4be6a6040f2e8b51079a97dcb8d26e3ecbeb004c28534a",
+  "steps": 6247
+}

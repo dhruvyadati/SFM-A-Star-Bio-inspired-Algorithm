@@ -1,0 +1,61 @@
+{
+  "description": "Repository-local paths only; original simulation outputs are unchanged. Original runner and manifest records are retained in adjacent directories. Active runner hashes identify the relocated scripts, not the historical execution.",
+  "changed_files": {
+    "orca_robot/analyze_results.py": {
+      "original_sha256": "8f36b1e3e2a88e79c89638db5a1a766ce4ea4001c9f7c03cb75755649c27c085",
+      "relocated_sha256": "b8851bcdf351488ecfc316661e5279c3e8b8911cc1d5ebe28359f24360b02b85"
+    },
+    "orca_robot/run_pipeline.py": {
+      "original_sha256": "4c873c33ccf7f33abb750cdcf2d2d9e9ae0ceadfadd09d1f05bb34d51eea73f5",
+      "relocated_sha256": "afbd104b278dade95d616de6202b33a0ff7005c1cd9bce60779c5ab77608a3ec"
+    },
+    "clearance_diagnostics/trace.py": {
+      "original_sha256": "738ea3352856f85ac7fad8d107f4be6cf6db3987843bc4a48f14d1a48c58c577",
+      "relocated_sha256": "9776c9e56614d5721781397ec219e34c9001d3f07895ad824236dede74bc9d46"
+    },
+    "clearance_diagnostics/plot.py": {
+      "original_sha256": "ab8c5e1877e1b8cc4d38ebc8e9b6da3f2142844d94e0f59c077e0c447b2c55fd",
+      "relocated_sha256": "8309409aad352c7322cec21b80d7a83e4e3adc8c56db5ce172f7dc7c891c6aa7"
+    },
+    "clearance_diagnostics/trace_manifest.json": {
+      "original_sha256": "2221efe39802e4db1fe69bbd3724b322aca707497b93505f20ef2452a2e928d2",
+      "relocated_sha256": "cf56f01e5ee3dc71684ea3922899aa89de1c721a99e7228a9e8a0b9eb60c484c"
+    },
+    "clearance_diagnostics/analysis.json": {
+      "original_sha256": "863c76b3c521749e9aadb53d3b47f88779caf2bef3ae143afce751fbd04d87b5",
+      "relocated_sha256": "4da25ec125510482e13ddd70bfff8c033a69a26e0c7b6208d1e74b976d67bee5"
+    },
+    "clearance_diagnostics/analyze.py": {
+      "original_sha256": "20ec3e9318545f080c0d8f18a2887d558e97dcc78bb440e6e045229216d14d25",
+      "relocated_sha256": "2a7261d40f96afa4c624851aa85accc65c2e9e112b590b063938d411e1732f23"
+    },
+    "parameter_sensitivity/run.py": {
+      "original_sha256": "f8dfbda6ea1ebe2140329d07a2c0413b2fa4a085b54d72181bc79eda4c21da59",
+      "relocated_sha256": "958ab54c37b109ccf9c875180a325b4db228a15f3ea70bc6b9d9a52171ddf2b5"
+    },
+    "parameter_sensitivity/README.md": {
+      "original_sha256": "84f94dd583ea0b8209a747d793ef91b379e2d9118dbca2cc440767e30ff43c4c",
+      "relocated_sha256": "0b75055ae3fc49589a8f94b67f11747a53b162bb006fa52aeacde6849f552734"
+    },
+    "parameter_sensitivity/manifest.json": {
+      "original_sha256": "6f25c97dc51941dc5c8dbbb0ccdfe00d21e63472f94ffaba0d7248d6c44f887a",
+      "relocated_sha256": "e4c94b1ddda022f3a29f22d652558fbb7e7fa0e743304bedc6830fde0e4ca0b7"
+    },
+    "parameter_sensitivity/analyze.py": {
+      "original_sha256": "0506db68d724bac3947876d7d0277b9491d7ca5a24fdd97aef21c039f0af4a3c",
+      "relocated_sha256": "aa37a2704c7aba513021530ffdc787fef6d105a164bae4d51b9b83f9c9b6b260"
+    },
+    "figure_layout/plot.py": {
+      "original_sha256": "a098c1335221d5d8570c5d1ddb2422f96ccd42ab8fc520af74f864c2bae61862",
+      "relocated_sha256": "82451a7443d6d9841eb4a833cea4f25aa9c65e0499e334bd79e691450b6c0e9e"
+    },
+    "figure_layout/README.md": {
+      "original_sha256": "3ce320da7cbbb1d8c6f916fe7c819a901fe15b5c1a7e7ab69b33f89afbd09bf1",
+      "relocated_sha256": "15928c61887201494926b20101ba2134d34e053bdbad3b3752156364070bf331"
+    },
+    "orca_robot/aligned/analysis.json": {
+      "original_sha256": "f09125383b1b4475f7193488cca642f011138a32b14d0e31cf5804bd0cb152df",
+      "relocated_sha256": "47608f658b955503ff4c650d7d16e6f747888deefd0f235fe03afb2969409553"
+    }
+  }
+}

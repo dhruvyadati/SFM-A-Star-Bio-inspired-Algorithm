@@ -1,0 +1,87 @@
+{
+  "complete": true,
+  "completed": 3000,
+  "expected": 3000,
+  "groups": [
+    {
+      "contacts": 11518,
+      "deadlock": 0.6833333333333333,
+      "margin": 0.0,
+      "n": 300,
+      "planner": "direct",
+      "safe": 0.03666666666666667
+    },
+    {
+      "contacts": 4476,
+      "deadlock": 0.7033333333333334,
+      "margin": 0.02,
+      "n": 300,
+      "planner": "direct",
+      "safe": 0.06
+    },
+    {
+      "contacts": 4638,
+      "deadlock": 0.7066666666666667,
+      "margin": 0.05,
+      "n": 300,
+      "planner": "direct",
+      "safe": 0.06
+    },
+    {
+      "contacts": 4102,
+      "deadlock": 0.74,
+      "margin": 0.1,
+      "n": 300,
+      "planner": "direct",
+      "safe": 0.05
+    },
+    {
+      "contacts": 4547,
+      "deadlock": 0.7733333333333333,
+      "margin": 0.2,
+      "n": 300,
+      "planner": "direct",
+      "safe": 0.043333333333333335
+    },
+    {
+      "contacts": 218,
+      "deadlock": 0.056666666666666664,
+      "margin": 0.0,
+      "n": 300,
+      "planner": "hybrid",
+      "safe": 0.7866666666666666
+    },
+    {
+      "contacts": 132,
+      "deadlock": 0.056666666666666664,
+      "margin": 0.02,
+      "n": 300,
+      "planner": "hybrid",
+      "safe": 0.87
+    },
+    {
+      "contacts": 182,
+      "deadlock": 0.056666666666666664,
+      "margin": 0.05,
+      "n": 300,
+      "planner": "hybrid",
+      "safe": 0.8733333333333333
+    },
+    {
+      "contacts": 232,
+      "deadlock": 0.05,
+      "margin": 0.1,
+      "n": 300,
+      "planner": "hybrid",
+      "safe": 0.88
+    },
+    {
+      "contacts": 215,
+      "deadlock": 0.056666666666666664,
+      "margin": 0.2,
+      "n": 300,
+      "planner": "hybrid",
+      "safe": 0.88
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "scenario": "conf_bigObs_1003239581",
+  "condition": "bigObs",
+  "arm": "hybrid",
+  "outcome": "success",
+  "steps": 6808,
+  "contacts": 0,
+  "matches_saved_endpoints": true
+}

@@ -1,0 +1,17 @@
+{
+  "scenario": "dev_cluttered_110510937",
+  "condition": "cluttered",
+  "setting": "ped_speed_high",
+  "arm": "hybrid-ttc",
+  "failed": false,
+  "outcome": "deadlock",
+  "safe": 0,
+  "unsafe_goal": 0,
+  "deadlock": 1,
+  "timeout": 0,
+  "contacts": 1,
+  "steps": 3889,
+  "path_len": 27.953052140562082,
+  "min_ped_gap": -0.07113585611566398,
+  "min_obs_gap": 0.16365601691087017
+}
