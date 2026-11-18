@@ -35,7 +35,7 @@ human-like behavior or continuous collision freedom.
 | `v2/` | MATLAB implementation and scenario exporters |
 | `v2/runs/v2/` | Saved results, manifests and scenario pools, when distributed with data |
 | `archive/confirm_code/` | Exact archived sources used for the fixed factorial results |
-| `docs/` | Protocols, environment details and historical development records |
+| `project_documentation/` | Study protocols and recorded execution environment |
 | Root-level MATLAB scripts | Legacy implementation and exploratory utilities |
 | `runs/` | Historical seed records |
 
@@ -67,7 +67,7 @@ python -m pytest py/test_path_progress.py py/test_recovery_state_machine.py py/t
 ```
 
 ORCA simulation and its alignment tests additionally require the `rvo2` Python
-extension built from Python-RVO2. Consult `docs/ENVIRONMENT.md` and the distributed
+extension built from Python-RVO2. Consult `project_documentation/ENVIRONMENT.md` and the distributed
 runtime records for the recorded versions. Plotting requires Matplotlib. MATLAB
 is needed to regenerate MATLAB scenarios, not to analyze the saved Python data.
 Full simulation replay tests take substantially longer than the focused checks.

@@ -31,7 +31,7 @@ R = Path("v2/runs/v2")
 FIG = Path("../paper/figures")
 FIG.mkdir(exist_ok=True)
 # MATLAB default look: boxed axes, inward ticks, light grid, Helvetica-like
-# sans, and MATLAB's default colour order. NO in-figure titles -- IEEE figures
+# sans, and MATLAB's default colour order. NO in-figure titles -- publication figures
 # carry their text in the caption, and a title duplicated there wastes column
 # height and reads as a slide.
 plt.rcParams.update({

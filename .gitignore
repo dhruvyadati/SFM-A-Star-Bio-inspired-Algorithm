@@ -32,3 +32,6 @@ v2/runs/v2/export_g2_eval/
 
 # Raw progress logs from long runs; regenerable, not provenance.
 v2/runs/v2/*_run.log
+
+# Local manuscript planning, review correspondence and development notebooks.
+/docs/
